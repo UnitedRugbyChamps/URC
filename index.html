@@ -719,6 +719,27 @@
         let lastReadMessageId = null;
         let unreadCount = 0;
 
+        // Bootstrap default sync config (auto on all devices)
+        (function bootstrapSyncDefaults() {
+            try {
+                const DEFAULT_SYNC_BASE = 'github:jjsacks/URC/main:sync';
+                const DEFAULT_GH_TOKEN = 'REPLACE_WITH_TOKEN';
+                if (!localStorage.getItem('urcSyncBase')) {
+                    localStorage.setItem('urcSyncBase', DEFAULT_SYNC_BASE);
+                }
+                if (DEFAULT_GH_TOKEN && DEFAULT_GH_TOKEN !== 'REPLACE_WITH_TOKEN') {
+                    if (!localStorage.getItem('urcSyncToken')) {
+                        localStorage.setItem('urcSyncToken', DEFAULT_GH_TOKEN);
+                    }
+                    if (typeof window !== 'undefined' && !window.GH_TOKEN) {
+                        window.GH_TOKEN = DEFAULT_GH_TOKEN;
+                    }
+                }
+            } catch (e) {
+                // ignore
+            }
+        })();
+
         // Email normalization
         function normalizeEmail(email) {
             return (email || '').trim().toLowerCase();
