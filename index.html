@@ -842,6 +842,75 @@
         let lastReadMessageId = null;
         let unreadCount = 0;
 
+        // Timezone helpers (UK time handling and formatting)
+        function pad2(num) { return String(num).padStart(2, '0'); }
+
+        function getLastSundayDayOfMonth(year, monthIndex /* 0-11 */) {
+            const d = new Date(Date.UTC(year, monthIndex + 1, 0));
+            while (d.getUTCDay() !== 0) {
+                d.setUTCDate(d.getUTCDate() - 1);
+            }
+            return d.getUTCDate();
+        }
+
+        function isDateInBST(year, monthIndex, dayOfMonth) {
+            // BST starts last Sunday in March, ends last Sunday in October
+            const marchLastSunday = getLastSundayDayOfMonth(year, 2);   // March
+            const octoberLastSunday = getLastSundayDayOfMonth(year, 9); // October
+            const afterStart = (monthIndex > 2) || (monthIndex === 2 && dayOfMonth >= marchLastSunday);
+            const beforeEnd = (monthIndex < 9) || (monthIndex === 9 && dayOfMonth < octoberLastSunday);
+            return afterStart && beforeEnd;
+        }
+
+        function getLondonOffsetString(year, monthIndex, dayOfMonth) {
+            return isDateInBST(year, monthIndex, dayOfMonth) ? '+01:00' : '+00:00';
+        }
+
+        function makeLondonDate(year, monthIndex /* 0-11 */, dayOfMonth, hour24, minute) {
+            const y = year;
+            const m = pad2(monthIndex + 1);
+            const d = pad2(dayOfMonth);
+            const hh = pad2(hour24);
+            const mm = pad2(minute);
+            const offset = getLondonOffsetString(year, monthIndex, dayOfMonth);
+            // Construct an absolute instant representing this London local time
+            return new Date(`${y}-${m}-${d}T${hh}:${mm}:00${offset}`);
+        }
+
+        const MONTH_NAME_TO_INDEX = {
+            'January': 0, 'February': 1, 'March': 2, 'April': 3, 'May': 4, 'June': 5,
+            'July': 6, 'August': 7, 'September': 8, 'October': 9, 'November': 10, 'December': 11
+        };
+
+        function parseMatchLondonDate(dayLabel, timeLabel, fallbackYear) {
+            // dayLabel e.g. "Friday 26th September"; timeLabel e.g. "18:00"
+            const dayNum = parseInt((dayLabel.match(/\d+/) || [])[0], 10);
+            const monthName = (dayLabel.trim().split(' ').pop()) || 'September';
+            const monthIndex = MONTH_NAME_TO_INDEX[monthName] ?? 8;
+            const [hh, mm] = timeLabel.split(':').map(v => parseInt(v, 10));
+            return makeLondonDate(fallbackYear, monthIndex, dayNum, hh, mm);
+        }
+
+        function formatInTimeZones(date) {
+            const userTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const fmtOpts = { weekday: 'short', day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' };
+            const uk = new Intl.DateTimeFormat('en-GB', { ...fmtOpts, timeZone: 'Europe/London', hour12: false }).format(date);
+            const local = new Intl.DateTimeFormat(undefined, { ...fmtOpts, timeZone: userTz, hour12: false }).format(date);
+            return { uk, local };
+        }
+
+        function formatCountdown(ms) {
+            if (ms <= 0) return '0m 00s';
+            const totalSeconds = Math.floor(ms / 1000);
+            const days = Math.floor(totalSeconds / 86400);
+            const hours = Math.floor((totalSeconds % 86400) / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            if (days > 0) return `${days}d ${hours}h ${minutes}m`;
+            if (hours > 0) return `${hours}h ${minutes}m ${pad2(seconds)}s`;
+            return `${minutes}m ${pad2(seconds)}s`;
+        }
+
         // Deadline management
         function calculatePickingStatus() {
             const now = new Date();
@@ -851,24 +920,13 @@
                 return { isOpen: false, message: 'No fixtures available', deadline: null };
             }
             
-            // Find the earliest match in the round
-            let earliestMatch = null;
+            // Find the earliest match in the round using UK time, then convert to absolute instant
             let earliestTime = null;
-            
+            const baseYear = (gameData.roundDeadline ? new Date(gameData.roundDeadline).getFullYear() : new Date().getFullYear());
             roundData.matches.forEach(match => {
-                let matchDate;
-                if (match.day.includes('26th')) {
-                    matchDate = new Date('2025-09-26T' + match.time);
-                } else if (match.day.includes('27th')) {
-                    matchDate = new Date('2025-09-27T' + match.time);
-                } else {
-                    // Handle other dates - for now use a default
-                    matchDate = new Date('2025-09-26T' + match.time);
-                }
-                
-                if (!earliestTime || matchDate < earliestTime) {
-                    earliestTime = matchDate;
-                    earliestMatch = match;
+                const matchDateLondon = parseMatchLondonDate(match.day, match.time, baseYear);
+                if (!earliestTime || matchDateLondon < earliestTime) {
+                    earliestTime = matchDateLondon;
                 }
             });
             
@@ -896,13 +954,16 @@
                 message = `🔒 Picking opens in ${days}d ${hours}h`;
             } else if (isOpen) {
                 const timeToClose = deadline.getTime() - now.getTime();
-                const hours = Math.floor(timeToClose / (1000 * 60 * 60));
-                const minutes = Math.floor((timeToClose % (1000 * 60 * 60)) / (1000 * 60));
                 message = `🟢 Picking is OPEN`;
-                timeUntil = `Closes in ${hours}h ${minutes}m`;
+                timeUntil = `Closes in ${formatCountdown(timeToClose)}`;
             } else {
-                message = `🔒 Picking is CLOSED`;
-                timeUntil = 'Round in progress';
+                if (now < earliestTime) {
+                    message = `🔒 Picking is LOCKED`;
+                    timeUntil = `Round starts in ${formatCountdown(earliestTime.getTime() - now.getTime())}`;
+                } else {
+                    message = `🟡 Round Started`;
+                    timeUntil = '';
+                }
             }
             
             return {
@@ -910,7 +971,8 @@
                 message: message,
                 timeUntil: timeUntil,
                 deadline: deadline,
-                roundStart: roundStartDate
+                roundStart: roundStartDate,
+                earliestKickoff: earliestTime
             };
         }
 
@@ -1176,7 +1238,7 @@
             updateUI();
             setInterval(() => {
                 updateGameStatus();
-            }, 30000);
+            }, 1000);
         });
 
         function setupEventListeners() {
@@ -1748,29 +1810,53 @@
             const status = calculatePickingStatus();
             gameData.pickingOpen = status.isOpen;
             
-            document.getElementById('statusMessage').textContent = status.message;
-            document.getElementById('countdown').textContent = status.timeUntil || 'Deadline: Friday 26th September at 17:30';
+            const statusMsgEl = document.getElementById('statusMessage');
+            const countdownEl = document.getElementById('countdown');
             const lmsInline = document.getElementById('lmsCountdownInline');
-            if (lmsInline) {
-                lmsInline.textContent = status.isOpen ? `⏳ ${status.timeUntil}` : '🔒 Picking Closed';
-            }
             const currentRoundCountdown = document.getElementById('currentRoundCountdown');
+            const allFixturesCountdown = document.getElementById('allFixturesCountdown');
+
+            if (statusMsgEl) statusMsgEl.textContent = status.message;
+            if (countdownEl) countdownEl.textContent = status.timeUntil || '';
+
+            // Compose rich inline block: show deadline in UK and local, plus state
+            if (lmsInline) {
+                let line = '';
+                if (status.deadline) {
+                    const { uk, local } = formatInTimeZones(status.deadline);
+                    line += `Deadline (UK): ${uk}`;
+                    if (local !== uk) line += ` · Your time: ${local}`;
+                }
+                if (status.isOpen) {
+                    line = `🟢 Picking OPEN — ${status.timeUntil}` + (line ? ` · ${line}` : '');
+                } else if (status.earliestKickoff && new Date() < status.earliestKickoff) {
+                    line = `🔒 Locked — ${status.timeUntil}` + (line ? ` · ${line}` : '');
+                } else {
+                    line = `🟡 Round Started` + (line ? ` · ${line}` : '');
+                }
+                lmsInline.textContent = line;
+            }
+
             if (currentRoundCountdown) {
                 currentRoundCountdown.textContent = status.isOpen ? `⏳ Round Open — ${status.timeUntil}` : (status.roundStart && new Date() < status.roundStart ? `🔒 Opens soon` : '🟡 Round Started');
             }
-            const allFixturesCountdown = document.getElementById('allFixturesCountdown');
             if (allFixturesCountdown) {
                 allFixturesCountdown.textContent = status.isOpen ? `⏳ Round Open — ${status.timeUntil}` : (status.roundStart && new Date() < status.roundStart ? `🔒 Opens soon` : '🟡 Round Started');
             }
             
             // Update round status indicator
             const indicator = document.getElementById('roundStatusIndicator');
-            if (status.isOpen) {
-                indicator.className = 'mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800';
-                indicator.innerHTML = '🟢 Round Open - Picking Available';
-            } else {
-                indicator.className = 'mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800';
-                indicator.innerHTML = '🔒 Round Closed - Picking Locked';
+            if (indicator) {
+                if (status.isOpen) {
+                    indicator.className = 'mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800';
+                    indicator.innerHTML = '🟢 Round Open - Picking Available';
+                } else if (status.earliestKickoff && new Date() < status.earliestKickoff) {
+                    indicator.className = 'mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-800';
+                    indicator.innerHTML = '🔒 Locked — Awaiting Kick-off';
+                } else {
+                    indicator.className = 'mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800';
+                    indicator.innerHTML = '🟡 Round Started';
+                }
             }
         }
 
@@ -2023,12 +2109,22 @@
                 summaryProgress.textContent = `${picksMade}/${roundData.matches.length}`;
             }
             
-            // Update deadline display
-            const deadlineText = status.isOpen ? `Deadline: ${status.timeUntil}` : 'Picking Closed';
+            // Update deadline display (show UK + local)
+            let deadlineText = 'Picking Closed';
+            if (status.deadline) {
+                const { uk, local } = formatInTimeZones(status.deadline);
+                if (status.isOpen) {
+                    deadlineText = `Deadline: ${status.timeUntil} · UK: ${uk}${local !== uk ? ` · Your time: ${local}` : ''}`;
+                } else if (status.earliestKickoff && new Date() < status.earliestKickoff) {
+                    deadlineText = `Locked — K.O. UK: ${uk}${local !== uk ? ` · Your time: ${local}` : ''}`;
+                } else {
+                    deadlineText = `Round Started — K.O. UK: ${uk}${local !== uk ? ` · Your time: ${local}` : ''}`;
+                }
+            }
             document.getElementById('pickItDeadline').textContent = deadlineText;
             const summaryDeadline = document.getElementById('pickItSummaryDeadline');
             if (summaryDeadline) {
-                summaryDeadline.textContent = status.isOpen ? status.timeUntil : 'Closed';
+                summaryDeadline.textContent = status.deadline ? (formatInTimeZones(status.deadline).uk) : '-';
             }
             
             // Enable/disable save button
