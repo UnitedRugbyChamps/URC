@@ -1789,6 +1789,7 @@
             }
             
             content.innerHTML = html || '<div class="text-center text-gray-500 py-8">No fixtures available</div>';
+            try { generateTeamButtons(); } catch (e) {}
         }
 
         function updateGameStatus() {
@@ -1852,8 +1853,22 @@
             const teamButtonsContainer = document.getElementById('teamButtons');
             if (!teamButtonsContainer) return;
             const roundData = roundFixtures[gameData.currentRound];
-            const availableTeams = roundData ? roundData.teams : [];
-            const status = calculatePickingStatus();
+            let availableTeams = roundData ? roundData.teams : [];
+            // Fallback: if for any reason current round data is missing, show union of all teams
+            if (!availableTeams || availableTeams.length === 0) {
+                const teamSet = new Set();
+                Object.keys(roundFixtures).forEach(key => {
+                    const rd = roundFixtures[key];
+                    (rd?.teams || []).forEach(t => { if (t && t !== 'TBD') teamSet.add(t); });
+                });
+                availableTeams = Array.from(teamSet);
+            }
+            let status;
+            try {
+                status = calculatePickingStatus();
+            } catch (e) {
+                status = { isOpen: !!gameData.pickingOpen };
+            }
             
             teamButtonsContainer.innerHTML = '';
             
