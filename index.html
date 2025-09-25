@@ -199,8 +199,15 @@
                 
             </div>
 
+            <!-- Open LMS Button -->
+            <div class="bg-white rounded-xl card-shadow p-6 mb-6">
+                <div class="flex justify-center">
+                    <button id="openLmsBtn" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">My LMS Picks</button>
+                </div>
+            </div>
+
             <!-- Round Status -->
-            <div id="roundStatus" class="bg-white rounded-xl card-shadow p-6 mb-6">
+            <div id="roundStatus" class="hidden bg-white rounded-xl card-shadow p-6 mb-6">
                 <div class="text-center">
                     <div id="statusMessage" class="text-lg font-medium text-gray-800 mb-2"></div>
                     <div id="countdown" class="text-sm text-gray-600"></div>
@@ -211,7 +218,7 @@
             </div>
 
             <!-- LMS Game Interface -->
-            <div id="lmsInterface" class="bg-white rounded-xl card-shadow p-6 mb-6">
+            <div id="lmsInterface" class="hidden bg-white rounded-xl card-shadow p-6 mb-6">
                 <div class="flex flex-wrap gap-2 md:space-x-1 mb-6">
                     <button id="currentRoundTab" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium">Current Round</button>
                     <button id="fixturesTab" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium">All Fixtures</button>
@@ -1191,14 +1198,7 @@
             setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 0);
             setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 200);
             // Force show Current Round tab on load
-            try { switchFixtureTab('current'); } catch (e) {}
-            // Keep trying briefly until buttons appear
-            let _tries = 0; (function ensureTeamButtons(){
-                const c = document.getElementById('teamButtons');
-                if (c && c.childElementCount > 0) return;
-                try { generateTeamButtons(); } catch (e) {}
-                if (_tries++ < 20) setTimeout(ensureTeamButtons, 100);
-            })();
+            // Do not auto-open LMS. User opens via button.
             setInterval(() => {
                 updateGameStatus();
             }, 1000);
@@ -1216,6 +1216,19 @@
         });
 
         function setupEventListeners() {
+            // Open LMS flow
+            const openBtn = document.getElementById('openLmsBtn');
+            if (openBtn) {
+                openBtn.addEventListener('click', () => {
+                    document.getElementById('roundStatus').classList.remove('hidden');
+                    document.getElementById('lmsInterface').classList.remove('hidden');
+                    switchFixtureTab('current');
+                    updateGameStatus();
+                    updateUI();
+                    try { generateTeamButtons(); } catch (e) {}
+                    setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 0);
+                });
+            }
             // Auth tabs
             document.getElementById('loginTab').addEventListener('click', () => switchTab('login'));
             document.getElementById('registerTab').addEventListener('click', () => switchTab('register'));
