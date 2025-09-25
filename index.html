@@ -1530,7 +1530,14 @@
                 return;
             }
             
-            if (currentUser.usedTeams.includes(teamName)) {
+            // Disallow previously used teams from prior rounds, but allow changing within this round
+            const startRound = currentUser.roundJoined || 1;
+            const roundIndex = Math.max(0, (gameData.currentRound || 1) - startRound);
+            const usedPreviously = currentUser.usedTeams
+                .slice(0, roundIndex)
+                .filter(t => !!t)
+                .includes(teamName);
+            if (usedPreviously) {
                 alert('You have already used this team in a previous round!');
                 return;
             }
