@@ -10,6 +10,8 @@
         body { font-family: 'Inter', sans-serif; }
         .gradient-bg { background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%); }
         .card-shadow { box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .blur { filter: blur(5px); transition: filter 0.3s ease; }
         .blur-pick {
     color: transparent !important;
@@ -43,7 +45,7 @@
 <body class="gradient-bg min-h-screen">
     <div class="flex">
         <!-- Chat Sidebar -->
-        <div id="chatSidebar" class="fixed right-0 top-0 h-full w-80 bg-white shadow-lg transform translate-x-full transition-transform duration-300 z-40">
+            <div id="chatSidebar" class="fixed right-0 top-0 h-full w-80 max-w-full bg-white shadow-lg transform translate-x-full transition-transform duration-300 z-40">
             <div class="flex flex-col h-full">
                 <div class="p-4 border-b border-gray-200 flex justify-between items-center">
                     <h3 class="font-semibold text-gray-800">💬 Chat</h3>
@@ -67,15 +69,15 @@
         </div>
 
         <!-- Chat Toggle Button -->
-        <button id="chatToggleBtn" class="fixed right-4 top-1/2 transform -translate-y-1/2 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 z-30">
+        <button id="chatToggleBtn" class="fixed right-4 md:top-1/2 bottom-6 md:bottom-auto transform md:-translate-y-1/2 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 z-30">
             💬
             <span id="unreadBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
         </button>
 
-        <div class="container mx-auto px-4 py-8 w-full">
+        <div class="container mx-auto px-3 sm:px-4 py-6 sm:py-8 w-full overflow-x-hidden">
         <!-- Header -->
         <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-white mb-2 flex items-center justify-center gap-3">
+            <h1 class="text-3xl sm:text-4xl font-bold text-white mb-2 flex items-center justify-center gap-3">
                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMFCSXJWsbmkra95ltt9Z9LJiRuMOsIBluqwF-g4&usqp=CAE&s" alt="URC Logo" class="h-12 w-12 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
                 <span style="display: none;">🏉</span>
                 URC Last Man Standing
@@ -195,8 +197,8 @@
 
             <!-- User Info & Stats -->
             <div class="bg-white rounded-xl card-shadow p-6 mb-6">
-                <div class="flex justify-between items-center mb-4">
-                    <div class="flex items-center space-x-3">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-4">
+                    <div class="flex items-center space-x-3 overflow-x-auto no-scrollbar">
                         <span id="userProfilePic" class="cursor-pointer hover:scale-110 transition-transform" onclick="openProfileModal(currentUser?.id)">
                             <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMFCSXJWsbmkra95ltt9Z9LJiRuMOsIBluqwF-g4&usqp=CAE&s" class="w-8 h-8 rounded-full object-cover border border-gray-300" alt="Profile" onerror="this.src=''; this.style.display='none'; this.nextElementSibling.style.display='block';">
                             <div class="w-8 h-8 rounded-full bg-gray-300 border border-gray-400" style="display: none;"></div>
@@ -260,7 +262,7 @@
             <!-- LMS Game Interface -->
             <div id="lmsInterface" class="bg-white rounded-xl card-shadow p-6 mb-6">
                 <div id="lmsCountdownInline" class="mb-2 text-sm text-gray-600"></div>
-                <div class="flex space-x-1 mb-6">
+                <div class="flex flex-wrap gap-2 md:space-x-1 mb-6">
                     <button id="currentRoundTab" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium">Current Round</button>
                     <button id="fixturesTab" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium">All Fixtures</button>
                 </div>
@@ -276,12 +278,12 @@
                     <div id="currentRoundFixtures" class="space-y-4 mb-6">
                         <div class="mb-3">
                             <h5 class="font-medium text-gray-700 mb-2">Friday 26th September</h5>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                <div class="flex justify-between items-center p-2 bg-gray-50 rounded border">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <div class="flex justify-between items-center p-2 bg-gray-50 rounded border">
                                     <span>Stormers vs Leinster</span>
                                     <span class="text-sm text-gray-500">18:00</span>
                                 </div>
-                                <div class="flex justify-between items-center p-2 bg-gray-50 rounded border">
+                    <div class="flex justify-between items-center p-2 bg-gray-50 rounded border">
                                     <span>Glasgow Warriors vs Sharks</span>
                                     <span class="text-sm text-gray-500">20:05</span>
                                 </div>
@@ -293,7 +295,7 @@
                         </div>
                         <div class="mb-3">
                             <h5 class="font-medium text-gray-700 mb-2">Saturday 27th September</h5>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                                 <div class="flex justify-between items-center p-2 bg-gray-50 rounded border">
                                     <span>Bulls vs Ospreys</span>
                                     <span class="text-sm text-gray-500">13:00</span>
@@ -320,7 +322,7 @@
 
                     <h4 class="font-medium text-gray-800 mb-3">Select Your Team to Win:</h4>
                     <p class="text-sm text-gray-600 mb-4">Teams you've used before are marked with ✗</p>
-                    <div id="teamButtons" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-4">
+                <div id="teamButtons" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 mb-4">
                         <!-- Team buttons will be generated dynamically -->
                     </div>
                     
@@ -333,7 +335,7 @@
 
                 <!-- All Fixtures Section -->
                 <div id="allFixturesSection" class="hidden">
-                    <div class="flex justify-between items-center mb-4">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
                         <h3 class="text-xl font-semibold text-gray-800">All URC Fixtures</h3>
                         <div class="flex items-center space-x-2">
                             <label class="text-sm text-gray-600">Round:</label>
@@ -369,7 +371,7 @@
 
             <!-- Pick it! Game Interface -->
             <div id="pickItInterface" class="hidden bg-white rounded-xl card-shadow p-6 mb-6">
-                <div class="flex space-x-1 mb-6">
+                <div class="flex flex-wrap gap-2 md:space-x-1 mb-6">
                     <button id="pickItCurrentTab" class="px-4 py-2 bg-green-600 text-white rounded-lg font-medium">Make Picks</button>
                     <button id="pickItLeaderboardTab" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium">Leaderboard</button>
                     <button id="pickItFixturesTab" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium">All Fixtures</button>
@@ -386,7 +388,7 @@
                         <!-- Pick it matches will be populated here -->
                     </div>
                     
-                    <div class="flex justify-between items-center mb-4">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
                         <div id="pickItProgress" class="text-sm text-gray-600">
                             Picks made: <span id="picksMade">0</span>/<span id="totalMatches">8</span>
                         </div>
@@ -412,7 +414,7 @@
 
                 <!-- Pick it! All Fixtures -->
                 <div id="pickItAllFixturesSection" class="hidden">
-                    <div class="flex justify-between items-center mb-4">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
                         <h3 class="text-xl font-semibold text-gray-800">All URC Fixtures</h3>
                         <div class="flex items-center space-x-2">
                             <label class="text-sm text-gray-600">Round:</label>
@@ -447,7 +449,7 @@
 
             <!-- Players List -->
             <div id="playersPanel" class="bg-white rounded-xl card-shadow p-6">
-                <div class="flex justify-between items-center mb-4">
+                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
                     <h3 class="text-xl font-semibold text-gray-800">Players</h3>
                     <button id="toggleEliminated" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 hidden">Show Eliminated</button>
                 </div>
@@ -2348,7 +2350,7 @@
                     }
                     
                     html += `
-                        <div class="flex justify-between items-center p-3 rounded-lg ${statusClass}">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 p-3 rounded-lg ${statusClass}">
                             <div class="flex items-center space-x-2">
                                 <span class="text-lg">${statusIcon}</span>
                                 <span class="font-medium text-gray-800">${player.displayName}</span>
@@ -2447,7 +2449,7 @@
                         teamDisplay = '<span class="blur-sm">████████</span>';
                     }
                     
-                    return `<div class="flex justify-between items-center py-1">
+                    return `<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 py-1">
                         <span>Round ${roundNum}:</span>
                         <span class="font-medium">${teamDisplay}</span>
                     </div>`;
@@ -2687,7 +2689,7 @@
                 
                 html += `
                     <div class="border rounded-lg p-4 bg-gray-50">
-                        <div class="flex justify-between items-center mb-3">
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-3">
                             <h4 class="font-semibold">${game.home} vs ${game.away}</h4>
                             <div class="text-right">
                                 <span class="text-sm px-2 py-1 rounded ${isFinished ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
