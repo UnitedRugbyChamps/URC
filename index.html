@@ -259,6 +259,7 @@
 
             <!-- LMS Game Interface -->
             <div id="lmsInterface" class="bg-white rounded-xl card-shadow p-6 mb-6">
+                <div id="lmsCountdownInline" class="mb-2 text-sm text-gray-600"></div>
                 <div class="flex space-x-1 mb-6">
                     <button id="currentRoundTab" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium">Current Round</button>
                     <button id="fixturesTab" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium">All Fixtures</button>
@@ -1161,6 +1162,9 @@
             setupEventListeners();
             updateGameStatus();
             updateUI();
+            setInterval(() => {
+                updateGameStatus();
+            }, 30000);
         });
 
         function setupEventListeners() {
@@ -1527,7 +1531,14 @@
                 return;
             }
             
-            if (currentUser.usedTeams.includes(teamName)) {
+            // Disallow previously used teams from prior rounds, but allow changing within this round
+            const startRound = currentUser.roundJoined || 1;
+            const roundIndex = Math.max(0, (gameData.currentRound || 1) - startRound);
+            const usedPreviously = currentUser.usedTeams
+                .slice(0, roundIndex)
+                .filter(t => !!t)
+                .includes(teamName);
+            if (usedPreviously) {
                 alert('You have already used this team in a previous round!');
                 return;
             }
@@ -1555,8 +1566,19 @@
         function confirmPick() {
             if (!currentUser.tempPick) return;
             
+            // Set current pick and update usedTeams at the correct round index
             currentUser.currentPick = currentUser.tempPick;
-            currentUser.usedTeams.push(currentUser.tempPick);
+            const startRound = currentUser.roundJoined || 1;
+            const roundIndex = Math.max(0, (gameData.currentRound || 1) - startRound);
+            if (!Array.isArray(currentUser.usedTeams)) currentUser.usedTeams = [];
+            if (roundIndex < currentUser.usedTeams.length) {
+                currentUser.usedTeams[roundIndex] = currentUser.tempPick;
+            } else if (roundIndex === currentUser.usedTeams.length) {
+                currentUser.usedTeams.push(currentUser.tempPick);
+            } else {
+                while (currentUser.usedTeams.length < roundIndex) currentUser.usedTeams.push(null);
+                currentUser.usedTeams.push(currentUser.tempPick);
+            }
             currentUser.tempPick = null;
             saveGameData();
             updateUI();
@@ -1716,6 +1738,10 @@
             
             document.getElementById('statusMessage').textContent = status.message;
             document.getElementById('countdown').textContent = status.timeUntil || 'Deadline: Friday 26th September at 17:30';
+            const lmsInline = document.getElementById('lmsCountdownInline');
+            if (lmsInline) {
+                lmsInline.textContent = status.isOpen ? `⏳ ${status.timeUntil}` : '🔒 Picking Closed';
+            }
             
             // Update round status indicator
             const indicator = document.getElementById('roundStatusIndicator');
@@ -2981,6 +3007,23 @@
             if (selectedRound === gameData.currentRound) {
                 const oldPick = player.currentPick;
                 player.currentPick = newPick || null;
+                const startRound = player.roundJoined || 1;
+                const roundIndex = Math.max(0, (gameData.currentRound || 1) - startRound);
+                if (!Array.isArray(player.usedTeams)) player.usedTeams = [];
+                if (newPick) {
+                    if (roundIndex < player.usedTeams.length) {
+                        player.usedTeams[roundIndex] = newPick;
+                    } else if (roundIndex === player.usedTeams.length) {
+                        player.usedTeams.push(newPick);
+                    } else {
+                        while (player.usedTeams.length < roundIndex) player.usedTeams.push(null);
+                        player.usedTeams.push(newPick);
+                    }
+                } else {
+                    if (roundIndex < player.usedTeams.length) {
+                        player.usedTeams[roundIndex] = null;
+                    }
+                }
                 
                 if (oldPick !== newPick) {
                     const pickText = newPick ? `${newPick}` : 'No pick';
