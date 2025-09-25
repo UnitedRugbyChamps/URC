@@ -1847,17 +1847,21 @@
 
         function generateTeamButtons() {
             const teamButtonsContainer = document.getElementById('teamButtons');
+            if (!teamButtonsContainer) return;
             const roundData = roundFixtures[gameData.currentRound];
             const availableTeams = roundData ? roundData.teams : [];
             const status = calculatePickingStatus();
             
             teamButtonsContainer.innerHTML = '';
             
-            if (!Array.isArray(currentUser.usedTeams)) currentUser.usedTeams = [];
-            const current = currentUser.currentPick;
+            const hasUser = !!currentUser;
+            const userUsedTeams = hasUser && Array.isArray(currentUser.usedTeams) ? currentUser.usedTeams : [];
+            const current = hasUser ? currentUser.currentPick : null;
+            const isEliminated = hasUser ? !!currentUser.isEliminated : true; // if no user, disable interactions
+            
             availableTeams.forEach(team => {
-                const isUsed = currentUser && currentUser.usedTeams.includes(team);
-                const isDisabled = isUsed || !status.isOpen || currentUser.isEliminated;
+                const isUsed = hasUser && userUsedTeams.includes(team);
+                const isDisabled = isUsed || !status.isOpen || isEliminated;
                 
                 const button = document.createElement('button');
                 button.className = `team-btn p-3 border-2 rounded-lg transition-colors ${
@@ -1900,7 +1904,7 @@
         function switchPickItTab() {}
 
         function updateUI() {
-            if (!currentUser) return;
+            // Render teams even if not logged in to avoid empty UI; interactions still guarded
             
             const currentRoundEl = document.getElementById('currentRound');
             if (currentRoundEl) currentRoundEl.textContent = gameData.currentRound;
@@ -1925,7 +1929,7 @@
                 generateTeamButtons();
                 
                 const status = calculatePickingStatus();
-                if (currentUser.currentPick) {
+                if (currentUser && currentUser.currentPick) {
                     document.getElementById('selectedTeam').classList.remove('hidden');
                     document.getElementById('selectedTeamName').textContent = currentUser.currentPick;
                     const btn = document.getElementById('confirmPick');
@@ -1940,7 +1944,7 @@
                         btn.classList.remove('bg-green-600','hover:bg-green-700');
                         btn.classList.add('bg-gray-400');
                     }
-                } else {
+                } else if (currentUser) {
                     const btn = document.getElementById('confirmPick');
                     if (status.isOpen) {
                         btn.textContent = 'Confirm Pick';
