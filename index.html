@@ -44,35 +44,7 @@
 </head>
 <body class="gradient-bg min-h-screen">
     <div class="flex">
-        <!-- Chat Sidebar -->
-            <div id="chatSidebar" class="fixed right-0 top-0 h-full w-80 max-w-full bg-white shadow-lg transform translate-x-full transition-transform duration-300 z-40">
-            <div class="flex flex-col h-full">
-                <div class="p-4 border-b border-gray-200 flex justify-between items-center">
-                    <h3 class="font-semibold text-gray-800">💬 Chat</h3>
-                    <button id="closeChatBtn" class="text-gray-500 hover:text-gray-700 text-xl">&times;</button>
-                </div>
-                
-                <div class="flex-1 overflow-y-auto p-4" id="chatMessages">
-                    <div class="text-center text-gray-500 py-8">No messages yet. Start the conversation!</div>
-                </div>
-                
-                <div class="p-4 border-t border-gray-200">
-                    <form id="chatForm" class="flex space-x-2">
-                        <input type="text" id="chatInput" placeholder="Type your message..." class="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" maxlength="200">
-                        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">Send</button>
-                    </form>
-                    <div class="flex justify-end items-center mt-2">
-                        <span class="text-xs text-gray-500" id="charCount">0/200</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Chat Toggle Button -->
-        <button id="chatToggleBtn" class="fixed right-4 md:top-1/2 bottom-6 md:bottom-auto transform md:-translate-y-1/2 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 z-30">
-            💬
-            <span id="unreadBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center hidden">0</span>
-        </button>
+        
 
         <div class="container mx-auto px-3 sm:px-4 py-6 sm:py-8 w-full overflow-x-hidden">
         <!-- Header -->
@@ -185,15 +157,7 @@
 
         <!-- Main App (Hidden initially) -->
         <div id="mainApp" class="hidden">
-            <!-- Game Mode Toggle -->
-            <div class="bg-white rounded-xl card-shadow p-6 mb-6">
-                <div class="flex justify-center mb-4">
-                    <div class="bg-gray-100 p-1 rounded-lg">
-                        <button id="lmsToggle" class="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium transition-colors">🏉 Last Man Standing</button>
-                        <button id="pickItToggle" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium transition-colors hover:bg-gray-200">🎯 Pick it!</button>
-                    </div>
-                </div>
-            </div>
+            
 
             <!-- User Info & Stats -->
             <div class="bg-white rounded-xl card-shadow p-6 mb-6">
@@ -233,21 +197,7 @@
                     </div>
                 </div>
 
-                <!-- Pick it! Stats -->
-                <div id="pickItStats" class="hidden grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-green-50 p-4 rounded-lg cursor-pointer hover:bg-green-100 transition-colors" id="leaderboardCard">
-                        <div class="text-2xl font-bold text-green-600" id="currentRank">-</div>
-                        <div class="text-sm text-green-700">Current Rank</div>
-                    </div>
-                    <div class="bg-green-50 p-4 rounded-lg">
-                        <div class="text-2xl font-bold text-green-600" id="pickPercentage">0%</div>
-                        <div class="text-sm text-green-700">Pick Accuracy</div>
-                    </div>
-                    <div class="bg-green-50 p-4 rounded-lg">
-                        <div class="text-2xl font-bold text-green-600" id="correctPicks">0/0</div>
-                        <div class="text-sm text-green-700">Correct Picks</div>
-                    </div>
-                </div>
+                
             </div>
 
             <!-- Round Status -->
@@ -370,111 +320,11 @@
                 </div>
             </div>
 
-            <!-- Pick it! Game Interface -->
-            <div id="pickItInterface" class="hidden bg-white rounded-xl card-shadow p-6 mb-6">
-                <div class="flex flex-wrap gap-2 md:space-x-1 mb-6">
-                    <button id="pickItCurrentTab" class="px-4 py-2 bg-green-600 text-white rounded-lg font-medium">Make Picks</button>
-                    <button id="pickItLeaderboardTab" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium">Leaderboard</button>
-                    <button id="pickItFixturesTab" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium">All Fixtures</button>
-                </div>
+            
 
-                <!-- Pick it! Current Round -->
-                <div id="pickItCurrentSection">
-                    <div class="mb-4">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Round <span id="pickItRoundNumber">1</span> - Pick All Winners</h3>
-                        <p class="text-gray-600">Pick the winner for each match. You must pick all matches to save your selections!</p>
-                    </div>
-                    
-                    <div id="pickItMatches" class="space-y-4 mb-6">
-                        <!-- Pick it matches will be populated here -->
-                    </div>
-                    
-                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
-                        <div id="pickItProgress" class="text-sm text-gray-600">
-                            Picks made: <span id="picksMade">0</span>/<span id="totalMatches">8</span>
-                        </div>
-                        <div id="pickItDeadline" class="text-sm text-red-600 font-medium">
-                            Deadline: Friday 26th September at 17:30
-                        </div>
-                    </div>
-                    
-                    <button id="savePickItPicks" class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 font-medium disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>Save All Picks</button>
-                </div>
+            
 
-                <!-- Pick it! Leaderboard -->
-                <div id="pickItLeaderboardSection" class="hidden">
-                    <div class="mb-4">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">🏆 Pick it! Leaderboard</h3>
-                        <p class="text-gray-600">Rankings based on pick accuracy percentage</p>
-                    </div>
-                    
-                    <div id="pickItLeaderboardContent" class="space-y-2">
-                        <!-- Leaderboard will be populated here -->
-                    </div>
-                </div>
-
-                <!-- Pick it! All Fixtures -->
-                <div id="pickItAllFixturesSection" class="hidden">
-                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
-                        <h3 class="text-xl font-semibold text-gray-800">All URC Fixtures</h3>
-                        <div class="flex items-center space-x-2">
-                            <label class="text-sm text-gray-600">Round:</label>
-                            <select id="pickItRoundSelector" class="border border-gray-300 rounded px-3 py-1 text-sm">
-                                <option value="all">All Rounds</option>
-                                <option value="1">Round 1</option>
-                                <option value="2">Round 2</option>
-                                <option value="3">Round 3</option>
-                                <option value="4">Round 4</option>
-                                <option value="5">Round 5</option>
-                                <option value="6">Round 6</option>
-                                <option value="7">Round 7</option>
-                                <option value="8">Round 8</option>
-                                <option value="9">Round 9</option>
-                                <option value="10">Round 10</option>
-                                <option value="11">Round 11</option>
-                                <option value="12">Round 12</option>
-                                <option value="13">Round 13</option>
-                                <option value="14">Round 14</option>
-                                <option value="15">Round 15</option>
-                                <option value="16">Round 16</option>
-                                <option value="17">Semi Finals</option>
-                                <option value="18">Final</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div id="pickItAllFixturesContent">
-                        <!-- Will be populated dynamically -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- Players List -->
-            <div id="playersPanel" class="bg-white rounded-xl card-shadow p-6">
-                <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 mb-4">
-                    <h3 class="text-xl font-semibold text-gray-800">Players</h3>
-                    <button id="toggleEliminated" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 hidden">Show Eliminated</button>
-                </div>
-                
-                <div id="playersList" class="space-y-2">
-                    <!-- Players will be populated here -->
-                </div>
-            </div>
-
-            <!-- Round Picks Status -->
-            <div id="picksStatusPanel" class="bg-white rounded-xl card-shadow p-6 mt-6">
-                <h3 class="text-xl font-semibold text-gray-800 mb-4">Round <span id="picksRoundNumber">1</span> Picks Status</h3>
-                <div id="picksStatusList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                    <!-- Picks status will be populated here -->
-                </div>
-            </div>
-
-            <!-- Pick it! Round Summary (visible only in Pick it mode) -->
-            <div id="pickItSummaryPanel" class="hidden bg-white rounded-xl card-shadow p-6 mt-6">
-                <h3 class="text-xl font-semibold text-gray-800 mb-2">Round Summary</h3>
-                <p class="text-sm text-gray-700">Picks made: <span id="pickItSummaryProgress">0/0</span></p>
-                <p class="text-sm text-gray-700">Deadline: <span id="pickItSummaryDeadline">-</span></p>
-                <p class="text-xs text-gray-500 mt-2">Your picks are hidden from others until lock. Others' picks are blurred while open.</p>
-            </div>
+            
         </div>
 
         <!-- Modals -->
@@ -1343,25 +1193,22 @@
             document.getElementById('authForm').addEventListener('submit', handleAuth);
             
             // Game mode toggles
-            document.getElementById('lmsToggle').addEventListener('click', () => switchGameMode('lms'));
-            document.getElementById('pickItToggle').addEventListener('click', () => switchGameMode('pickit'));
+            
             
             // LMS Navigation tabs
             document.getElementById('currentRoundTab').addEventListener('click', () => switchFixtureTab('current'));
             document.getElementById('fixturesTab').addEventListener('click', () => switchFixtureTab('all'));
             
             // Pick it! Navigation tabs
-            document.getElementById('pickItCurrentTab').addEventListener('click', () => switchPickItTab('current'));
-            document.getElementById('pickItLeaderboardTab').addEventListener('click', () => switchPickItTab('leaderboard'));
-            document.getElementById('pickItFixturesTab').addEventListener('click', () => switchPickItTab('fixtures'));
+            
             
             // Round selectors
             document.getElementById('roundSelector').addEventListener('change', updateAllFixtures);
-            document.getElementById('pickItRoundSelector').addEventListener('change', updatePickItAllFixtures);
+            
             
             // Confirm pick
             document.getElementById('confirmPick').addEventListener('click', confirmPick);
-            document.getElementById('savePickItPicks').addEventListener('click', savePickItPicks);
+            
             
             // Toggle eliminated
             document.getElementById('toggleEliminated').addEventListener('click', toggleEliminatedPlayers);
@@ -1373,8 +1220,6 @@
             // Player list modals
             document.getElementById('standingPlayersCard').addEventListener('click', () => openPlayerListModal('standing'));
             document.getElementById('eliminatedPlayersCard').addEventListener('click', () => openPlayerListModal('eliminated'));
-            document.getElementById('leaderboardCard').addEventListener('click', openLeaderboardModal);
-            document.getElementById('closePlayerListModal').addEventListener('click', closePlayerListModal);
             
             // Admin modal
             document.getElementById('adminScores').addEventListener('click', openAdminModal);
@@ -1391,10 +1236,7 @@
             document.getElementById('adminPlayoffsTab').addEventListener('click', () => switchAdminTab('playoffs'));
             
             // Chat functionality
-            document.getElementById('chatToggleBtn').addEventListener('click', toggleChat);
-            document.getElementById('closeChatBtn').addEventListener('click', closeChat);
-            document.getElementById('chatForm').addEventListener('submit', sendMessage);
-            document.getElementById('chatInput').addEventListener('input', updateCharCount);
+            
             
             // Logout
             document.getElementById('logoutBtn').addEventListener('click', logout);
@@ -1737,6 +1579,7 @@
             }
             
             // Disallow previously used teams from prior rounds, but allow changing within this round
+            if (!Array.isArray(currentUser.usedTeams)) currentUser.usedTeams = [];
             const startRound = currentUser.roundJoined || 1;
             const roundIndex = Math.max(0, (gameData.currentRound || 1) - startRound);
             const usedPreviously = currentUser.usedTeams
@@ -1763,12 +1606,17 @@
             
             document.getElementById('selectedTeam').classList.remove('hidden');
             document.getElementById('selectedTeamName').textContent = teamName;
-            document.getElementById('confirmPick').disabled = false;
+            const btn = document.getElementById('confirmPick');
+            btn.disabled = false;
+            btn.textContent = currentUser.currentPick ? 'Change Pick' : 'Confirm Pick';
             
             currentUser.tempPick = teamName;
         }
 
         function confirmPick() {
+            const status = calculatePickingStatus();
+            if (!status.isOpen || currentUser.isEliminated) return;
+            if (!currentUser.tempPick && currentUser.currentPick) return; // nothing to change
             if (!currentUser.tempPick) return;
             
             // Set current pick and update usedTeams at the correct round index
@@ -1999,6 +1847,8 @@
             
             teamButtonsContainer.innerHTML = '';
             
+            if (!Array.isArray(currentUser.usedTeams)) currentUser.usedTeams = [];
+            const current = currentUser.currentPick;
             availableTeams.forEach(team => {
                 const isUsed = currentUser && currentUser.usedTeams.includes(team);
                 const isDisabled = isUsed || !status.isOpen || currentUser.isEliminated;
@@ -2012,7 +1862,10 @@
                 button.dataset.team = team;
                 button.disabled = isDisabled;
                 
-                if (isUsed) {
+                if (current && team === current) {
+                    button.innerHTML = `${team} <span class="text-xs">✓</span>`;
+                    button.classList.add('border-green-500','bg-green-50');
+                } else if (isUsed) {
                     button.innerHTML = `${team} <span class="text-xs">✗</span>`;
                 } else if (!status.isOpen) {
                     button.innerHTML = `${team} <span class="text-xs">🔒</span>`;
@@ -2030,82 +1883,22 @@
 
         // Game mode switching
         function switchGameMode(mode) {
-            currentGameMode = mode;
-            
-            const lmsToggle = document.getElementById('lmsToggle');
-            const pickItToggle = document.getElementById('pickItToggle');
+            // Simplified: LMS only
+            currentGameMode = 'lms';
             const lmsInterface = document.getElementById('lmsInterface');
-            const pickItInterface = document.getElementById('pickItInterface');
-            const lmsStats = document.getElementById('lmsStats');
-            const pickItStats = document.getElementById('pickItStats');
-            const playersPanel = document.getElementById('playersPanel');
-            const picksStatusPanel = document.getElementById('picksStatusPanel');
-            const pickItSummaryPanel = document.getElementById('pickItSummaryPanel');
-            
-            if (mode === 'lms') {
-                lmsToggle.className = 'px-6 py-2 bg-blue-600 text-white rounded-lg font-medium transition-colors';
-                pickItToggle.className = 'px-6 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium transition-colors hover:bg-gray-200';
-                lmsInterface.classList.remove('hidden');
-                pickItInterface.classList.add('hidden');
-                lmsStats.classList.remove('hidden');
-                pickItStats.classList.add('hidden');
-                playersPanel.classList.remove('hidden');
-                picksStatusPanel.classList.remove('hidden');
-                pickItSummaryPanel.classList.add('hidden');
-            } else {
-                lmsToggle.className = 'px-6 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium transition-colors hover:bg-gray-200';
-                pickItToggle.className = 'px-6 py-2 bg-green-600 text-white rounded-lg font-medium transition-colors';
-                lmsInterface.classList.add('hidden');
-                pickItInterface.classList.remove('hidden');
-                lmsStats.classList.add('hidden');
-                pickItStats.classList.remove('hidden');
-                playersPanel.classList.add('hidden');
-                picksStatusPanel.classList.add('hidden');
-                pickItSummaryPanel.classList.remove('hidden');
-                updatePickItInterface();
-            }
-            
+            if (lmsInterface) lmsInterface.classList.remove('hidden');
             updateUI();
         }
 
         // Pick it! tab switching
-        function switchPickItTab(tab) {
-            const currentTab = document.getElementById('pickItCurrentTab');
-            const leaderboardTab = document.getElementById('pickItLeaderboardTab');
-            const fixturesTab = document.getElementById('pickItFixturesTab');
-            const currentSection = document.getElementById('pickItCurrentSection');
-            const leaderboardSection = document.getElementById('pickItLeaderboardSection');
-            const fixturesSection = document.getElementById('pickItAllFixturesSection');
-            
-            // Reset all tabs
-            currentTab.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium';
-            leaderboardTab.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium';
-            fixturesTab.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium';
-            currentSection.classList.add('hidden');
-            leaderboardSection.classList.add('hidden');
-            fixturesSection.classList.add('hidden');
-            
-            if (tab === 'current') {
-                currentTab.className = 'px-4 py-2 bg-green-600 text-white rounded-lg font-medium';
-                currentSection.classList.remove('hidden');
-                updatePickItInterface();
-            } else if (tab === 'leaderboard') {
-                leaderboardTab.className = 'px-4 py-2 bg-green-600 text-white rounded-lg font-medium';
-                leaderboardSection.classList.remove('hidden');
-                updatePickItLeaderboard();
-            } else if (tab === 'fixtures') {
-                fixturesTab.className = 'px-4 py-2 bg-green-600 text-white rounded-lg font-medium';
-                fixturesSection.classList.remove('hidden');
-                updatePickItAllFixtures();
-            }
-        }
+        function switchPickItTab() {}
 
         function updateUI() {
             if (!currentUser) return;
             
             document.getElementById('currentRound').textContent = gameData.currentRound;
             document.getElementById('picksRoundNumber').textContent = gameData.currentRound;
-            document.getElementById('pickItRoundNumber').textContent = gameData.currentRound;
+            
             
             if (currentGameMode === 'lms') {
                 // Update LMS stats
@@ -2128,188 +1921,46 @@
                 updatePlayersList();
                 updatePicksStatus();
                 
+                const status = calculatePickingStatus();
                 if (currentUser.currentPick) {
                     document.getElementById('selectedTeam').classList.remove('hidden');
                     document.getElementById('selectedTeamName').textContent = currentUser.currentPick;
-                    document.getElementById('confirmPick').textContent = 'Pick Confirmed ✓';
-                    document.getElementById('confirmPick').disabled = true;
-                    document.getElementById('confirmPick').classList.add('bg-green-500');
-                }
-            } else {
-                // Update Pick it! stats
-                updatePickItStats();
-            }
-        }
-
-        function updatePickItStats() {
-            if (!currentUser) return;
-            const stats = computeAndUpdatePlayerPickItStats(currentUser);
-            const leaderboard = calculatePickItLeaderboard();
-            const userRank = leaderboard.findIndex(p => p.id === currentUser.id) + 1;
-            document.getElementById('currentRank').textContent = userRank > 0 ? `#${userRank}` : '-';
-            document.getElementById('pickPercentage').textContent = `${Math.round(stats.percentage || 0)}%`;
-            document.getElementById('correctPicks').textContent = `${stats.correctPicks || 0}/${stats.totalPicks || 0}`;
-        }
-
-        function updatePickItInterface() {
-            if (!currentUser) return;
-            
-            const roundData = roundFixtures[gameData.currentRound];
-            if (!roundData) return;
-            
-            const container = document.getElementById('pickItMatches');
-            const userPicks = currentUser.pickItPicks[gameData.currentRound] || {};
-            const status = calculatePickingStatus();
-            
-            let html = '';
-            let picksMade = 0;
-            
-            // Group matches by day
-            const matchesByDay = {};
-            roundData.matches.forEach(match => {
-                if (!matchesByDay[match.day]) {
-                    matchesByDay[match.day] = [];
-                }
-                matchesByDay[match.day].push(match);
-            });
-            
-            Object.keys(matchesByDay).forEach(day => {
-                html += `
-                    <div class="mb-4">
-                        <h5 class="font-medium text-gray-700 mb-3">${day}</h5>
-                        <div class="space-y-3">
-                `;
-                
-                matchesByDay[day].forEach(match => {
-                    const userPick = userPicks[match.id];
-                    if (userPick) picksMade++;
-                    
-                    const result = gameData.matchResults[match.id];
-                    let statusDisplay = '';
-                    
-            if (result && result.finished) {
-                const isCorrect = userPick === result.winner;
-                const pickDisplay = userPick ? ` — Your pick: ${userPick === result.winner ? '<span class=\'text-green-700 font-semibold\'>Correct</span>' : '<span class=\'text-red-600 font-semibold\'>Wrong</span>'}` : '';
-                statusDisplay = `<span class=\"text-xs text-green-700 font-semibold\">FT: <span class=\"font-bold\">${result.winner}</span>${pickDisplay}</span>`;
-            } else if (isMatchLive(match)) {
-                statusDisplay = `<span class=\"text-xs text-red-600 font-medium animate-pulse\">🔴 LIVE</span>`;
-            } else {
-                statusDisplay = `<span class=\"text-xs text-gray-500\">${match.time}</span>`;
-            }
-                    
-                    const isDisabled = (result && result.finished) || !status.isOpen;
-                    
-                    html += `
-                        <div class="border rounded-lg p-4 ${userPick ? 'bg-green-50 border-green-200' : 'bg-gray-50'}">
-                            <div class="flex justify-between items-center mb-3">
-                                <div class="font-medium">${match.home} vs ${match.away}</div>
-                                ${statusDisplay}
-                            </div>
-                            <div class="grid grid-cols-2 gap-2">
-                                <button onclick="makePickItPick('${match.id}', '${match.home}')" 
-                                        class="px-3 py-2 border rounded-lg text-sm transition-colors ${userPick === match.home ? 'bg-green-500 text-white border-green-500' : 'border-gray-300 hover:bg-green-50'} ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}"
-                                        ${isDisabled ? 'disabled' : ''}>
-                                    ${match.home}
-                                </button>
-                                <button onclick="makePickItPick('${match.id}', '${match.away}')" 
-                                        class="px-3 py-2 border rounded-lg text-sm transition-colors ${userPick === match.away ? 'bg-green-500 text-white border-green-500' : 'border-gray-300 hover:bg-green-50'} ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}"
-                                        ${isDisabled ? 'disabled' : ''}>
-                                    ${match.away}
-                                </button>
-                            </div>
-                            ${userPick ? `<div class="mt-2 text-sm text-green-600 font-medium">Your pick: ${userPick}</div>` : ''}
-                        </div>
-                    `;
-                });
-                
-                html += `
-                        </div>
-                    </div>
-                `;
-            });
-            
-            container.innerHTML = html;
-            
-            // Update progress
-            document.getElementById('picksMade').textContent = picksMade;
-            document.getElementById('totalMatches').textContent = roundData.matches.length;
-            const summaryProgress = document.getElementById('pickItSummaryProgress');
-            if (summaryProgress) {
-                summaryProgress.textContent = `${picksMade}/${roundData.matches.length}`;
-            }
-            
-            // Update deadline display (show UK + local)
-            let deadlineText = 'Picking Closed';
-            if (status.deadline) {
-                const { uk, local } = formatInTimeZones(status.deadline);
-                if (status.isOpen) {
-                    deadlineText = `Deadline: ${status.timeUntil} · UK: ${uk}${local !== uk ? ` · Your time: ${local}` : ''}`;
-                } else if (status.earliestKickoff && new Date() < status.earliestKickoff) {
-                    deadlineText = `Locked — K.O. UK: ${uk}${local !== uk ? ` · Your time: ${local}` : ''}`;
+                    const btn = document.getElementById('confirmPick');
+                    if (status.isOpen) {
+                        btn.textContent = 'Change Pick';
+                        btn.disabled = false;
+                        btn.classList.remove('bg-gray-400','bg-green-500');
+                        btn.classList.add('bg-green-600','hover:bg-green-700');
+                    } else {
+                        btn.textContent = 'Round In Progress';
+                        btn.disabled = true;
+                        btn.classList.remove('bg-green-600','hover:bg-green-700');
+                        btn.classList.add('bg-gray-400');
+                    }
                 } else {
-                    deadlineText = `Round Started — K.O. UK: ${uk}${local !== uk ? ` · Your time: ${local}` : ''}`;
+                    const btn = document.getElementById('confirmPick');
+                    if (status.isOpen) {
+                        btn.textContent = 'Confirm Pick';
+                        btn.disabled = true; // until a team selected
+                        btn.classList.remove('bg-gray-400');
+                        btn.classList.add('bg-green-600','hover:bg-green-700');
+                    } else {
+                        btn.textContent = 'Round In Progress';
+                        btn.disabled = true;
+                        btn.classList.remove('bg-green-600','hover:bg-green-700');
+                        btn.classList.add('bg-gray-400');
+                    }
                 }
             }
-            document.getElementById('pickItDeadline').textContent = deadlineText;
-            const summaryDeadline = document.getElementById('pickItSummaryDeadline');
-            if (summaryDeadline) {
-                summaryDeadline.textContent = status.deadline ? (formatInTimeZones(status.deadline).uk) : '-';
-            }
-            
-            // Enable/disable save button
-            const saveBtn = document.getElementById('savePickItPicks');
-            const allPicksMade = picksMade === roundData.matches.length;
-            saveBtn.disabled = !allPicksMade || !status.isOpen;
-            
-            if (allPicksMade && status.isOpen) {
-                saveBtn.textContent = 'Save All Picks';
-                saveBtn.className = 'w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 font-medium';
-            } else if (!status.isOpen) {
-                saveBtn.textContent = 'Picking Closed';
-                saveBtn.className = 'w-full bg-gray-400 text-white py-3 px-4 rounded-lg font-medium cursor-not-allowed';
-            } else {
-                saveBtn.textContent = `Pick All Matches (${picksMade}/${roundData.matches.length})`;
-                saveBtn.className = 'w-full bg-gray-400 text-white py-3 px-4 rounded-lg font-medium cursor-not-allowed';
-            }
         }
 
-        function makePickItPick(matchId, team) {
-            const status = calculatePickingStatus();
-            if (!currentUser || !status.isOpen) return;
-            
-            if (!currentUser.pickItPicks) {
-                currentUser.pickItPicks = {};
-            }
-            
-            if (!currentUser.pickItPicks[gameData.currentRound]) {
-                currentUser.pickItPicks[gameData.currentRound] = {};
-            }
-            
-            currentUser.pickItPicks[gameData.currentRound][matchId] = team;
-            
-            // Update the player in gameData
-            const playerIndex = gameData.players.findIndex(p => p.id === currentUser.id);
-            if (playerIndex !== -1) {
-                gameData.players[playerIndex] = { ...currentUser };
-            }
-            
-            saveGameData();
-            updatePickItInterface();
-        }
+        function updatePickItStats() {}
 
-        function savePickItPicks() {
-            if (!currentUser) return;
-            
-            const roundData = roundFixtures[gameData.currentRound];
-            const userPicks = currentUser.pickItPicks[gameData.currentRound] || {};
-            
-            if (Object.keys(userPicks).length !== roundData.matches.length) {
-                showNotification('Please pick all matches before saving!', 'error');
-                return;
-            }
-            
-            showNotification('All picks saved successfully!', 'success');
-        }
+        function updatePickItInterface() {}
+
+        function makePickItPick() {}
+
+        function savePickItPicks() {}
 
         // Admin: reset Pick It picks for a player (current round)
         function resetPickItRound(playerId, roundNum) {
@@ -2487,82 +2138,9 @@
             container.innerHTML = html;
         }
 
-        function updatePlayersList() {
-            const container = document.getElementById('playersList');
-            let playersToShow = showEliminated ? 
-                gameData.players.filter(p => p.isEliminated) : 
-                gameData.players.filter(p => !p.isEliminated);
-            
-            // Sort eliminated players by elimination round, then alphabetically
-            // Sort standing players alphabetically
-            if (showEliminated) {
-                playersToShow.sort((a, b) => {
-                    if (a.eliminatedInRound !== b.eliminatedInRound) {
-                        return (b.eliminatedInRound || 0) - (a.eliminatedInRound || 0);
-                    }
-                    return a.displayName.localeCompare(b.displayName);
-                });
-            } else {
-                playersToShow.sort((a, b) => a.displayName.localeCompare(b.displayName));
-            }
-            
-            let html = '';
-            playersToShow.forEach(player => {
-                const statusIcon = player.isEliminated ? '💀' : '✅';
-                const statusClass = player.isEliminated ? 'text-red-600' : 'text-green-600';
-                
-                let profilePic = '';
-                if (player.isCustomPic && player.profilePic && player.profilePic.startsWith('data:')) {
-                    profilePic = `<img src="${player.profilePic}" class="w-8 h-8 rounded-full object-cover border border-gray-300 cursor-pointer hover:scale-110 transition-transform" onclick="openProfileModal(${player.id})" alt="Profile">`;
-                } else {
-                    profilePic = `<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMFCSXJWsbmkra95ltt9Z9LJiRuMOsIBluqwF-g4&usqp=CAE&s" class="w-8 h-8 rounded-full object-cover border border-gray-300 cursor-pointer hover:scale-110 transition-transform" onclick="openProfileModal(${player.id})" alt="Profile" onerror="this.src=''; this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="w-8 h-8 rounded-full bg-gray-300 border border-gray-400 cursor-pointer hover:scale-110 transition-transform" onclick="openProfileModal(${player.id})" style="display: none;"></div>`;
-                }
-                
-                // Calculate rounds survived
-                let roundsSurvived = 0;
-                if (player.isEliminated) {
-                    roundsSurvived = (player.eliminatedInRound || 1) - (player.roundJoined || 1);
-                } else {
-                    roundsSurvived = gameData.currentRound - (player.roundJoined || 1);
-                }
-                
-                let statusText = '';
-                if (player.isEliminated) {
-                    statusText = `Eliminated Round ${player.eliminatedInRound || 1}`;
-                } else {
-                    statusText = `${roundsSurvived} rounds survived`;
-                }
-                
-                html += `
-                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                        <div class="flex items-center space-x-3">
-                            ${profilePic}
-                            <div>
-                                <div class="font-medium text-gray-800 cursor-pointer hover:text-blue-600 transition-colors" onclick="openProfileModal(${player.id})">${player.displayName}</div>
-                                ${player.favoriteTeam ? `<div class="text-xs text-blue-600">${player.favoriteTeam}</div>` : ''}
-                            </div>
-                        </div>
-                        <div class="flex items-center space-x-2">
-                            <span class="${statusClass}">${statusIcon}</span>
-                            <span class="text-sm text-gray-600">${statusText}</span>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            container.innerHTML = html || '<div class="text-center text-gray-500 py-8">No players to show</div>';
-        }
+        function updatePlayersList() {}
 
-
-
-
-
-        function toggleEliminatedPlayers() {
-            showEliminated = !showEliminated;
-            const btn = document.getElementById('toggleEliminated');
-            btn.textContent = showEliminated ? 'Show Standing' : 'Show Eliminated';
-            updatePlayersList();
-        }
+        function toggleEliminatedPlayers() {}
 
         function openPicksModal() {
             document.getElementById('modalRoundNumber').textContent = gameData.currentRound;
@@ -2571,50 +2149,20 @@
             const status = calculatePickingStatus();
             let html = '';
             
-            const playersWithPicks = gameData.players.filter(p => !p.isEliminated);
-            
-            if (playersWithPicks.length === 0) {
+            const playersToShow = gameData.players.filter(p => !p.isEliminated).sort((a,b) => a.displayName.localeCompare(b.displayName));
+            if (playersToShow.length === 0) {
                 html = '<div class="text-center text-gray-500 py-8">No active players</div>';
             } else {
-                playersWithPicks.sort((a, b) => {
-                    // Sort by pick status first (picked vs not picked), then by name
-                    if (!!a.currentPick !== !!b.currentPick) {
-                        return !!b.currentPick - !!a.currentPick; // Picked players first
-                    }
-                    return a.displayName.localeCompare(b.displayName);
-                });
-                
-                const isAdmin = currentUser?.email === 'sacksjordan@gmail.com';
-                
-                playersWithPicks.forEach(player => {
-                    const hasPick = player.currentPick;
-                    const isCurrentUser = player.id === currentUser?.id;
-                    let pickDisplay = '';
-                    let statusIcon = '';
-                    let statusClass = '';
-                    
-                    if (!hasPick) {
-                        pickDisplay = '<span class="text-red-500 font-medium">❌ Not picked yet</span>';
-                        statusIcon = '⏳';
-                        statusClass = 'bg-red-50 border-l-4 border-red-400';
-                    } else {
-                        statusIcon = '✅';
-                        // Only show actual pick if picking is closed OR user is admin OR it's current user
-                        if (status.isOpen && !isAdmin && !isCurrentUser) {
-                            pickDisplay = `<span class="font-medium text-green-600">🔒 <span class=\"blur-sm\">████████</span></span>`;
-                        } else {
-                            pickDisplay = `<span class="font-medium text-green-700">🔒 <span class=\"font-semibold\">${player.currentPick}</span></span>`;
-                        }
-                        statusClass = 'bg-green-50 border-l-4 border-green-400';
-                    }
-                    
+                playersToShow.forEach(player => {
+                    const isSelf = currentUser && player.id === currentUser.id;
+                    const pick = player.currentPick || null;
+                    const pickText = pick ? pick : 'No pick yet';
+                    const blur = (!isSelf && status.isOpen && pick) ? 'blur-pick' : '';
+                    const rowClass = isSelf ? 'bg-blue-50 border-blue-200' : (pick ? 'bg-green-50 border-green-200' : 'bg-gray-50');
                     html += `
-                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 p-3 rounded-lg ${statusClass}">
-                            <div class="flex items-center space-x-2">
-                                <span class="text-lg">${statusIcon}</span>
-                                <span class="font-medium text-gray-800">${player.displayName}</span>
-                            </div>
-                            ${pickDisplay}
+                        <div class="flex justify-between items-center p-3 border rounded-lg ${rowClass}">
+                            <span class="font-medium">${player.displayName}</span>
+                            <span class="text-sm ${blur}">${pickText}</span>
                         </div>
                     `;
                 });
@@ -3446,99 +2994,12 @@
             populateAdminPlayers();
         }
 
-        // Chat functionality
-        function toggleChat() {
-            const sidebar = document.getElementById('chatSidebar');
-            sidebar.classList.toggle('translate-x-full');
-            if (!sidebar.classList.contains('translate-x-full')) {
-                loadChatMessages();
-            }
-        }
-
-        function closeChat() {
-            document.getElementById('chatSidebar').classList.add('translate-x-full');
-        }
-
-        function sendMessage(e) {
-            e.preventDefault();
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            
-            if (!message || !currentUser) return;
-            
-            if (containsProfanity(message)) {
-                showNotification('Message contains inappropriate language and cannot be sent.', 'error');
-                return;
-            }
-            
-            const chatMessage = {
-                id: Date.now(),
-                sender: currentUser.displayName,
-                senderId: currentUser.id,
-                message: message,
-                timestamp: new Date().toISOString(),
-                isAdmin: currentUser.email === 'sacksjordan@gmail.com'
-            };
-            
-            if (!gameData.chatMessages) {
-                gameData.chatMessages = [];
-            }
-            
-            gameData.chatMessages.push(chatMessage);
-            saveGameData();
-            
-            input.value = '';
-            updateCharCount();
-            loadChatMessages();
-            
-            showNotification('Message sent', 'success');
-            showNewMessageNotification(chatMessage);
-        }
-
-        function loadChatMessages() {
-            const container = document.getElementById('chatMessages');
-            const messages = gameData.chatMessages || [];
-            
-            if (messages.length === 0) {
-                container.innerHTML = '<div class="text-center text-gray-500 py-8">No messages yet. Start the conversation!</div>';
-                return;
-            }
-            
-            let html = '';
-            const isAdmin = currentUser?.email === 'sacksjordan@gmail.com';
-            
-            messages.forEach(msg => {
-                // Show message if: not private, or user is admin, or user sent the private message
-                const canSeeMessage = !msg.isPrivate || isAdmin || msg.senderId === currentUser?.id;
-                
-                if (canSeeMessage) {
-                    const time = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                    const isOwnMessage = msg.senderId === currentUser?.id;
-                    const messageClass = isOwnMessage ? 'bg-blue-100 ml-8' : 'bg-gray-100 mr-8';
-                    const privateLabel = msg.isPrivate ? '<span class="text-xs text-red-600">[Private to Admin]</span> ' : '';
-                    const adminLabel = msg.isAdmin ? '<span class="text-xs text-purple-600">[Admin]</span> ' : '';
-                    
-                    html += `
-                        <div class="mb-3 p-3 rounded-lg ${messageClass}">
-                            <div class="flex justify-between items-start mb-1">
-                                <span class="font-medium text-sm">${adminLabel}${msg.sender}</span>
-                                <span class="text-xs text-gray-500">${time}</span>
-                            </div>
-                            <div class="text-sm">${privateLabel}${msg.message}</div>
-                        </div>
-                    `;
-                }
-            });
-            
-            container.innerHTML = html;
-            container.scrollTop = container.scrollHeight;
-        }
-
-        function updateCharCount() {
-            const input = document.getElementById('chatInput');
-            const counter = document.getElementById('charCount');
-            counter.textContent = `${input.value.length}/200`;
-        }
+        // Chat removed
+        function toggleChat() {}
+        function closeChat() {}
+        function sendMessage() {}
+        function loadChatMessages() {}
+        function updateCharCount() {}
 
         // Playoff management functions
         function updateSemiFinals() {
