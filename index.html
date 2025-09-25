@@ -205,7 +205,7 @@
                         </span>
                         <div>
                             <h2 class="text-xl font-semibold text-gray-800">Welcome, <span id="userName"></span>!</h2>
-                            <p class="text-gray-600">Round <span id="currentRound">1</span> - September 2025</p>
+                            <p class="text-gray-600">Round <span id="currentRound">1</span></p>
                         </div>
                     </div>
                     <div class="flex space-x-2">
@@ -269,9 +269,9 @@
 
                 <!-- Current Round Section -->
                 <div id="currentRoundSection">
-                    <div id="currentRoundHeader" class="mb-4">
+                        <div id="currentRoundHeader" class="mb-4">
                         <div id="currentRoundCountdown" class="text-sm text-gray-600 mb-2"></div>
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Round 1 - September 2025</h3>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Round <span id="currentRoundHeadingNum">1</span></h3>
                         <p class="text-gray-600">Pick your team to win this round. Remember - you can only use each team once!</p>
                     </div>
                     
@@ -842,6 +842,11 @@
         let lastReadMessageId = null;
         let unreadCount = 0;
 
+        // Email normalization
+        function normalizeEmail(email) {
+            return (email || '').trim().toLowerCase();
+        }
+
         // Timezone helpers (UK time handling and formatting)
         function pad2(num) { return String(num).padStart(2, '0'); }
 
@@ -1335,6 +1340,17 @@
             if (saved) {
                 gameData = { ...gameData, ...JSON.parse(saved) };
             }
+            // Auto-attach current user if we previously stored an email
+            const savedEmail = localStorage.getItem('currentUserEmail');
+            if (savedEmail && Array.isArray(gameData.players)) {
+                const player = gameData.players.find(p => normalizeEmail(p.email) === normalizeEmail(savedEmail));
+                if (player) {
+                    currentUser = player;
+                    document.getElementById('authSection').classList.add('hidden');
+                    document.getElementById('mainApp').classList.remove('hidden');
+                    document.getElementById('userName').textContent = player.displayName;
+                }
+            }
         }
 
         function saveGameData() {
@@ -1424,7 +1440,8 @@
         }
 
         function registerUser(email, password, displayName) {
-            const existingPlayer = gameData.players.find(p => p.email === email);
+            email = normalizeEmail(email);
+            const existingPlayer = gameData.players.find(p => normalizeEmail(p.email) === email);
             if (existingPlayer) {
                 showNotification('Email already registered! Please login instead.', 'error');
                 return;
@@ -1548,7 +1565,8 @@
         }
 
         function loginUser(email, password) {
-            const player = gameData.players.find(p => p.email === email);
+            email = normalizeEmail(email);
+            const player = gameData.players.find(p => normalizeEmail(p.email) === email);
             if (!player) {
                 showNotification('Email not found. Please register first.', 'error');
                 return;
