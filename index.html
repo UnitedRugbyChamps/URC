@@ -1240,8 +1240,10 @@
             
             
             // LMS Navigation tabs
-            document.getElementById('currentRoundTab').addEventListener('click', () => switchFixtureTab('current'));
-            document.getElementById('fixturesTab').addEventListener('click', () => switchFixtureTab('all'));
+            const crtTab = document.getElementById('currentRoundTab');
+            const fixTab = document.getElementById('fixturesTab');
+            if (crtTab) crtTab.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); switchFixtureTab('current'); });
+            if (fixTab) fixTab.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); switchFixtureTab('all'); });
             
             // Pick it! Navigation tabs
             
@@ -1920,15 +1922,7 @@
                 });
                 availableTeams = Array.from(teamSet);
             }
-            // Ensure container is visible
-            const currentSection = document.getElementById('currentRoundSection');
-            if (currentSection) currentSection.classList.remove('hidden');
-            const currentTab = document.getElementById('currentRoundTab');
-            const fixturesTab = document.getElementById('fixturesTab');
-            if (currentTab && fixturesTab) {
-                currentTab.className = 'px-4 py-2 bg-blue-600 text-white rounded-lg font-medium';
-                fixturesTab.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium';
-            }
+            // Do not change tab visibility here; just build buttons for Current Round if visible
             let status;
             try {
                 status = calculatePickingStatus();
