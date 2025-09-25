@@ -1210,8 +1210,9 @@
             document.getElementById('confirmPick').addEventListener('click', confirmPick);
             
             
-            // Toggle eliminated
-            document.getElementById('toggleEliminated').addEventListener('click', toggleEliminatedPlayers);
+            // Toggle eliminated (panel removed — guard)
+            const toggleEliminatedBtn = document.getElementById('toggleEliminated');
+            if (toggleEliminatedBtn) toggleEliminatedBtn.addEventListener('click', toggleEliminatedPlayers);
             
             // View picks modal
             document.getElementById('viewPicksCard').addEventListener('click', openPicksModal);
@@ -1896,8 +1897,8 @@
         function updateUI() {
             if (!currentUser) return;
             
-            document.getElementById('currentRound').textContent = gameData.currentRound;
-            document.getElementById('picksRoundNumber').textContent = gameData.currentRound;
+            const currentRoundEl = document.getElementById('currentRound');
+            if (currentRoundEl) currentRoundEl.textContent = gameData.currentRound;
             
             
             if (currentGameMode === 'lms') {
@@ -1909,17 +1910,14 @@
                 document.getElementById('playersEliminated').textContent = eliminatedPlayers.length;
                 document.getElementById('totalPlayers').textContent = gameData.players.length;
                 
-                // Show/hide eliminated toggle button
+                // Show/hide eliminated toggle button (guarded)
                 const toggleBtn = document.getElementById('toggleEliminated');
-                if (eliminatedPlayers.length > 0) {
-                    toggleBtn.classList.remove('hidden');
-                } else {
-                    toggleBtn.classList.add('hidden');
+                if (toggleBtn) {
+                    if (eliminatedPlayers.length > 0) toggleBtn.classList.remove('hidden');
+                    else toggleBtn.classList.add('hidden');
                 }
                 
                 generateTeamButtons();
-                updatePlayersList();
-                updatePicksStatus();
                 
                 const status = calculatePickingStatus();
                 if (currentUser.currentPick) {
