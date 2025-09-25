@@ -446,7 +446,7 @@
             </div>
 
             <!-- Players List -->
-            <div class="bg-white rounded-xl card-shadow p-6">
+            <div id="playersPanel" class="bg-white rounded-xl card-shadow p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-xl font-semibold text-gray-800">Players</h3>
                     <button id="toggleEliminated" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 hidden">Show Eliminated</button>
@@ -458,11 +458,19 @@
             </div>
 
             <!-- Round Picks Status -->
-            <div class="bg-white rounded-xl card-shadow p-6 mt-6">
+            <div id="picksStatusPanel" class="bg-white rounded-xl card-shadow p-6 mt-6">
                 <h3 class="text-xl font-semibold text-gray-800 mb-4">Round <span id="picksRoundNumber">1</span> Picks Status</h3>
                 <div id="picksStatusList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                     <!-- Picks status will be populated here -->
                 </div>
+            </div>
+
+            <!-- Pick it! Round Summary (visible only in Pick it mode) -->
+            <div id="pickItSummaryPanel" class="hidden bg-white rounded-xl card-shadow p-6 mt-6">
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Round Summary</h3>
+                <p class="text-sm text-gray-700">Picks made: <span id="pickItSummaryProgress">0/0</span></p>
+                <p class="text-sm text-gray-700">Deadline: <span id="pickItSummaryDeadline">-</span></p>
+                <p class="text-xs text-gray-500 mt-2">Your picks are hidden from others until lock. Others' picks are blurred while open.</p>
             </div>
         </div>
 
@@ -1645,9 +1653,9 @@
                             const result = gameData.matchResults[match.id];
                             let statusDisplay = '';
                             
-                            if (result && result.finished) {
-                                statusDisplay = `<span class="text-xs text-green-600 font-medium">✅ ${result.winner}</span>`;
-                            } else if (isMatchLive(match)) {
+            if (result && result.finished) {
+                statusDisplay = `<span class="text-xs text-green-700 font-semibold">FT: <span class="font-bold">${result.winner}</span></span>`;
+            } else if (isMatchLive(match)) {
                                 statusDisplay = `<span class="text-xs text-red-600 font-medium animate-pulse">🔴 LIVE</span>`;
                             } else {
                                 statusDisplay = `<span class="text-xs text-gray-500">${match.time}</span>`;
@@ -1702,9 +1710,9 @@
                             const result = gameData.matchResults[match.id];
                             let statusDisplay = '';
                             
-                            if (result && result.finished) {
-                                statusDisplay = `<span class="text-xs text-green-600 font-medium">✅ ${result.winner}</span>`;
-                            } else if (isMatchLive(match)) {
+            if (result && result.finished) {
+                statusDisplay = `<span class="text-xs text-green-700 font-semibold">FT: <span class="font-bold">${result.winner}</span></span>`;
+            } else if (isMatchLive(match)) {
                                 statusDisplay = `<span class="text-xs text-red-600 font-medium animate-pulse">🔴 LIVE</span>`;
                             } else {
                                 statusDisplay = `<span class="text-xs text-gray-500">${match.time}</span>`;
@@ -1811,6 +1819,9 @@
             const pickItInterface = document.getElementById('pickItInterface');
             const lmsStats = document.getElementById('lmsStats');
             const pickItStats = document.getElementById('pickItStats');
+            const playersPanel = document.getElementById('playersPanel');
+            const picksStatusPanel = document.getElementById('picksStatusPanel');
+            const pickItSummaryPanel = document.getElementById('pickItSummaryPanel');
             
             if (mode === 'lms') {
                 lmsToggle.className = 'px-6 py-2 bg-blue-600 text-white rounded-lg font-medium transition-colors';
@@ -1819,6 +1830,9 @@
                 pickItInterface.classList.add('hidden');
                 lmsStats.classList.remove('hidden');
                 pickItStats.classList.add('hidden');
+                playersPanel.classList.remove('hidden');
+                picksStatusPanel.classList.remove('hidden');
+                pickItSummaryPanel.classList.add('hidden');
             } else {
                 lmsToggle.className = 'px-6 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium transition-colors hover:bg-gray-200';
                 pickItToggle.className = 'px-6 py-2 bg-green-600 text-white rounded-lg font-medium transition-colors';
@@ -1826,7 +1840,9 @@
                 pickItInterface.classList.remove('hidden');
                 lmsStats.classList.add('hidden');
                 pickItStats.classList.remove('hidden');
-                
+                playersPanel.classList.add('hidden');
+                picksStatusPanel.classList.add('hidden');
+                pickItSummaryPanel.classList.remove('hidden');
                 updatePickItInterface();
             }
             
@@ -1954,12 +1970,15 @@
                     const result = gameData.matchResults[match.id];
                     let statusDisplay = '';
                     
-                    if (result && result.finished) {
-                        const isCorrect = userPick === result.winner;
-                        statusDisplay = `<span class="text-xs ${isCorrect ? 'text-green-600' : 'text-red-600'} font-medium">${isCorrect ? '✅' : '❌'} ${result.winner}</span>`;
-                    } else {
-                        statusDisplay = `<span class="text-xs text-gray-500">${match.time}</span>`;
-                    }
+            if (result && result.finished) {
+                const isCorrect = userPick === result.winner;
+                const pickDisplay = userPick ? ` — Your pick: ${userPick === result.winner ? '<span class=\'text-green-700 font-semibold\'>Correct</span>' : '<span class=\'text-red-600 font-semibold\'>Wrong</span>'}` : '';
+                statusDisplay = `<span class=\"text-xs text-green-700 font-semibold\">FT: <span class=\"font-bold\">${result.winner}</span>${pickDisplay}</span>`;
+            } else if (isMatchLive(match)) {
+                statusDisplay = `<span class=\"text-xs text-red-600 font-medium animate-pulse\">🔴 LIVE</span>`;
+            } else {
+                statusDisplay = `<span class=\"text-xs text-gray-500\">${match.time}</span>`;
+            }
                     
                     const isDisabled = (result && result.finished) || !status.isOpen;
                     
@@ -1997,11 +2016,18 @@
             // Update progress
             document.getElementById('picksMade').textContent = picksMade;
             document.getElementById('totalMatches').textContent = roundData.matches.length;
+            const summaryProgress = document.getElementById('pickItSummaryProgress');
+            if (summaryProgress) {
+                summaryProgress.textContent = `${picksMade}/${roundData.matches.length}`;
+            }
             
             // Update deadline display
-            document.getElementById('pickItDeadline').textContent = status.isOpen ? 
-                `Deadline: ${status.timeUntil}` : 
-                'Picking Closed';
+            const deadlineText = status.isOpen ? `Deadline: ${status.timeUntil}` : 'Picking Closed';
+            document.getElementById('pickItDeadline').textContent = deadlineText;
+            const summaryDeadline = document.getElementById('pickItSummaryDeadline');
+            if (summaryDeadline) {
+                summaryDeadline.textContent = status.isOpen ? status.timeUntil : 'Closed';
+            }
             
             // Enable/disable save button
             const saveBtn = document.getElementById('savePickItPicks');
@@ -2172,10 +2198,8 @@
                     pickText = 'Not picked';
                 } else if (status.isOpen && !isAdmin && !isCurrentUser) {
                     pickText = '<span class="blur-sm">████████</span>';
-                } else if (status.isOpen && (isAdmin || isCurrentUser)) {
-                    pickText = player.currentPick;
                 } else {
-                    pickText = player.currentPick;
+                    pickText = `<span class=\"font-semibold\">${player.currentPick}</span>`;
                 }
                 
                 let profilePic = '';
@@ -2316,11 +2340,9 @@
                         statusIcon = '✅';
                         // Only show actual pick if picking is closed OR user is admin OR it's current user
                         if (status.isOpen && !isAdmin && !isCurrentUser) {
-                            pickDisplay = `<span class="font-medium text-green-600">🔒 <span class="blur-sm">████████</span></span>`;
-                        } else if (status.isOpen && (isAdmin || isCurrentUser)) {
-                            pickDisplay = `<span class="font-medium text-green-600">🔒 ${player.currentPick}</span>`;
+                            pickDisplay = `<span class="font-medium text-green-600">🔒 <span class=\"blur-sm\">████████</span></span>`;
                         } else {
-                            pickDisplay = `<span class="font-medium text-green-600">🔒 ${player.currentPick}</span>`;
+                            pickDisplay = `<span class="font-medium text-green-700">🔒 <span class=\"font-semibold\">${player.currentPick}</span></span>`;
                         }
                         statusClass = 'bg-green-50 border-l-4 border-green-400';
                     }
@@ -2454,7 +2476,7 @@
                             <span class="font-semibold text-green-800">Still Standing</span>
                         </div>
                         <p class="text-sm text-green-700">Survived ${roundsSurvived} rounds</p>
-                        ${player.currentPick ? `<p class="text-xs text-green-600 mt-1">Current pick: ${status.isOpen && !isAdmin && !isCurrentUser ? '<span class="blur-sm">████████</span>' : player.currentPick}</p>` : ''}
+                        ${player.currentPick ? `<p class="text-xs text-green-600 mt-1">Current pick: ${status.isOpen && !isAdmin && !isCurrentUser ? '<span class=\"blur-sm\">████████</span>' : `<span class=\"font-semibold\">${player.currentPick}</span>`}</p>` : ''}
                     </div>
                 `;
             }
