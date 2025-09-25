@@ -744,20 +744,31 @@
 
         // Optional remote sync
         let syncUrl = localStorage.getItem('urcSyncUrl') || null;
+        let syncGithub = null; // { owner, repo, branch, rootPath }
 
         async function syncPullAndMaybeUpdate() {
-            if (!syncUrl) return;
             try {
-                const res = await fetch(syncUrl, { cache: 'no-store' });
-                if (!res.ok) return;
-                const remote = await res.json();
+                let remote = null;
+                if (syncGithub) {
+                    const savedEmail = localStorage.getItem('currentUserEmail');
+                    if (!savedEmail) return;
+                    const key = normalizeEmail(savedEmail).replace(/[^a-z0-9@._-]/g, '');
+                    const path = `${syncGithub.rootPath.replace(/\/$/, '')}/urc-${encodeURIComponent(key)}.json`;
+                    const token = getGithubToken();
+                    if (!token) return;
+                    const gh = await githubGetFile(syncGithub.owner, syncGithub.repo, syncGithub.branch, path, token);
+                    remote = gh?.json || null;
+                } else if (syncUrl) {
+                    const res = await fetch(syncUrl, { cache: 'no-store' });
+                    if (!res.ok) return;
+                    remote = await res.json();
+                }
                 if (!remote || typeof remote !== 'object') return;
                 if (!remote.updatedAt || remote.updatedAt > (gameData.updatedAt || 0)) {
                     gameData = { ...gameData, ...remote };
                     localStorage.setItem('urcGameData', JSON.stringify(gameData));
-                    // Rebind currentUser by email if present
                     const savedEmail = localStorage.getItem('currentUserEmail');
-                    if (savedEmail) {
+                    if (savedEmail && Array.isArray(gameData.players)) {
                         const player = gameData.players.find(p => normalizeEmail(p.email) === normalizeEmail(savedEmail));
                         if (player) currentUser = player;
                     }
@@ -771,15 +782,25 @@
 
         let syncPushTimer = null;
         function scheduleSyncPush() {
-            if (!syncUrl) return;
+            if (!syncUrl && !syncGithub) return;
             if (syncPushTimer) clearTimeout(syncPushTimer);
             syncPushTimer = setTimeout(async () => {
                 try {
-                    await fetch(syncUrl, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(gameData)
-                    });
+                    if (syncGithub) {
+                        const savedEmail = localStorage.getItem('currentUserEmail');
+                        if (!savedEmail) return;
+                        const key = normalizeEmail(savedEmail).replace(/[^a-z0-9@._-]/g, '');
+                        const path = `${syncGithub.rootPath.replace(/\/$/, '')}/urc-${encodeURIComponent(key)}.json`;
+                        const token = getGithubToken();
+                        if (!token) return;
+                        await githubPutFile(syncGithub.owner, syncGithub.repo, syncGithub.branch, path, gameData, token);
+                    } else if (syncUrl) {
+                        await fetch(syncUrl, {
+                            method: 'PUT',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(gameData)
+                        });
+                    }
                 } catch (e) {
                     // silent
                 }
@@ -792,11 +813,53 @@
         }
 
         // Derive a default sync URL from the user's email to auto-sync, if a base is configured.
-        const SYNC_BASE = localStorage.getItem('urcSyncBase');
+        const SYNC_BASE = localStorage.getItem('urcSyncBase') || 'github:jjsacks/URC/main:sync';
         function deriveAutoSyncUrlFromEmail(email) {
             if (!SYNC_BASE || !email) return null;
-            const key = normalizeEmail(email).replace(/[^a-z0-9@._-]/g, '');
-            return `${SYNC_BASE.replace(/\/$/, '')}/urc-${encodeURIComponent(key)}.json`;
+            if (SYNC_BASE.startsWith('github:')) {
+                const spec = SYNC_BASE.replace(/^github:/, '');
+                const m = spec.match(/^([^/]+)\/([^/]+)\/([^:]+):(.*)$/);
+                if (!m) return null;
+                syncGithub = { owner: m[1], repo: m[2], branch: m[3], rootPath: m[4] };
+                return 'github';
+            } else {
+                const key = normalizeEmail(email).replace(/[^a-z0-9@._-]/g, '');
+                return `${SYNC_BASE.replace(/\/$/, '')}/urc-${encodeURIComponent(key)}.json`;
+            }
+        }
+
+        function getGithubToken() {
+            const t = localStorage.getItem('urcSyncToken') || (typeof window !== 'undefined' && window.GH_TOKEN) || '';
+            if (t) localStorage.setItem('urcSyncToken', t);
+            return t;
+        }
+
+        async function githubGetFile(owner, repo, branch, path, token) {
+            const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(branch)}`;
+            const res = await fetch(url, { headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github+json' } });
+            if (res.status === 404) return null;
+            if (!res.ok) return null;
+            const data = await res.json();
+            const content = data.content ? atob(data.content.replace(/\n/g, '')) : '';
+            try {
+                const json = JSON.parse(content);
+                return { sha: data.sha, json };
+            } catch (_) {
+                return { sha: data.sha, json: null };
+            }
+        }
+
+        async function githubPutFile(owner, repo, branch, path, json, token) {
+            const get = await githubGetFile(owner, repo, branch, path, token);
+            const sha = get?.sha;
+            const body = {
+                message: `sync: update ${path}`,
+                content: btoa(unescape(encodeURIComponent(JSON.stringify(json, null, 2)))) ,
+                branch
+            };
+            if (sha) body.sha = sha;
+            const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`;
+            await fetch(url, { method: 'PUT', headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
         }
 
         // Timezone helpers (UK time handling and formatting)
@@ -1491,7 +1554,7 @@
             saveGameData();
             // Auto-configure sync URL after sign-up
             const autoUrlReg = deriveAutoSyncUrlFromEmail(email);
-            if (autoUrlReg) setSyncUrl(autoUrlReg);
+            if (autoUrlReg && autoUrlReg !== 'github') setSyncUrl(autoUrlReg);
             
             showNotification('Registration successful! You can now login and start playing.', 'success');
             
@@ -1588,12 +1651,16 @@
             
             currentUser = player;
             localStorage.setItem('currentUserEmail', email);
-            // Auto-configure sync URL if a base is present
-            const autoUrl = deriveAutoSyncUrlFromEmail(email);
-            if (autoUrl) {
-                setSyncUrl(autoUrl);
-                syncPullAndMaybeUpdate();
-            }
+            // Auto-configure sync using email
+            (async () => {
+                const auto = deriveAutoSyncUrlFromEmail(email);
+                if (auto === 'github') {
+                    await syncPullAndMaybeUpdate();
+                } else if (auto) {
+                    setSyncUrl(auto);
+                    await syncPullAndMaybeUpdate();
+                }
+            })();
             document.getElementById('authSection').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
             document.getElementById('userName').textContent = player.displayName;
