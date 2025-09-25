@@ -1183,6 +1183,8 @@
             // Ensure render after any late layout/JS work
             setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 0);
             setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 200);
+            // Force show Current Round tab on load
+            try { switchFixtureTab('current'); } catch (e) {}
             setInterval(() => {
                 updateGameStatus();
             }, 1000);
@@ -1662,6 +1664,8 @@
                 currentSection.classList.remove('hidden');
                 allSection.classList.add('hidden');
                 try { generateTeamButtons(); } catch (e) {}
+                // Also rebuild when tab becomes visible in case of earlier timing issues
+                setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 0);
             } else {
                 currentTab.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium';
                 fixturesTab.className = 'px-4 py-2 bg-blue-600 text-white rounded-lg font-medium';
