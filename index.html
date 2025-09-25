@@ -175,7 +175,6 @@
                     <div class="flex space-x-2">
                         <button id="settingsBtn" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700">Profile</button>
                         <button id="adminScores" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 hidden">Admin Panel</button>
-                        <button id="syncSettingsBtn" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">Sync</button>
                         <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Logout</button>
                     </div>
                 </div>
@@ -783,6 +782,14 @@
         function setSyncUrl(url) {
             syncUrl = (url || '').trim() || null;
             if (syncUrl) localStorage.setItem('urcSyncUrl', syncUrl); else localStorage.removeItem('urcSyncUrl');
+        }
+
+        // Derive a default sync URL from the user's email to auto-sync, if a base is configured.
+        const SYNC_BASE = localStorage.getItem('urcSyncBase');
+        function deriveAutoSyncUrlFromEmail(email) {
+            if (!SYNC_BASE || !email) return null;
+            const key = normalizeEmail(email).replace(/[^a-z0-9@._-]/g, '');
+            return `${SYNC_BASE.replace(/\/$/, '')}/urc-${encodeURIComponent(key)}.json`;
         }
 
         // Timezone helpers (UK time handling and formatting)
@@ -1465,6 +1472,9 @@
             
             gameData.players.push(newPlayer);
             saveGameData();
+            // Auto-configure sync URL after sign-up
+            const autoUrlReg = deriveAutoSyncUrlFromEmail(email);
+            if (autoUrlReg) setSyncUrl(autoUrlReg);
             
             showNotification('Registration successful! You can now login and start playing.', 'success');
             
@@ -1561,6 +1571,12 @@
             
             currentUser = player;
             localStorage.setItem('currentUserEmail', email);
+            // Auto-configure sync URL if a base is present
+            const autoUrl = deriveAutoSyncUrlFromEmail(email);
+            if (autoUrl) {
+                setSyncUrl(autoUrl);
+                syncPullAndMaybeUpdate();
+            }
             document.getElementById('authSection').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
             document.getElementById('userName').textContent = player.displayName;
