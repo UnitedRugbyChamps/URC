@@ -1195,6 +1195,17 @@
             setInterval(() => {
                 updateGameStatus();
             }, 1000);
+
+            // Observe Current Round section visibility and rebuild when shown
+            const currentSection = document.getElementById('currentRoundSection');
+            if (currentSection && 'MutationObserver' in window) {
+                const obs = new MutationObserver(() => {
+                    if (!currentSection.classList.contains('hidden')) {
+                        try { generateTeamButtons(); } catch (e) {}
+                    }
+                });
+                obs.observe(currentSection, { attributes: true, attributeFilter: ['class'] });
+            }
         });
 
         function setupEventListeners() {
