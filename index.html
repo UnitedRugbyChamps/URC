@@ -1185,6 +1185,13 @@
             setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 200);
             // Force show Current Round tab on load
             try { switchFixtureTab('current'); } catch (e) {}
+            // Keep trying briefly until buttons appear
+            let _tries = 0; (function ensureTeamButtons(){
+                const c = document.getElementById('teamButtons');
+                if (c && c.childElementCount > 0) return;
+                try { generateTeamButtons(); } catch (e) {}
+                if (_tries++ < 20) setTimeout(ensureTeamButtons, 100);
+            })();
             setInterval(() => {
                 updateGameStatus();
             }, 1000);
@@ -1872,6 +1879,15 @@
                     (rd?.teams || []).forEach(t => { if (t && t !== 'TBD') teamSet.add(t); });
                 });
                 availableTeams = Array.from(teamSet);
+            }
+            // Ensure container is visible
+            const currentSection = document.getElementById('currentRoundSection');
+            if (currentSection) currentSection.classList.remove('hidden');
+            const currentTab = document.getElementById('currentRoundTab');
+            const fixturesTab = document.getElementById('fixturesTab');
+            if (currentTab && fixturesTab) {
+                currentTab.className = 'px-4 py-2 bg-blue-600 text-white rounded-lg font-medium';
+                fixturesTab.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium';
             }
             let status;
             try {
