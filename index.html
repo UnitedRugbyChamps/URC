@@ -1180,6 +1180,9 @@
             updateGameStatus();
             updateUI();
             try { generateTeamButtons(); } catch (e) {}
+            // Ensure render after any late layout/JS work
+            setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 0);
+            setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 200);
             setInterval(() => {
                 updateGameStatus();
             }, 1000);
@@ -1541,6 +1544,7 @@
             document.getElementById('authSection').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
             document.getElementById('userName').textContent = player.displayName;
+            try { generateTeamButtons(); } catch (e) {}
             
             const userProfilePicElement = document.getElementById('userProfilePic');
             if (player.isCustomPic && player.profilePic && player.profilePic.startsWith('data:')) {
@@ -1558,6 +1562,7 @@
             showNotification(`Welcome back, ${player.displayName}!`, 'success');
             updateUI();
             try { generateTeamButtons(); } catch (e) {}
+            setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 0);
         }
 
 
@@ -1847,6 +1852,7 @@
 
             // Always (re)build team buttons so they are visible regardless of mode toggles
             try { generateTeamButtons(); } catch (e) {}
+            setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 0);
         }
 
         function generateTeamButtons() {
