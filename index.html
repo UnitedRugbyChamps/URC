@@ -1179,6 +1179,7 @@
             setupEventListeners();
             updateGameStatus();
             updateUI();
+            try { generateTeamButtons(); } catch (e) {}
             setInterval(() => {
                 updateGameStatus();
             }, 1000);
@@ -1556,6 +1557,7 @@
             
             showNotification(`Welcome back, ${player.displayName}!`, 'success');
             updateUI();
+            try { generateTeamButtons(); } catch (e) {}
         }
 
 
@@ -1654,6 +1656,7 @@
                 fixturesTab.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium';
                 currentSection.classList.remove('hidden');
                 allSection.classList.add('hidden');
+                try { generateTeamButtons(); } catch (e) {}
             } else {
                 currentTab.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium';
                 fixturesTab.className = 'px-4 py-2 bg-blue-600 text-white rounded-lg font-medium';
