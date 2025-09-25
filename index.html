@@ -1646,10 +1646,29 @@
 
         function loginUser(email, password) {
             email = normalizeEmail(email);
-            const player = gameData.players.find(p => normalizeEmail(p.email) === email);
+            let player = gameData.players.find(p => normalizeEmail(p.email) === email);
             if (!player) {
-                showNotification('Email not found. Please register first.', 'error');
-                return;
+                // Auto-create account on login if not found (cross-device friendly)
+                const newPlayer = {
+                    id: Date.now(),
+                    email: email,
+                    password: password,
+                    displayName: email.split('@')[0],
+                    profilePic: null,
+                    isCustomPic: false,
+                    favoriteTeam: '',
+                    isEliminated: false,
+                    usedTeams: [],
+                    currentPick: null,
+                    roundJoined: gameData.currentRound,
+                    joinDate: new Date().toISOString(),
+                    pickItPicks: {},
+                    pickItStats: { totalPicks: 0, correctPicks: 0, percentage: 0, weeklyMovement: 0, previousRank: null }
+                };
+                gameData.players.push(newPlayer);
+                saveGameData();
+                player = newPlayer;
+                showNotification('Account created and logged in', 'success');
             }
             
             if (player.password !== password) {
