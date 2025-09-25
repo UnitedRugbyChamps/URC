@@ -95,10 +95,7 @@
                                     <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
                                 </svg>
                             </div>
-                            <label for="customProfilePic" class="cursor-pointer">
-                                <span class="text-sm text-blue-600 hover:text-blue-500 font-medium">Upload your picture</span>
-                                <input id="customProfilePic" type="file" accept="image/*" class="hidden">
-                            </label>
+                            <div class="text-sm text-gray-500">Profile pictures are disabled</div>
                             <p class="text-xs text-gray-500 mt-1">JPG, PNG, GIF up to 2MB</p>
                         </div>
                         <div id="customPicPreview" class="hidden mt-3 text-center">
@@ -178,7 +175,7 @@
                         <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Logout</button>
                     </div>
                 </div>
-                <div id="lmsCountdownInline" class="mt-2 text-sm text-gray-600"></div>
+                <div id="lmsCountdownInline" class="hidden mt-2 text-sm text-gray-600"></div>
                 
                 <!-- LMS Stats -->
                 <div id="lmsStats" class="hidden grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -227,7 +224,7 @@
                 <!-- Current Round Section -->
                 <div id="currentRoundSection">
                         <div id="currentRoundHeader" class="mb-4">
-                        <div id="currentRoundCountdown" class="text-sm text-gray-600 mb-2"></div>
+                        <div id="currentRoundCountdown" class="hidden text-sm text-gray-600 mb-2"></div>
                         <h3 class="text-xl font-semibold text-gray-800 mb-2">Round <span id="currentRoundHeadingNum">1</span></h3>
                         <p class="text-gray-600">Pick your team to win this round. Remember - you can only use each team once!</p>
                     </div>
@@ -319,7 +316,7 @@
                             </select>
                         </div>
                     </div>
-                    <div id="allFixturesCountdown" class="mb-2 text-sm text-gray-600"></div>
+                    <div id="allFixturesCountdown" class="hidden mb-2 text-sm text-gray-600"></div>
                     <div id="allFixturesContent">
                         <!-- Will be populated dynamically -->
                     </div>
@@ -734,11 +731,7 @@
             }
             const userProfilePicElement = document.getElementById('userProfilePic');
             if (userProfilePicElement && currentUser) {
-                if (currentUser.isCustomPic && currentUser.profilePic && currentUser.profilePic.startsWith('data:')) {
-                    userProfilePicElement.innerHTML = `<img src="${currentUser.profilePic}" class="w-8 h-8 rounded-full object-cover border border-gray-300" alt="Profile">`;
-                } else {
-                    userProfilePicElement.innerHTML = `<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMFCSXJWsbmkra95ltt9Z9LJiRuMOsIBluqwF-g4&usqp=CAE&s" class="w-8 h-8 rounded-full object-cover border border-gray-300" alt="Profile" onerror="this.src=''; this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="w-8 h-8 rounded-full bg-gray-300 border border-gray-400" style="display: none;"></div>`;
-                }
+                userProfilePicElement.innerHTML = `<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMFCSXJWsbmkra95ltt9Z9LJiRuMOsIBluqwF-g4&usqp=CAE&s" class="w-8 h-8 rounded-full object-cover border border-gray-300" alt="Profile" onerror="this.src=''; this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="w-8 h-8 rounded-full bg-gray-300 border border-gray-400" style="display: none;"></div>`;
             }
         }
 
@@ -1373,10 +1366,7 @@
             document.getElementById('resendCode').addEventListener('click', resendVerificationCode);
             
             // Custom profile picture uploads
-            document.getElementById('customProfilePic').addEventListener('change', handleCustomProfilePic);
-            document.getElementById('removeCustomPic').addEventListener('click', removeCustomProfilePic);
-            document.getElementById('settingsCustomProfilePic').addEventListener('change', handleSettingsCustomProfilePic);
-            document.getElementById('settingsRemoveCustomPic').addEventListener('click', removeSettingsCustomProfilePic);
+                
 
             // Sync modal
             document.getElementById('syncSettingsBtn').addEventListener('click', () => {
@@ -1672,11 +1662,7 @@
             try { generateTeamButtons(); } catch (e) {}
             
             const userProfilePicElement = document.getElementById('userProfilePic');
-            if (player.isCustomPic && player.profilePic && player.profilePic.startsWith('data:')) {
-                userProfilePicElement.innerHTML = `<img src="${player.profilePic}" class="w-8 h-8 rounded-full object-cover border border-gray-300" alt="Profile">`;
-            } else {
-                userProfilePicElement.innerHTML = `<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMFCSXJWsbmkra95ltt9Z9LJiRuMOsIBluqwF-g4&usqp=CAE&s" class="w-8 h-8 rounded-full object-cover border border-gray-300" alt="Profile" onerror="this.src=''; this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="w-8 h-8 rounded-full bg-gray-300 border border-gray-400" style="display: none;"></div>`;
-            }
+            userProfilePicElement.innerHTML = `<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMFCSXJWsbmkra95ltt9Z9LJiRuMOsIBluqwF-g4&usqp=CAE&s" class="w-8 h-8 rounded-full object-cover border border-gray-300" alt="Profile" onerror="this.src=''; this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="w-8 h-8 rounded-full bg-gray-300 border border-gray-400" style="display: none;"></div>`;
             
             if (email === 'sacksjordan@gmail.com') {
                 document.getElementById('adminScores').classList.remove('hidden');
@@ -1938,29 +1924,9 @@
             if (countdownEl) countdownEl.textContent = status.timeUntil || '';
 
             // Compose rich inline block: show deadline in UK and local, plus state
-            if (lmsInline) {
-                let line = '';
-                if (status.deadline) {
-                    const { uk, local } = formatInTimeZones(status.deadline);
-                    line += `Deadline (UK): ${uk}`;
-                    if (local !== uk) line += ` · Your time: ${local}`;
-                }
-                if (status.isOpen) {
-                    line = `🟢 Picking OPEN — ${status.timeUntil}` + (line ? ` · ${line}` : '');
-                } else if (status.earliestKickoff && new Date() < status.earliestKickoff) {
-                    line = `🔒 Locked — ${status.timeUntil}` + (line ? ` · ${line}` : '');
-                } else {
-                    line = `🟡 Round Started` + (line ? ` · ${line}` : '');
-                }
-                lmsInline.textContent = line;
-            }
+            // hide inline countdowns to avoid duplication
 
-            if (currentRoundCountdown) {
-                currentRoundCountdown.textContent = status.isOpen ? `⏳ Round Open — ${status.timeUntil}` : (status.roundStart && new Date() < status.roundStart ? `🔒 Opens soon` : '🟡 Round Started');
-            }
-            if (allFixturesCountdown) {
-                allFixturesCountdown.textContent = status.isOpen ? `⏳ Round Open — ${status.timeUntil}` : (status.roundStart && new Date() < status.roundStart ? `🔒 Opens soon` : '🟡 Round Started');
-            }
+            // hide section-specific countdowns to avoid duplication
             
             // Update round status indicator (compact dot + label)
             const indicator = document.getElementById('roundStatusIndicator');
@@ -2270,12 +2236,7 @@
                     pickText = `<span class=\"font-semibold\">${player.currentPick}</span>`;
                 }
                 
-                let profilePic = '';
-                if (player.isCustomPic && player.profilePic && player.profilePic.startsWith('data:')) {
-                    profilePic = `<img src="${player.profilePic}" class="w-6 h-6 rounded-full object-cover border border-gray-300" alt="Profile">`;
-                } else {
-                    profilePic = `<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMFCSXJWsbmkra95ltt9Z9LJiRuMOsIBluqwF-g4&usqp=CAE&s" class="w-6 h-6 rounded-full object-cover border border-gray-300" alt="Profile" onerror="this.src=''; this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="w-6 h-6 rounded-full bg-gray-300 border border-gray-400" style="display: none;"></div>`;
-                }
+                const profilePic = `<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMFCSXJWsbmkra95ltt9Z9LJiRuMOsIBluqwF-g4&usqp=CAE&s" class="w-6 h-6 rounded-full object-cover border border-gray-300" alt="Profile" onerror="this.src=''; this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="w-6 h-6 rounded-full bg-gray-300 border border-gray-400" style="display: none;"></div>`;
                 
                 html += `
                     <div class="p-3 border rounded-lg ${statusClass}">
@@ -2445,12 +2406,7 @@
             
             const joinDate = player.joinDate ? new Date(player.joinDate).toLocaleDateString() : 'Unknown';
             
-            let profilePicDisplay = '';
-            if (player.isCustomPic && player.profilePic && player.profilePic.startsWith('data:')) {
-                profilePicDisplay = `<img src="${player.profilePic}" class="w-24 h-24 rounded-full mx-auto object-cover border-4 border-gray-200 mb-3" alt="Profile">`;
-            } else {
-                profilePicDisplay = `<div class="w-24 h-24 rounded-full bg-gray-300 border-4 border-gray-200 mx-auto mb-3"></div>`;
-            }
+            const profilePicDisplay = `<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMFCSXJWsbmkra95ltt9Z9LJiRuMOsIBluqwF-g4&usqp=CAE&s" class="w-24 h-24 rounded-full mx-auto object-cover border-4 border-gray-200 mb-3" alt="Profile" onerror="this.src=''; this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="w-24 h-24 rounded-full bg-gray-300 border-4 border-gray-200 mx-auto mb-3" style="display: none;"></div>`;
             
             content.innerHTML = `
                 <div class="text-center mb-6">
