@@ -1739,7 +1739,11 @@
             document.getElementById('countdown').textContent = status.timeUntil || 'Deadline: Friday 26th September at 17:30';
             const lmsInline = document.getElementById('lmsCountdownInline');
             if (lmsInline) {
-                lmsInline.textContent = status.isOpen ? `⏳ ${status.timeUntil}` : '🔒 Picking Closed';
+                if (status.isOpen) {
+                    lmsInline.innerHTML = `<span class="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium bg-green-100 text-green-800">🟢 Open — ${status.timeUntil}</span>`;
+                } else {
+                    lmsInline.innerHTML = `<span class="inline-flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium bg-red-100 text-red-800">🔒 Round started — Picking locked</span>`;
+                }
             }
             
             // Update round status indicator
@@ -2196,6 +2200,8 @@
             let playersToShow = showEliminated ? 
                 gameData.players.filter(p => p.isEliminated) : 
                 gameData.players.filter(p => !p.isEliminated);
+            const status = calculatePickingStatus();
+            const isAdmin = currentUser?.email === 'sacksjordan@gmail.com';
             
             // Sort eliminated players by elimination round, then alphabetically
             // Sort standing players alphabetically
@@ -2237,6 +2243,15 @@
                     statusText = `${roundsSurvived} rounds survived`;
                 }
                 
+                const isCurrentUser = player.id === currentUser?.id;
+                let pickDisplay = '';
+                if (player.currentPick) {
+                    if (status.isOpen && !isAdmin && !isCurrentUser) {
+                        pickDisplay = '<span class="blur-sm">████████</span>';
+                    } else {
+                        pickDisplay = player.currentPick;
+                    }
+                }
                 html += `
                     <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                         <div class="flex items-center space-x-3">
@@ -2244,11 +2259,14 @@
                             <div>
                                 <div class="font-medium text-gray-800 cursor-pointer hover:text-blue-600 transition-colors" onclick="openProfileModal(${player.id})">${player.displayName}</div>
                                 ${player.favoriteTeam ? `<div class="text-xs text-blue-600">${player.favoriteTeam}</div>` : ''}
+                                ${player.currentPick ? `<div class="text-xs text-gray-600">Pick: ${pickDisplay}</div>` : ''}
                             </div>
                         </div>
-                        <div class="flex items-center space-x-2">
-                            <span class="${statusClass}">${statusIcon}</span>
-                            <span class="text-sm text-gray-600">${statusText}</span>
+                        <div class="text-right">
+                            <div class="flex items-center justify-end space-x-2">
+                                <span class="${statusClass}">${statusIcon}</span>
+                                <span class="text-sm text-gray-600">${statusText}</span>
+                            </div>
                         </div>
                     </div>
                 `;
@@ -2361,12 +2379,23 @@
                 players.sort((a, b) => a.displayName.localeCompare(b.displayName));
                 
                 let html = '';
+                const status = calculatePickingStatus();
+                const isAdmin = currentUser?.email === 'sacksjordan@gmail.com';
                 players.forEach(player => {
                     let profilePic = '';
                     if (player.isCustomPic && player.profilePic && player.profilePic.startsWith('data:')) {
                         profilePic = `<img src="${player.profilePic}" class="w-8 h-8 rounded-full object-cover border border-gray-300 cursor-pointer hover:scale-110 transition-transform" onclick="openProfileModal(${player.id})" alt="Profile">`;
                     } else {
                         profilePic = `<div class="w-8 h-8 rounded-full bg-gray-300 border border-gray-400 cursor-pointer hover:scale-110 transition-transform" onclick="openProfileModal(${player.id})"></div>`;
+                    }
+                    const isCurrentUser = player.id === currentUser?.id;
+                    let pickDisplay = '';
+                    if (player.currentPick) {
+                        if (status.isOpen && !isAdmin && !isCurrentUser) {
+                            pickDisplay = '<span class="blur-sm">████████</span>';
+                        } else {
+                            pickDisplay = player.currentPick;
+                        }
                     }
                     
                     html += `
@@ -2376,6 +2405,7 @@
                                 <div class="font-medium text-gray-800 cursor-pointer hover:text-blue-600 transition-colors" onclick="openProfileModal(${player.id})">${player.displayName}</div>
                                 ${player.favoriteTeam ? `<span class="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded">${player.favoriteTeam}</span>` : ''}
                             </div>
+                            ${player.currentPick ? `<div class="text-xs text-gray-600 ml-10">Pick: ${pickDisplay}</div>` : ''}
                         </div>
                     `;
                 });
