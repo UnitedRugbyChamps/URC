@@ -3,124 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>URC Last Man Standing 2025/26 </title>
+    <title>URC Last Man Standing</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        body { 
-            font-family: 'Inter', sans-serif; 
-            box-sizing: border-box;
-        }
+        body { font-family: 'Inter', sans-serif; }
         .gradient-bg { background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 100%); }
         .card-shadow { box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .glass-effect { 
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        .gradient-card {
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            border: 1px solid #e2e8f0;
-        }
-        .lms-gradient {
-            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
-        }
-        .pickit-gradient {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        }
-        .animate-pulse-slow {
-            animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-        }
-        .countdown-glow {
-            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
-        }
-        .lms-interface {
-            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
-            border: 2px solid #3b82f6;
-        }
-        .pickit-interface {
-            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-            border: 2px solid #10b981;
-        }
-        .match-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border: 1px solid #e2e8f0;
-            transition: all 0.3s ease;
-        }
-        .match-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
-        }
-        .picks-blur {
-            filter: blur(8px);
-            pointer-events: none;
-            opacity: 0.6;
-        }
-        .picks-blur-overlay {
-            position: relative;
-        }
-        .picks-blur-overlay::after {
-            content: "🔒 Picks hidden until round closes";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0,0,0,0.8);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 500;
-            white-space: nowrap;
-        }
-        .admin-picks-visible {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border: 2px solid #f59e0b;
-        }
-        .admin-picks-visible::before {
-            content: "🔓 ADMIN VIEW - Always Visible";
-            position: absolute;
-            top: -8px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #f59e0b;
-            color: white;
-            padding: 2px 8px;
-            border-radius: 4px;
-            font-size: 10px;
-            font-weight: 600;
-            white-space: nowrap;
-        }
-        .version-badge {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            background: rgba(0,0,0,0.7);
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 12px;
-            z-index: 1000;
-        }
-        .profile-pic {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #e5e7eb;
-        }
-        .profile-pic-large {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #e5e7eb;
-        }
     </style>
 </head>
 <body class="gradient-bg min-h-screen">
-    <div class="version-badge">v54</div>
-    
     <div class="flex">
         <!-- Chat Sidebar -->
         <div id="chatSidebar" class="fixed right-0 top-0 h-full w-80 bg-white shadow-lg transform translate-x-full transition-transform duration-300 z-40">
@@ -156,14 +48,15 @@
         <!-- Header -->
         <div class="text-center mb-8">
             <h1 class="text-4xl font-bold text-white mb-2 flex items-center justify-center gap-3">
-                🏉
-                <span id="gameTitle">URC Last Man Standing</span>
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMFCSXJWsbmkra95ltt9Z9LJiRuMOsIBluqwF-g4&usqp=CAE&s" alt="URC Logo" class="h-12 w-12 object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='inline';">
+                <span style="display: none;">🏉</span>
+                URC Last Man Standing
             </h1>
-            <p id="gameSlogan" class="text-white/80">Pick a team each week - but you can only use each team once!</p>
+            <p class="text-white/80">Pick a team each week - but you can only use each team once!</p>
         </div>
 
         <!-- Login/Register Form -->
-        <div id="authSection" class="max-w-md mx-auto glass-effect rounded-xl card-shadow p-6 mb-8">
+        <div id="authSection" class="max-w-md mx-auto bg-white rounded-xl card-shadow p-6 mb-8">
             <div class="flex mb-4">
                 <button id="loginTab" class="flex-1 py-2 px-4 bg-blue-600 text-white rounded-l-lg font-medium">Login</button>
                 <button id="registerTab" class="flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-r-lg font-medium">Register</button>
@@ -181,9 +74,36 @@
                     <p id="passwordHelp" class="text-xs text-gray-500 mt-1 hidden">Password must be at least 6 characters long</p>
                 </div>
                 
+
+                
                 <div id="nameField" class="mb-4 hidden">
                     <label class="block text-gray-700 text-sm font-medium mb-2">Display Name</label>
                     <input type="text" id="displayName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                
+                <!-- Profile Picture Selection -->
+                <div id="profilePicField" class="mb-4 hidden">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Profile Picture (Optional)</label>
+                    
+                    <!-- Upload Custom Picture -->
+                    <div class="mb-4 p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 transition-colors">
+                        <div class="text-center">
+                            <div class="mb-2">
+                                <svg class="mx-auto h-8 w-8 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </div>
+                            <label for="customProfilePic" class="cursor-pointer">
+                                <span class="text-sm text-blue-600 hover:text-blue-500 font-medium">Upload your picture</span>
+                                <input id="customProfilePic" type="file" accept="image/*" class="hidden">
+                            </label>
+                            <p class="text-xs text-gray-500 mt-1">JPG, PNG, GIF up to 2MB</p>
+                        </div>
+                        <div id="customPicPreview" class="hidden mt-3 text-center">
+                            <img id="customPicImage" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-blue-500" alt="Custom profile picture">
+                            <button type="button" id="removeCustomPic" class="mt-2 text-xs text-red-600 hover:text-red-800">Remove</button>
+                        </div>
+                    </div>
                 </div>
                 
                 <!-- Favorite Team Selection -->
@@ -236,21 +156,22 @@
         <!-- Main App (Hidden initially) -->
         <div id="mainApp" class="hidden">
             <!-- Game Mode Toggle -->
-            <div class="glass-effect rounded-xl card-shadow p-6 mb-6">
+            <div class="bg-white rounded-xl card-shadow p-6 mb-6">
                 <div class="flex justify-center mb-4">
                     <div class="bg-gray-100 p-1 rounded-lg">
-                        <button id="lmsToggle" class="px-6 py-2 lms-gradient text-white rounded-lg font-medium transition-all shadow-lg">🏉 Last Man Standing</button>
-                        <button id="pickItToggle" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium transition-all hover:bg-gray-200">🎯 Pick it!</button>
+                        <button id="lmsToggle" class="px-6 py-2 bg-blue-600 text-white rounded-lg font-medium transition-colors">🏉 Last Man Standing</button>
+                        <button id="pickItToggle" class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium transition-colors hover:bg-gray-200">🎯 Pick it!</button>
                     </div>
                 </div>
             </div>
 
             <!-- User Info & Stats -->
-            <div class="glass-effect rounded-xl card-shadow p-6 mb-6">
+            <div class="bg-white rounded-xl card-shadow p-6 mb-6">
                 <div class="flex justify-between items-center mb-4">
                     <div class="flex items-center space-x-3">
-                        <span id="userProfilePic" class="cursor-pointer hover:scale-110 transition-transform">
-                            🏉
+                        <span id="userProfilePic" class="cursor-pointer hover:scale-110 transition-transform" onclick="openProfileModal(currentUser?.id)">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMFCSXJWsbmkra95ltt9Z9LJiRuMOsIBluqwF-g4&usqp=CAE&s" class="w-8 h-8 rounded-full object-cover border border-gray-300" alt="Profile" onerror="this.src=''; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                            <div class="w-8 h-8 rounded-full bg-gray-300 border border-gray-400" style="display: none;"></div>
                         </span>
                         <div>
                             <h2 class="text-xl font-semibold text-gray-800">Welcome, <span id="userName"></span>!</h2>
@@ -258,23 +179,23 @@
                         </div>
                     </div>
                     <div class="flex space-x-2">
-                        <button id="settingsBtn" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors">Profile</button>
-                        <button id="adminScores" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 hidden transition-colors">Admin Panel</button>
-                        <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">Logout</button>
+                        <button id="settingsBtn" class="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700">Profile</button>
+                        <button id="adminScores" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 hidden">Admin Panel</button>
+                        <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">Logout</button>
                     </div>
                 </div>
                 
                 <!-- LMS Stats -->
                 <div id="lmsStats" class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="gradient-card p-4 rounded-lg cursor-pointer hover:shadow-lg transition-all transform hover:scale-105" id="standingPlayersCard">
+                    <div class="bg-green-50 p-4 rounded-lg cursor-pointer hover:bg-green-100 transition-colors" id="standingPlayersCard">
                         <div class="text-2xl font-bold text-green-600" id="playersStanding">0</div>
                         <div class="text-sm text-green-700">Players Standing</div>
                     </div>
-                    <div class="gradient-card p-4 rounded-lg cursor-pointer hover:shadow-lg transition-all transform hover:scale-105" id="eliminatedPlayersCard">
+                    <div class="bg-red-50 p-4 rounded-lg cursor-pointer hover:bg-red-100 transition-colors" id="eliminatedPlayersCard">
                         <div class="text-2xl font-bold text-red-600" id="playersEliminated">0</div>
                         <div class="text-sm text-red-700">Players Eliminated</div>
                     </div>
-                    <div class="gradient-card p-4 rounded-lg cursor-pointer hover:shadow-lg transition-all transform hover:scale-105" id="viewPicksCard">
+                    <div class="bg-blue-50 p-4 rounded-lg cursor-pointer hover:bg-blue-100 transition-colors" id="viewPicksCard">
                         <div class="text-2xl font-bold text-blue-600" id="totalPlayers">0</div>
                         <div class="text-sm text-blue-700">View Picks</div>
                     </div>
@@ -282,38 +203,37 @@
 
                 <!-- Pick it! Stats -->
                 <div id="pickItStats" class="hidden grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="gradient-card p-4 rounded-lg cursor-pointer hover:shadow-lg transition-all transform hover:scale-105" id="leaderboardCard">
+                    <div class="bg-green-50 p-4 rounded-lg cursor-pointer hover:bg-green-100 transition-colors" id="leaderboardCard">
                         <div class="text-2xl font-bold text-green-600" id="currentRank">-</div>
                         <div class="text-sm text-green-700">Current Rank</div>
                     </div>
-                    <div class="gradient-card p-4 rounded-lg">
+                    <div class="bg-green-50 p-4 rounded-lg">
                         <div class="text-2xl font-bold text-green-600" id="pickPercentage">0%</div>
                         <div class="text-sm text-green-700">Pick Accuracy</div>
                     </div>
-                    <div class="gradient-card p-4 rounded-lg">
+                    <div class="bg-green-50 p-4 rounded-lg">
                         <div class="text-2xl font-bold text-green-600" id="correctPicks">0/0</div>
                         <div class="text-sm text-green-700">Correct Picks</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Round Status with Countdown -->
-            <div id="roundStatus" class="glass-effect rounded-xl card-shadow p-6 mb-6 countdown-glow">
+            <!-- Round Status -->
+            <div id="roundStatus" class="bg-white rounded-xl card-shadow p-6 mb-6">
                 <div class="text-center">
                     <div id="statusMessage" class="text-lg font-medium text-gray-800 mb-2"></div>
-                    <div id="countdown" class="text-2xl font-bold text-blue-600 animate-pulse-slow mb-3"></div>
-                    <div id="roundStatusIndicator" class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium shadow-lg">
+                    <div id="countdown" class="text-sm text-gray-600"></div>
+                    <div id="roundStatusIndicator" class="mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium">
                         <!-- Status will be populated by JavaScript -->
                     </div>
                 </div>
             </div>
 
             <!-- LMS Game Interface -->
-            <div id="lmsInterface" class="lms-interface rounded-xl card-shadow p-6 mb-6">
+            <div id="lmsInterface" class="bg-white rounded-xl card-shadow p-6 mb-6">
                 <div class="flex space-x-1 mb-6">
-                    <button id="currentRoundTab" class="px-4 py-2 lms-gradient text-white rounded-lg font-medium shadow-lg">Current Round</button>
-                    <button id="fixturesTab" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors">All Fixtures</button>
-                    <button id="upcomingTab" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors">Upcoming</button>
+                    <button id="currentRoundTab" class="px-4 py-2 bg-blue-600 text-white rounded-lg font-medium">Current Round</button>
+                    <button id="fixturesTab" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium">All Fixtures</button>
                 </div>
 
                 <!-- Current Round Section -->
@@ -327,15 +247,15 @@
                         <div class="mb-3">
                             <h5 class="font-medium text-gray-700 mb-2">Friday 26th September</h5>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                <div class="flex justify-between items-center p-3 match-card rounded shadow-sm">
+                                <div class="flex justify-between items-center p-2 bg-gray-50 rounded border">
                                     <span>Stormers vs Leinster</span>
                                     <span class="text-sm text-gray-500">18:00</span>
                                 </div>
-                                <div class="flex justify-between items-center p-3 match-card rounded shadow-sm">
+                                <div class="flex justify-between items-center p-2 bg-gray-50 rounded border">
                                     <span>Glasgow Warriors vs Sharks</span>
                                     <span class="text-sm text-gray-500">20:05</span>
                                 </div>
-                                <div class="flex justify-between items-center p-3 match-card rounded shadow-sm">
+                                <div class="flex justify-between items-center p-2 bg-gray-50 rounded border">
                                     <span>Ulster vs Dragons</span>
                                     <span class="text-sm text-gray-500">20:05</span>
                                 </div>
@@ -344,23 +264,23 @@
                         <div class="mb-3">
                             <h5 class="font-medium text-gray-700 mb-2">Saturday 27th September</h5>
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
-                                <div class="flex justify-between items-center p-3 match-card rounded shadow-sm">
+                                <div class="flex justify-between items-center p-2 bg-gray-50 rounded border">
                                     <span>Bulls vs Ospreys</span>
                                     <span class="text-sm text-gray-500">13:00</span>
                                 </div>
-                                <div class="flex justify-between items-center p-3 match-card rounded shadow-sm">
+                                <div class="flex justify-between items-center p-2 bg-gray-50 rounded border">
                                     <span>Zebre vs Edinburgh</span>
                                     <span class="text-sm text-gray-500">15:05</span>
                                 </div>
-                                <div class="flex justify-between items-center p-3 match-card rounded shadow-sm">
+                                <div class="flex justify-between items-center p-2 bg-gray-50 rounded border">
                                     <span>Scarlets vs Munster</span>
                                     <span class="text-sm text-gray-500">17:30</span>
                                 </div>
-                                <div class="flex justify-between items-center p-3 match-card rounded shadow-sm">
+                                <div class="flex justify-between items-center p-2 bg-gray-50 rounded border">
                                     <span>Cardiff Rugby vs Lions</span>
                                     <span class="text-sm text-gray-500">19:45</span>
                                 </div>
-                                <div class="flex justify-between items-center p-3 match-card rounded shadow-sm">
+                                <div class="flex justify-between items-center p-2 bg-gray-50 rounded border">
                                     <span>Connacht vs Benetton Rugby</span>
                                     <span class="text-sm text-gray-500">19:45</span>
                                 </div>
@@ -378,7 +298,7 @@
                         <p class="text-blue-800">Selected: <span id="selectedTeamName" class="font-semibold"></span></p>
                     </div>
                     
-                    <button id="confirmPick" class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 font-medium disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors shadow-lg" disabled>Confirm Pick</button>
+                    <button id="confirmPick" class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 font-medium disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>Confirm Pick</button>
                 </div>
 
                 <!-- All Fixtures Section -->
@@ -388,6 +308,7 @@
                         <div class="flex items-center space-x-2">
                             <label class="text-sm text-gray-600">Round:</label>
                             <select id="roundSelector" class="border border-gray-300 rounded px-3 py-1 text-sm">
+                                <option value="all">All Rounds</option>
                                 <option value="1">Round 1</option>
                                 <option value="2">Round 2</option>
                                 <option value="3">Round 3</option>
@@ -413,25 +334,14 @@
                         <!-- Will be populated dynamically -->
                     </div>
                 </div>
-
-                <!-- Upcoming Fixtures Section -->
-                <div id="upcomingSection" class="hidden">
-                    <div class="mb-4">
-                        <h3 class="text-xl font-semibold text-gray-800 mb-2">Upcoming Fixtures</h3>
-                        <p class="text-gray-600">Preview of future rounds and their activation dates</p>
-                    </div>
-                    <div id="upcomingContent">
-                        <!-- Will be populated dynamically -->
-                    </div>
-                </div>
             </div>
 
             <!-- Pick it! Game Interface -->
-            <div id="pickItInterface" class="hidden pickit-interface rounded-xl card-shadow p-6 mb-6">
+            <div id="pickItInterface" class="hidden bg-white rounded-xl card-shadow p-6 mb-6">
                 <div class="flex space-x-1 mb-6">
-                    <button id="pickItCurrentTab" class="px-4 py-2 pickit-gradient text-white rounded-lg font-medium shadow-lg">Make Picks</button>
-                    <button id="pickItLeaderboardTab" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors">Leaderboard</button>
-                    <button id="pickItFixturesTab" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors">All Fixtures</button>
+                    <button id="pickItCurrentTab" class="px-4 py-2 bg-green-600 text-white rounded-lg font-medium">Make Picks</button>
+                    <button id="pickItLeaderboardTab" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium">Leaderboard</button>
+                    <button id="pickItFixturesTab" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium">All Fixtures</button>
                 </div>
 
                 <!-- Pick it! Current Round -->
@@ -454,7 +364,7 @@
                         </div>
                     </div>
                     
-                    <button id="savePickItPicks" class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 font-medium disabled:bg-gray-400 disabled:cursor-not-allowed transition-colors shadow-lg" disabled>Save All Picks</button>
+                    <button id="savePickItPicks" class="w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 font-medium disabled:bg-gray-400 disabled:cursor-not-allowed" disabled>Save All Picks</button>
                 </div>
 
                 <!-- Pick it! Leaderboard -->
@@ -476,6 +386,7 @@
                         <div class="flex items-center space-x-2">
                             <label class="text-sm text-gray-600">Round:</label>
                             <select id="pickItRoundSelector" class="border border-gray-300 rounded px-3 py-1 text-sm">
+                                <option value="all">All Rounds</option>
                                 <option value="1">Round 1</option>
                                 <option value="2">Round 2</option>
                                 <option value="3">Round 3</option>
@@ -504,10 +415,10 @@
             </div>
 
             <!-- Players List -->
-            <div class="glass-effect rounded-xl card-shadow p-6 mb-6">
+            <div class="bg-white rounded-xl card-shadow p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="text-xl font-semibold text-gray-800">Players</h3>
-                    <button id="toggleEliminated" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 hidden transition-colors">Show Eliminated</button>
+                    <button id="toggleEliminated" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 hidden">Show Eliminated</button>
                 </div>
                 
                 <div id="playersList" class="space-y-2">
@@ -515,19 +426,11 @@
                 </div>
             </div>
 
-            <!-- Round Picks Status (LMS Only) -->
-            <div id="lmsPicksStatus" class="glass-effect rounded-xl card-shadow p-6 mt-6">
+            <!-- Round Picks Status -->
+            <div class="bg-white rounded-xl card-shadow p-6 mt-6">
                 <h3 class="text-xl font-semibold text-gray-800 mb-4">Round <span id="picksRoundNumber">1</span> Picks Status</h3>
                 <div id="picksStatusList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                     <!-- Picks status will be populated here -->
-                </div>
-            </div>
-
-            <!-- Pick it! Round Results -->
-            <div id="pickItRoundResults" class="hidden glass-effect rounded-xl card-shadow p-6 mt-6">
-                <h3 class="text-xl font-semibold text-gray-800 mb-4">Round <span id="pickItResultsRoundNumber">1</span> Results</h3>
-                <div id="pickItResultsList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-                    <!-- Pick it results will be populated here -->
                 </div>
             </div>
         </div>
@@ -597,17 +500,25 @@
                             
                             <div class="mb-4">
                                 <label class="block text-gray-700 text-sm font-medium mb-2">Profile Picture</label>
-                                <div class="flex items-center space-x-4 mb-3">
-                                    <div id="currentProfilePic" class="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-2xl">
-                                        🏉
+                                
+                                <div class="mb-4 p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 transition-colors">
+                                    <div class="text-center">
+                                        <div class="mb-2">
+                                            <svg class="mx-auto h-8 w-8 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                                            </svg>
+                                        </div>
+                                        <label for="settingsCustomProfilePic" class="cursor-pointer">
+                                            <span class="text-sm text-blue-600 hover:text-blue-500 font-medium">Upload your picture</span>
+                                            <input id="settingsCustomProfilePic" type="file" accept="image/*" class="hidden">
+                                        </label>
+                                        <p class="text-xs text-gray-500 mt-1">JPG, PNG, GIF up to 2MB</p>
                                     </div>
-                                    <div>
-                                        <input type="file" id="profilePicInput" accept="image/*" class="hidden">
-                                        <button type="button" id="uploadPicBtn" class="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600">Upload Picture</button>
-                                        <button type="button" id="removePicBtn" class="bg-red-500 text-white px-3 py-1 rounded text-sm hover:bg-red-600 ml-2 hidden">Remove</button>
+                                    <div id="settingsCustomPicPreview" class="hidden mt-3 text-center">
+                                        <img id="settingsCustomPicImage" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-blue-500" alt="Custom profile picture">
+                                        <button type="button" id="settingsRemoveCustomPic" class="mt-2 text-xs text-red-600 hover:text-red-800">Remove</button>
                                     </div>
                                 </div>
-                                <p class="text-xs text-gray-500">Max file size: 5MB. Supported formats: JPG, PNG, GIF</p>
                             </div>
                             
                             <div class="mb-6">
@@ -890,10 +801,108 @@
         let lastReadMessageId = null;
         let unreadCount = 0;
 
-        // Round fixtures data with activation dates
+        // Deadline management
+        function calculatePickingStatus() {
+            const now = new Date();
+            const roundData = roundFixtures[gameData.currentRound];
+            
+            if (!roundData || !roundData.matches || roundData.matches.length === 0) {
+                return { isOpen: false, message: 'No fixtures available', deadline: null };
+            }
+            
+            // Find the earliest match in the round
+            let earliestMatch = null;
+            let earliestTime = null;
+            
+            roundData.matches.forEach(match => {
+                let matchDate;
+                if (match.day.includes('26th')) {
+                    matchDate = new Date('2025-09-26T' + match.time);
+                } else if (match.day.includes('27th')) {
+                    matchDate = new Date('2025-09-27T' + match.time);
+                } else {
+                    // Handle other dates - for now use a default
+                    matchDate = new Date('2025-09-26T' + match.time);
+                }
+                
+                if (!earliestTime || matchDate < earliestTime) {
+                    earliestTime = matchDate;
+                    earliestMatch = match;
+                }
+            });
+            
+            if (!earliestTime) {
+                return { isOpen: false, message: 'No valid match times', deadline: null };
+            }
+            
+            // Deadline is 30 minutes before the earliest match
+            const deadline = new Date(earliestTime.getTime() - (30 * 60 * 1000));
+            
+            // Round opens on Monday at midnight (start of the week)
+            const roundStartDate = new Date(deadline);
+            roundStartDate.setDate(roundStartDate.getDate() - 4); // Go back to Monday
+            roundStartDate.setHours(0, 0, 0, 0);
+            
+            const isOpen = now >= roundStartDate && now < deadline;
+            
+            let message = '';
+            let timeUntil = '';
+            
+            if (now < roundStartDate) {
+                const timeToOpen = roundStartDate.getTime() - now.getTime();
+                const days = Math.floor(timeToOpen / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((timeToOpen % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                message = `🔒 Picking opens in ${days}d ${hours}h`;
+            } else if (isOpen) {
+                const timeToClose = deadline.getTime() - now.getTime();
+                const hours = Math.floor(timeToClose / (1000 * 60 * 60));
+                const minutes = Math.floor((timeToClose % (1000 * 60 * 60)) / (1000 * 60));
+                message = `🟢 Picking is OPEN`;
+                timeUntil = `Closes in ${hours}h ${minutes}m`;
+            } else {
+                message = `🔒 Picking is CLOSED`;
+                timeUntil = 'Round in progress';
+            }
+            
+            return {
+                isOpen: isOpen,
+                message: message,
+                timeUntil: timeUntil,
+                deadline: deadline,
+                roundStart: roundStartDate
+            };
+        }
+
+        // Email verification state
+        let verificationState = {
+            email: null,
+            code: null,
+            expiresAt: null,
+            attempts: 0,
+            maxAttempts: 3,
+            timer: null
+        };
+
+        // Registration state
+        let registrationData = {
+            email: '',
+            displayName: '',
+            profilePic: null,
+            isCustomPic: false,
+            favoriteTeam: ''
+        };
+
+        // Helper function to check if match is live
+        function isMatchLive(match) {
+            const now = new Date();
+            const kickoffTime = new Date(`2025-09-${match.day.includes('26th') ? '26' : '27'} ${match.time}`);
+            const endTime = new Date(kickoffTime.getTime() + (120 * 60 * 1000)); // 120 minutes after kickoff
+            return now >= kickoffTime && now <= endTime;
+        }
+
+        // Round fixtures
         const roundFixtures = {
             1: {
-                activationDate: new Date('2025-09-22T00:00:00'), // Monday before round 1
                 teams: ['Stormers', 'Leinster', 'Glasgow Warriors', 'Sharks', 'Ulster', 'Dragons', 'Bulls', 'Ospreys', 'Zebre', 'Edinburgh', 'Scarlets', 'Munster', 'Cardiff Rugby', 'Lions', 'Connacht', 'Benetton Rugby'],
                 matches: [
                     { id: 'r1g1', home: 'Stormers', away: 'Leinster', time: '18:00', day: 'Friday 26th September' },
@@ -907,7 +916,6 @@
                 ]
             },
             2: {
-                activationDate: new Date('2025-09-29T00:00:00'), // Monday before round 2
                 teams: ['Stormers', 'Ospreys', 'Dragons', 'Sharks', 'Edinburgh', 'Ulster', 'Connacht', 'Scarlets', 'Benetton Rugby', 'Glasgow Warriors', 'Bulls', 'Leinster', 'Munster', 'Cardiff Rugby', 'Zebre', 'Lions'],
                 matches: [
                     { id: 'r2g1', home: 'Stormers', away: 'Ospreys', time: '18:00', day: 'Friday 3rd October' },
@@ -921,7 +929,6 @@
                 ]
             },
             3: {
-                activationDate: new Date('2025-10-06T00:00:00'), // Monday before round 3
                 teams: ['Munster', 'Edinburgh', 'Scarlets', 'Stormers', 'Benetton Rugby', 'Lions', 'Ospreys', 'Zebre', 'Glasgow Warriors', 'Dragons', 'Leinster', 'Sharks', 'Cardiff Rugby', 'Connacht', 'Ulster', 'Bulls'],
                 matches: [
                     { id: 'r3g1', home: 'Munster', away: 'Edinburgh', time: '19:45', day: 'Friday 10th October' },
@@ -935,7 +942,6 @@
                 ]
             },
             4: {
-                activationDate: new Date('2025-10-13T00:00:00'), // Monday before round 4
                 teams: ['Connacht', 'Bulls', 'Dragons', 'Cardiff Rugby', 'Edinburgh', 'Benetton Rugby', 'Lions', 'Scarlets', 'Sharks', 'Ulster', 'Leinster', 'Munster', 'Ospreys', 'Glasgow Warriors', 'Zebre', 'Stormers'],
                 matches: [
                     { id: 'r4g1', home: 'Connacht', away: 'Bulls', time: '19:45', day: 'Friday 17th October' },
@@ -949,7 +955,6 @@
                 ]
             },
             5: {
-                activationDate: new Date('2025-10-20T00:00:00'), // Monday before round 5
                 teams: ['Glasgow Warriors', 'Bulls', 'Lions', 'Ulster', 'Sharks', 'Scarlets', 'Benetton Rugby', 'Stormers', 'Dragons', 'Ospreys', 'Leinster', 'Zebre', 'Cardiff Rugby', 'Edinburgh', 'Munster', 'Connacht'],
                 matches: [
                     { id: 'r5g1', home: 'Glasgow Warriors', away: 'Bulls', time: '19:45', day: 'Friday 24th October' },
@@ -963,7 +968,6 @@
                 ]
             },
             6: {
-                activationDate: new Date('2025-11-24T00:00:00'), // Monday before round 6
                 teams: ['Dragons', 'Leinster', 'Ulster', 'Benetton Rugby', 'Bulls', 'Lions', 'Zebre', 'Cardiff Rugby', 'Edinburgh', 'Ospreys', 'Munster', 'Stormers', 'Connacht', 'Sharks', 'Scarlets', 'Glasgow Warriors'],
                 matches: [
                     { id: 'r6g1', home: 'Dragons', away: 'Leinster', time: '19:45', day: 'Friday 28th November' },
@@ -977,7 +981,6 @@
                 ]
             },
             7: {
-                activationDate: new Date('2025-12-15T00:00:00'), // Monday before round 7
                 teams: ['Cardiff Rugby', 'Scarlets', 'Leinster', 'Ulster', 'Stormers', 'Lions', 'Benetton Rugby', 'Zebre', 'Glasgow Warriors', 'Edinburgh', 'Sharks', 'Bulls', 'Ospreys', 'Munster', 'Dragons', 'Connacht'],
                 matches: [
                     { id: 'r7g1', home: 'Cardiff Rugby', away: 'Scarlets', time: '19:45', day: 'Friday 19th December' },
@@ -991,7 +994,6 @@
                 ]
             },
             8: {
-                activationDate: new Date('2025-12-22T00:00:00'), // Monday before round 8
                 teams: ['Bulls', 'Stormers', 'Lions', 'Sharks', 'Cardiff Rugby', 'Dragons', 'Scarlets', 'Ospreys', 'Zebre', 'Benetton Rugby', 'Edinburgh', 'Glasgow Warriors', 'Connacht', 'Ulster', 'Munster', 'Leinster'],
                 matches: [
                     { id: 'r8g1', home: 'Bulls', away: 'Stormers', time: '00:00', day: 'Friday 26th December' },
@@ -1005,7 +1007,6 @@
                 ]
             },
             9: {
-                activationDate: new Date('2025-12-29T00:00:00'), // Monday before round 9
                 teams: ['Dragons', 'Scarlets', 'Ospreys', 'Cardiff Rugby', 'Ulster', 'Munster', 'Sharks', 'Lions', 'Stormers', 'Bulls', 'Benetton Rugby', 'Edinburgh', 'Leinster', 'Connacht', 'Glasgow Warriors', 'Zebre'],
                 matches: [
                     { id: 'r9g1', home: 'Dragons', away: 'Scarlets', time: '15:00', day: 'Thursday 1st January' },
@@ -1019,7 +1020,6 @@
                 ]
             },
             10: {
-                activationDate: new Date('2026-01-19T00:00:00'), // Monday before round 10
                 teams: ['Edinburgh', 'Bulls', 'Munster', 'Dragons', 'Ospreys', 'Lions', 'Scarlets', 'Ulster', 'Connacht', 'Leinster', 'Stormers', 'Sharks', 'Cardiff Rugby', 'Benetton Rugby', 'Zebre', 'Glasgow Warriors'],
                 matches: [
                     { id: 'r10g1', home: 'Edinburgh', away: 'Bulls', time: '19:45', day: 'Friday 23rd January' },
@@ -1033,7 +1033,6 @@
                 ]
             },
             11: {
-                activationDate: new Date('2026-01-26T00:00:00'), // Monday before round 11
                 teams: ['Benetton Rugby', 'Scarlets', 'Glasgow Warriors', 'Munster', 'Lions', 'Bulls', 'Sharks', 'Stormers', 'Zebre', 'Connacht', 'Leinster', 'Edinburgh', 'Ospreys', 'Dragons', 'Ulster', 'Cardiff Rugby'],
                 matches: [
                     { id: 'r11g1', home: 'Benetton Rugby', away: 'Scarlets', time: '19:45', day: 'Friday 30th January' },
@@ -1047,7 +1046,6 @@
                 ]
             },
             12: {
-                activationDate: new Date('2026-02-23T00:00:00'), // Monday before round 12
                 teams: ['Cardiff Rugby', 'Leinster', 'Edinburgh', 'Scarlets', 'Lions', 'Stormers', 'Bulls', 'Sharks', 'Connacht', 'Glasgow Warriors', 'Dragons', 'Benetton Rugby', 'Munster', 'Zebre', 'Ospreys', 'Ulster'],
                 matches: [
                     { id: 'r12g1', home: 'Cardiff Rugby', away: 'Leinster', time: '19:45', day: 'Friday 27th February' },
@@ -1061,7 +1059,6 @@
                 ]
             },
             13: {
-                activationDate: new Date('2026-03-16T00:00:00'), // Monday before round 13
                 teams: ['Bulls', 'Cardiff Rugby', 'Scarlets', 'Zebre', 'Ulster', 'Connacht', 'Lions', 'Edinburgh', 'Benetton Rugby', 'Ospreys', 'Sharks', 'Munster', 'Glasgow Warriors', 'Leinster', 'Stormers', 'Dragons'],
                 matches: [
                     { id: 'r13g1', home: 'Bulls', away: 'Cardiff Rugby', time: '17:00', day: 'Friday 20th March' },
@@ -1075,7 +1072,6 @@
                 ]
             },
             14: {
-                activationDate: new Date('2026-03-23T00:00:00'), // Monday before round 14
                 teams: ['Sharks', 'Cardiff Rugby', 'Glasgow Warriors', 'Benetton Rugby', 'Bulls', 'Munster', 'Connacht', 'Ospreys', 'Lions', 'Dragons', 'Stormers', 'Edinburgh', 'Leinster', 'Scarlets', 'Zebre', 'Ulster'],
                 matches: [
                     { id: 'r14g1', home: 'Sharks', away: 'Cardiff Rugby', time: '17:00', day: 'Friday 27th March' },
@@ -1087,8 +1083,49 @@
                     { id: 'r14g7', home: 'Leinster', away: 'Scarlets', time: '17:30', day: 'Saturday 28th March' },
                     { id: 'r14g8', home: 'Zebre', away: 'Ulster', time: '19:45', day: 'Saturday 28th March' }
                 ]
+            },
+            15: {
+                teams: ['Dragons', 'Bulls', 'Edinburgh', 'Zebre', 'Ulster', 'Leinster', 'Lions', 'Glasgow Warriors', 'Stormers', 'Connacht', 'Scarlets', 'Cardiff Rugby', 'Benetton Rugby', 'Munster', 'Ospreys', 'Sharks'],
+                matches: [
+                    { id: 'r15g1', home: 'Dragons', away: 'Bulls', time: '19:45', day: 'Friday 17th April' },
+                    { id: 'r15g2', home: 'Edinburgh', away: 'Zebre', time: '19:45', day: 'Friday 17th April' },
+                    { id: 'r15g3', home: 'Ulster', away: 'Leinster', time: '19:45', day: 'Friday 17th April' },
+                    { id: 'r15g4', home: 'Lions', away: 'Glasgow Warriors', time: '14:45', day: 'Saturday 18th April' },
+                    { id: 'r15g5', home: 'Stormers', away: 'Connacht', time: '17:15', day: 'Saturday 18th April' },
+                    { id: 'r15g6', home: 'Scarlets', away: 'Cardiff Rugby', time: '17:30', day: 'Saturday 18th April' },
+                    { id: 'r15g7', home: 'Benetton Rugby', away: 'Munster', time: '19:45', day: 'Saturday 18th April' },
+                    { id: 'r15g8', home: 'Ospreys', away: 'Sharks', time: '19:45', day: 'Saturday 18th April' }
+                ]
+            },
+            16: {
+                teams: ['Cardiff Rugby', 'Ospreys', 'Edinburgh', 'Sharks', 'Zebre', 'Dragons', 'Lions', 'Connacht', 'Munster', 'Ulster', 'Stormers', 'Glasgow Warriors', 'Benetton Rugby', 'Leinster', 'Scarlets', 'Bulls'],
+                matches: [
+                    { id: 'r16g1', home: 'Cardiff Rugby', away: 'Ospreys', time: '19:45', day: 'Friday 24th April' },
+                    { id: 'r16g2', home: 'Edinburgh', away: 'Sharks', time: '19:45', day: 'Friday 24th April' },
+                    { id: 'r16g3', home: 'Zebre', away: 'Dragons', time: '19:45', day: 'Friday 24th April' },
+                    { id: 'r16g4', home: 'Lions', away: 'Connacht', time: '15:00', day: 'Saturday 25th April' },
+                    { id: 'r16g5', home: 'Munster', away: 'Ulster', time: '17:30', day: 'Saturday 25th April' },
+                    { id: 'r16g6', home: 'Stormers', away: 'Glasgow Warriors', time: '17:30', day: 'Saturday 25th April' },
+                    { id: 'r16g7', home: 'Benetton Rugby', away: 'Leinster', time: '19:45', day: 'Saturday 25th April' },
+                    { id: 'r16g8', home: 'Scarlets', away: 'Bulls', time: '19:45', day: 'Saturday 25th April' }
+                ]
+            },
+            17: {
+                teams: ['TBD', 'TBD', 'TBD', 'TBD'],
+                matches: [
+                    { id: 'sf1', home: 'TBD', away: 'TBD', time: 'TBD', day: 'Friday 6th June' },
+                    { id: 'sf2', home: 'TBD', away: 'TBD', time: 'TBD', day: 'Friday 6th June' }
+                ]
+            },
+            18: {
+                teams: ['TBD', 'TBD'],
+                matches: [
+                    { id: 'final', home: 'TBD', away: 'TBD', time: 'TBD', day: 'Friday 20th June' }
+                ]
             }
         };
+
+        let showEliminated = false;
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
@@ -1106,63 +1143,53 @@
             // Auth form
             document.getElementById('authForm').addEventListener('submit', handleAuth);
             
-            // Password reset
-            document.getElementById('forgotPasswordBtn').addEventListener('click', showPasswordReset);
-            document.getElementById('resetPasswordBtn').addEventListener('click', handlePasswordReset);
-            document.getElementById('cancelResetBtn').addEventListener('click', hidePasswordReset);
-            
             // Game mode toggles
             document.getElementById('lmsToggle').addEventListener('click', () => switchGameMode('lms'));
             document.getElementById('pickItToggle').addEventListener('click', () => switchGameMode('pickit'));
             
-            // LMS Interface tabs
-            document.getElementById('currentRoundTab').addEventListener('click', () => switchLMSTab('current'));
-            document.getElementById('fixturesTab').addEventListener('click', () => switchLMSTab('fixtures'));
-            document.getElementById('upcomingTab').addEventListener('click', () => switchLMSTab('upcoming'));
+            // LMS Navigation tabs
+            document.getElementById('currentRoundTab').addEventListener('click', () => switchFixtureTab('current'));
+            document.getElementById('fixturesTab').addEventListener('click', () => switchFixtureTab('all'));
             
-            // Pick it! Interface tabs
+            // Pick it! Navigation tabs
             document.getElementById('pickItCurrentTab').addEventListener('click', () => switchPickItTab('current'));
             document.getElementById('pickItLeaderboardTab').addEventListener('click', () => switchPickItTab('leaderboard'));
             document.getElementById('pickItFixturesTab').addEventListener('click', () => switchPickItTab('fixtures'));
+            
+            // Round selectors
+            document.getElementById('roundSelector').addEventListener('change', updateAllFixtures);
+            document.getElementById('pickItRoundSelector').addEventListener('change', updatePickItAllFixtures);
             
             // Confirm pick
             document.getElementById('confirmPick').addEventListener('click', confirmPick);
             document.getElementById('savePickItPicks').addEventListener('click', savePickItPicks);
             
-            // Settings and profile
-            document.getElementById('settingsBtn').addEventListener('click', openSettings);
-            document.getElementById('closeSettingsModal').addEventListener('click', closeSettings);
-            document.getElementById('settingsForm').addEventListener('submit', saveSettings);
-            document.getElementById('cancelSettings').addEventListener('click', closeSettings);
-            document.getElementById('uploadPicBtn').addEventListener('click', () => document.getElementById('profilePicInput').click());
-            document.getElementById('profilePicInput').addEventListener('change', handleProfilePicUpload);
-            document.getElementById('removePicBtn').addEventListener('click', removeProfilePic);
+            // Toggle eliminated
+            document.getElementById('toggleEliminated').addEventListener('click', toggleEliminatedPlayers);
             
-            // Admin panel
-            document.getElementById('adminScores').addEventListener('click', openAdminPanel);
-            document.getElementById('closeAdminModal').addEventListener('click', closeAdminPanel);
+            // View picks modal
+            document.getElementById('viewPicksCard').addEventListener('click', openPicksModal);
+            document.getElementById('closePicksModal').addEventListener('click', closePicksModal);
+            
+            // Player list modals
+            document.getElementById('standingPlayersCard').addEventListener('click', () => openPlayerListModal('standing'));
+            document.getElementById('eliminatedPlayersCard').addEventListener('click', () => openPlayerListModal('eliminated'));
+            document.getElementById('leaderboardCard').addEventListener('click', openLeaderboardModal);
+            document.getElementById('closePlayerListModal').addEventListener('click', closePlayerListModal);
+            
+            // Admin modal
+            document.getElementById('adminScores').addEventListener('click', openAdminModal);
+            document.getElementById('closeAdminModal').addEventListener('click', closeAdminModal);
+            
+            // Admin tabs
             document.getElementById('adminScoresTab').addEventListener('click', () => switchAdminTab('scores'));
             document.getElementById('adminPlayersTab').addEventListener('click', () => switchAdminTab('players'));
+            
+            // Admin round selector
+            document.getElementById('adminRoundSelector').addEventListener('change', populateAdminScores);
+            
+            // Admin tabs
             document.getElementById('adminPlayoffsTab').addEventListener('click', () => switchAdminTab('playoffs'));
-            
-            // Round selectors
-            document.getElementById('roundSelector').addEventListener('change', updateFixturesDisplay);
-            document.getElementById('pickItRoundSelector').addEventListener('change', updatePickItFixturesDisplay);
-            document.getElementById('adminRoundSelector').addEventListener('change', updateAdminScoresDisplay);
-            
-            // Stats cards
-            document.getElementById('standingPlayersCard').addEventListener('click', () => showPlayerList('standing'));
-            document.getElementById('eliminatedPlayersCard').addEventListener('click', () => showPlayerList('eliminated'));
-            document.getElementById('viewPicksCard').addEventListener('click', showPicksModal);
-            document.getElementById('leaderboardCard').addEventListener('click', () => switchPickItTab('leaderboard'));
-            
-            // Modal close buttons
-            document.getElementById('closePicksModal').addEventListener('click', closePicksModal);
-            document.getElementById('closePlayerListModal').addEventListener('click', closePlayerListModal);
-            document.getElementById('closeProfileModal').addEventListener('click', closeProfileModal);
-            
-            // Profile picture click
-            document.getElementById('userProfilePic').addEventListener('click', openSettings);
             
             // Chat functionality
             document.getElementById('chatToggleBtn').addEventListener('click', toggleChat);
@@ -1173,8 +1200,28 @@
             // Logout
             document.getElementById('logoutBtn').addEventListener('click', logout);
             
-            // Toggle eliminated players
-            document.getElementById('toggleEliminated').addEventListener('click', toggleEliminatedPlayers);
+            // Settings
+            document.getElementById('settingsBtn').addEventListener('click', openSettingsModal);
+            document.getElementById('closeSettingsModal').addEventListener('click', closeSettingsModal);
+            document.getElementById('settingsForm').addEventListener('submit', saveSettings);
+            document.getElementById('cancelSettings').addEventListener('click', closeSettingsModal);
+            
+            // Profile modal
+            document.getElementById('closeProfileModal').addEventListener('click', closeProfileModal);
+            
+            // Password reset
+            document.getElementById('forgotPasswordBtn').addEventListener('click', showPasswordReset);
+            document.getElementById('resetPasswordBtn').addEventListener('click', resetPassword);
+            document.getElementById('cancelResetBtn').addEventListener('click', hidePasswordReset);
+            
+            // Email verification
+            document.getElementById('resendCode').addEventListener('click', resendVerificationCode);
+            
+            // Custom profile picture uploads
+            document.getElementById('customProfilePic').addEventListener('change', handleCustomProfilePic);
+            document.getElementById('removeCustomPic').addEventListener('click', removeCustomProfilePic);
+            document.getElementById('settingsCustomProfilePic').addEventListener('change', handleSettingsCustomProfilePic);
+            document.getElementById('settingsRemoveCustomPic').addEventListener('click', removeSettingsCustomProfilePic);
         }
 
         function loadGameData() {
@@ -1182,41 +1229,45 @@
             if (saved) {
                 gameData = { ...gameData, ...JSON.parse(saved) };
             }
-            
-            // Check for auto-login
-            const savedEmail = localStorage.getItem('currentUserEmail');
-            if (savedEmail) {
-                const player = gameData.players.find(p => p.email === savedEmail);
-                if (player) {
-                    currentUser = player;
-                    document.getElementById('authSection').classList.add('hidden');
-                    document.getElementById('mainApp').classList.remove('hidden');
-                    document.getElementById('userName').textContent = player.displayName;
-                    
-                    if (savedEmail === 'sacksjordan@gmail.com') {
-                        document.getElementById('adminScores').classList.remove('hidden');
-                    }
-                }
-            }
         }
 
         function saveGameData() {
             localStorage.setItem('urcGameData', JSON.stringify(gameData));
         }
 
+        function resetVerificationState() {
+            // Reset verification state when switching tabs
+            verificationState = {
+                email: null,
+                code: null,
+                expiresAt: null,
+                attempts: 0,
+                maxAttempts: 3,
+                timer: null
+            };
+        }
+
         function switchTab(tab) {
             const loginTab = document.getElementById('loginTab');
             const registerTab = document.getElementById('registerTab');
             const nameField = document.getElementById('nameField');
+            const profilePicField = document.getElementById('profilePicField');
             const favoriteTeamField = document.getElementById('favoriteTeamField');
             const passwordHelp = document.getElementById('passwordHelp');
             const authButton = document.getElementById('authButton');
             const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+            const passwordResetForm = document.getElementById('passwordResetForm');
+            
+            resetVerificationState();
+            
+            // Hide password reset form when switching tabs
+            passwordResetForm.classList.add('hidden');
             
             if (tab === 'login') {
                 loginTab.className = 'flex-1 py-2 px-4 bg-blue-600 text-white rounded-l-lg font-medium';
                 registerTab.className = 'flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-r-lg font-medium';
                 nameField.classList.add('hidden');
+                profilePicField.classList.add('hidden');
                 favoriteTeamField.classList.add('hidden');
                 passwordHelp.classList.add('hidden');
                 forgotPasswordLink.classList.remove('hidden');
@@ -1225,6 +1276,7 @@
                 loginTab.className = 'flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-l-lg font-medium';
                 registerTab.className = 'flex-1 py-2 px-4 bg-blue-600 text-white rounded-r-lg font-medium';
                 nameField.classList.remove('hidden');
+                profilePicField.classList.remove('hidden');
                 favoriteTeamField.classList.remove('hidden');
                 passwordHelp.classList.remove('hidden');
                 forgotPasswordLink.classList.add('hidden');
@@ -1246,20 +1298,39 @@
             }
         }
 
+        // Enhanced profanity filter function
+        function containsProfanity(text) {
+            if (!text) return false;
+            const profanityList = [
+                'fuck', 'shit', 'damn', 'bitch', 'asshole', 'bastard', 'cunt', 'dick', 'piss', 'cock', 'pussy', 'whore', 'slut', 'fag', 'nigger', 'retard',
+                'f*ck', 'sh*t', 'b*tch', 'a**hole', 'c*nt', 'd*ck', 'p*ss', 'wh*re', 'sl*t',
+                'fck', 'sht', 'btch', 'cnt', 'dck', 'pss', 'whr', 'slt',
+                'fucker', 'fucking', 'fucked', 'shitty', 'shitting', 'bitchy', 'dickhead', 'pissed',
+                'sex', 'porn', 'xxx', 'anal', 'oral', 'nude', 'naked', 'boobs', 'tits', 'ass',
+                'hate', 'kill', 'die', 'death', 'murder', 'suicide', 'nazi', 'hitler',
+                'stupid', 'idiot', 'moron', 'dumb', 'loser', 'gay', 'homo', 'lesbian'
+            ];
+            const lowerText = text.toLowerCase().replace(/[^a-z0-9]/g, '');
+            return profanityList.some(word => {
+                const cleanWord = word.replace(/[^a-z0-9]/g, '');
+                return lowerText.includes(cleanWord);
+            });
+        }
+
         function registerUser(email, password, displayName) {
             const existingPlayer = gameData.players.find(p => p.email === email);
             if (existingPlayer) {
-                alert('Email already registered! Please login instead.');
+                showNotification('Email already registered! Please login instead.', 'error');
                 return;
             }
             
             if (password.length < 6) {
-                alert('Password must be at least 6 characters long');
+                showNotification('Password must be at least 6 characters long', 'error');
                 return;
             }
             
-            if (!displayName || displayName.trim() === '') {
-                alert('Please enter a display name');
+            if (containsProfanity(displayName)) {
+                showNotification('Display name contains inappropriate language. Please choose a different name.', 'error');
                 return;
             }
             
@@ -1267,43 +1338,118 @@
                 id: Date.now(),
                 email: email,
                 password: password,
-                displayName: displayName.trim(),
-                favoriteTeam: document.getElementById('favoriteTeam').value || '',
-                profilePicture: null,
+                displayName: displayName || email.split('@')[0],
+                profilePic: registrationData.profilePic,
+                isCustomPic: registrationData.isCustomPic || false,
+                favoriteTeam: document.getElementById('favoriteTeam').value,
                 isEliminated: false,
                 usedTeams: [],
                 currentPick: null,
                 roundJoined: gameData.currentRound,
                 joinDate: new Date().toISOString(),
-                pickItPicks: {},
+                // Pick it! game data
+                pickItPicks: {}, // roundNum: {matchId: teamPicked}
                 pickItStats: {
                     totalPicks: 0,
                     correctPicks: 0,
-                    percentage: 0
+                    percentage: 0,
+                    weeklyMovement: 0,
+                    previousRank: null
                 }
             };
             
             gameData.players.push(newPlayer);
             saveGameData();
             
-            alert('Registration successful! You can now login and start playing.');
+            showNotification('Registration successful! You can now login and start playing.', 'success');
             
             switchTab('login');
             document.getElementById('email').value = '';
             document.getElementById('password').value = '';
             document.getElementById('displayName').value = '';
-            document.getElementById('favoriteTeam').value = '';
+        }
+
+
+
+        function handleCustomProfilePic(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            if (file.size > 2 * 1024 * 1024) {
+                showNotification('Image must be smaller than 2MB', 'error');
+                e.target.value = '';
+                return;
+            }
+            
+            if (!file.type.startsWith('image/')) {
+                showNotification('Please select an image file', 'error');
+                e.target.value = '';
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const imageData = event.target.result;
+                
+                document.getElementById('customPicImage').src = imageData;
+                document.getElementById('customPicPreview').classList.remove('hidden');
+                
+                registrationData.profilePic = imageData;
+                registrationData.isCustomPic = true;
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function removeCustomProfilePic() {
+            document.getElementById('customPicPreview').classList.add('hidden');
+            document.getElementById('customProfilePic').value = '';
+            registrationData.profilePic = null;
+            registrationData.isCustomPic = false;
+        }
+        
+        function handleSettingsCustomProfilePic(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            if (file.size > 2 * 1024 * 1024) {
+                showNotification('Image must be smaller than 2MB', 'error');
+                e.target.value = '';
+                return;
+            }
+            
+            if (!file.type.startsWith('image/')) {
+                showNotification('Please select an image file', 'error');
+                e.target.value = '';
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const imageData = event.target.result;
+                
+                document.getElementById('settingsCustomPicImage').src = imageData;
+                document.getElementById('settingsCustomPicPreview').classList.remove('hidden');
+                
+                window.tempCustomPic = imageData;
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function removeSettingsCustomProfilePic() {
+            document.getElementById('settingsCustomPicPreview').classList.add('hidden');
+            document.getElementById('settingsCustomProfilePic').value = '';
+            window.tempCustomPic = null;
         }
 
         function loginUser(email, password) {
             const player = gameData.players.find(p => p.email === email);
             if (!player) {
-                alert('Email not found. Please register first.');
+                showNotification('Email not found. Please register first.', 'error');
                 return;
             }
             
             if (player.password !== password) {
-                alert('Incorrect password. Please try again.');
+                showNotification('Incorrect password. Please try again.', 'error');
                 return;
             }
             
@@ -1313,55 +1459,24 @@
             document.getElementById('mainApp').classList.remove('hidden');
             document.getElementById('userName').textContent = player.displayName;
             
+            const userProfilePicElement = document.getElementById('userProfilePic');
+            if (player.isCustomPic && player.profilePic && player.profilePic.startsWith('data:')) {
+                userProfilePicElement.innerHTML = `<img src="${player.profilePic}" class="w-8 h-8 rounded-full object-cover border border-gray-300" alt="Profile">`;
+            } else {
+                userProfilePicElement.innerHTML = `<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMFCSXJWsbmkra95ltt9Z9LJiRuMOsIBluqwF-g4&usqp=CAE&s" class="w-8 h-8 rounded-full object-cover border border-gray-300" alt="Profile" onerror="this.src=''; this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="w-8 h-8 rounded-full bg-gray-300 border border-gray-400" style="display: none;"></div>`;
+            }
+            
             if (email === 'sacksjordan@gmail.com') {
                 document.getElementById('adminScores').classList.remove('hidden');
             } else {
                 document.getElementById('adminScores').classList.add('hidden');
             }
             
-            alert(`Welcome back, ${player.displayName}!`);
+            showNotification(`Welcome back, ${player.displayName}!`, 'success');
             updateUI();
         }
 
-        function switchGameMode(mode) {
-            currentGameMode = mode;
-            const lmsToggle = document.getElementById('lmsToggle');
-            const pickItToggle = document.getElementById('pickItToggle');
-            const lmsInterface = document.getElementById('lmsInterface');
-            const pickItInterface = document.getElementById('pickItInterface');
-            const lmsStats = document.getElementById('lmsStats');
-            const pickItStats = document.getElementById('pickItStats');
-            const lmsPicksStatus = document.getElementById('lmsPicksStatus');
-            const pickItRoundResults = document.getElementById('pickItRoundResults');
-            const gameTitle = document.getElementById('gameTitle');
-            const gameSlogan = document.getElementById('gameSlogan');
-            
-            if (mode === 'lms') {
-                lmsToggle.className = 'px-6 py-2 lms-gradient text-white rounded-lg font-medium transition-all shadow-lg';
-                pickItToggle.className = 'px-6 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium transition-all hover:bg-gray-200';
-                lmsInterface.classList.remove('hidden');
-                pickItInterface.classList.add('hidden');
-                lmsStats.classList.remove('hidden');
-                pickItStats.classList.add('hidden');
-                lmsPicksStatus.classList.remove('hidden');
-                pickItRoundResults.classList.add('hidden');
-                gameTitle.textContent = 'URC Last Man Standing';
-                gameSlogan.textContent = 'Pick a team each week - but you can only use each team once!';
-            } else {
-                lmsToggle.className = 'px-6 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium transition-all hover:bg-gray-200';
-                pickItToggle.className = 'px-6 py-2 pickit-gradient text-white rounded-lg font-medium transition-all shadow-lg';
-                lmsInterface.classList.add('hidden');
-                pickItInterface.classList.remove('hidden');
-                lmsStats.classList.add('hidden');
-                pickItStats.classList.remove('hidden');
-                lmsPicksStatus.classList.add('hidden');
-                pickItRoundResults.classList.remove('hidden');
-                gameTitle.textContent = 'URC Pick it!';
-                gameSlogan.textContent = 'Pick the winner of every match each round!';
-            }
-            
-            updateUI();
-        }
+
 
         function logout() {
             currentUser = null;
@@ -1373,101 +1488,22 @@
             document.getElementById('displayName').value = '';
         }
 
-        function updateGameStatus() {
-            // Update countdown and status
-            const now = new Date();
-            const deadline = gameData.roundDeadline;
-            const roundEnd = gameData.roundEnd;
+        function selectTeam(teamName) {
+            const status = calculatePickingStatus();
+            if (!status.isOpen || currentUser.isEliminated) return;
             
-            let statusMessage = '';
-            let countdown = '';
-            let statusClass = '';
-            
-            if (now < deadline) {
-                const timeLeft = deadline.getTime() - now.getTime();
-                const hours = Math.floor(timeLeft / (1000 * 60 * 60));
-                const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
-                
-                statusMessage = '🟢 Picking is OPEN';
-                countdown = `Closes in ${hours}h ${minutes}m`;
-                statusClass = 'bg-green-100 text-green-800';
-                gameData.pickingOpen = true;
-            } else if (now < roundEnd) {
-                statusMessage = '🔴 Picking is CLOSED';
-                countdown = 'Round in progress';
-                statusClass = 'bg-red-100 text-red-800';
-                gameData.pickingOpen = false;
-            } else {
-                statusMessage = '⏳ Round Complete';
-                countdown = 'Waiting for next round';
-                statusClass = 'bg-gray-100 text-gray-800';
-                gameData.pickingOpen = false;
+            const roundData = roundFixtures[gameData.currentRound];
+            const availableTeams = roundData ? roundData.teams : [];
+            if (!availableTeams.includes(teamName)) {
+                alert('This team is not playing in the current round!');
+                return;
             }
             
-            document.getElementById('statusMessage').textContent = statusMessage;
-            document.getElementById('countdown').textContent = countdown;
-            document.getElementById('roundStatusIndicator').className = `inline-flex items-center px-4 py-2 rounded-full text-sm font-medium shadow-lg ${statusClass}`;
-            document.getElementById('roundStatusIndicator').textContent = statusMessage;
-        }
-
-        function updateUI() {
-            if (!currentUser) return;
+            if (currentUser.usedTeams.includes(teamName)) {
+                alert('You have already used this team in a previous round!');
+                return;
+            }
             
-            updateGameStatus();
-            updateStats();
-            updateTeamButtons();
-            updatePlayersList();
-            updatePicksStatus();
-            
-            // Update round display
-            document.getElementById('currentRound').textContent = gameData.currentRound;
-            document.getElementById('picksRoundNumber').textContent = gameData.currentRound;
-        }
-
-        function updateStats() {
-            const standing = gameData.players.filter(p => !p.isEliminated).length;
-            const eliminated = gameData.players.filter(p => p.isEliminated).length;
-            const total = gameData.players.length;
-            
-            document.getElementById('playersStanding').textContent = standing;
-            document.getElementById('playersEliminated').textContent = eliminated;
-            document.getElementById('totalPlayers').textContent = total;
-        }
-
-        function updateTeamButtons() {
-            const roundData = roundFixtures[gameData.currentRound];
-            if (!roundData) return;
-            
-            const teamButtonsContainer = document.getElementById('teamButtons');
-            teamButtonsContainer.innerHTML = '';
-            
-            roundData.teams.forEach(team => {
-                const isUsed = currentUser.usedTeams.includes(team);
-                const isEliminated = currentUser.isEliminated;
-                const isPickingClosed = !gameData.pickingOpen;
-                
-                const button = document.createElement('button');
-                button.className = `team-btn p-3 border-2 rounded-lg font-medium transition-all ${
-                    isUsed || isEliminated || isPickingClosed
-                        ? 'border-gray-300 bg-gray-100 text-gray-500 cursor-not-allowed'
-                        : 'border-gray-200 bg-white text-gray-800 hover:border-blue-300 hover:bg-blue-50'
-                }`;
-                button.textContent = isUsed ? `${team} ✗` : team;
-                button.disabled = isUsed || isEliminated || isPickingClosed;
-                button.setAttribute('data-team', team);
-                
-                if (!button.disabled) {
-                    button.addEventListener('click', () => selectTeam(team));
-                }
-                
-                teamButtonsContainer.appendChild(button);
-            });
-        }
-
-        function selectTeam(teamName) {
-            if (currentUser.isEliminated || !gameData.pickingOpen) return;
-            
-            // Clear previous selection
             document.querySelectorAll('.team-btn').forEach(btn => {
                 if (!btn.disabled) {
                     btn.classList.remove('border-blue-500', 'bg-blue-100');
@@ -1475,14 +1511,12 @@
                 }
             });
             
-            // Highlight selected team
             const selectedBtn = document.querySelector(`[data-team="${teamName}"]`);
             if (selectedBtn && !selectedBtn.disabled) {
                 selectedBtn.classList.add('border-blue-500', 'bg-blue-100');
                 selectedBtn.classList.remove('border-gray-200');
             }
             
-            // Show selection
             document.getElementById('selectedTeam').classList.remove('hidden');
             document.getElementById('selectedTeamName').textContent = teamName;
             document.getElementById('confirmPick').disabled = false;
@@ -1491,421 +1525,1517 @@
         }
 
         function confirmPick() {
-            if (!currentUser.tempPick || currentUser.isEliminated || !gameData.pickingOpen) return;
+            if (!currentUser.tempPick) return;
             
             currentUser.currentPick = currentUser.tempPick;
+            currentUser.usedTeams.push(currentUser.tempPick);
             currentUser.tempPick = null;
-            
             saveGameData();
-            alert(`Pick confirmed: ${currentUser.currentPick}`);
-            
-            // Update UI
-            document.getElementById('selectedTeam').classList.add('hidden');
-            document.getElementById('confirmPick').disabled = true;
-            updatePicksStatus();
+            updateUI();
+            showNotification('Pick confirmed! Good luck!', 'success');
         }
 
-        function updatePlayersList() {
-            const playersListContainer = document.getElementById('playersList');
-            playersListContainer.innerHTML = '';
-            
-            gameData.players.forEach(player => {
-                const playerDiv = document.createElement('div');
-                playerDiv.className = `flex justify-between items-center p-3 bg-white rounded-lg border ${
-                    player.isEliminated ? 'border-red-200 bg-red-50' : 'border-gray-200'
-                }`;
-                
-                const statusIcon = player.isEliminated ? '❌' : '✅';
-                const statusText = player.isEliminated ? 'Eliminated' : 'Standing';
-                
-                playerDiv.innerHTML = `
-                    <div class="flex items-center space-x-3">
-                        <span class="text-lg">${statusIcon}</span>
-                        <span class="text-lg">🏉</span>
-                        <div>
-                            <div class="font-medium text-gray-800">${player.displayName}</div>
-                            <div class="text-sm text-gray-600">${statusText}</div>
-                        </div>
-                    </div>
-                    <div class="text-sm text-gray-500">
-                        Round ${player.roundJoined}
-                    </div>
-                `;
-                
-                playersListContainer.appendChild(playerDiv);
-            });
-        }
 
-        function updatePicksStatus() {
-            const picksStatusContainer = document.getElementById('picksStatusList');
-            const shouldBlurPicks = gameData.pickingOpen && currentUser.email !== 'sacksjordan@gmail.com';
-            const isAdmin = currentUser.email === 'sacksjordan@gmail.com';
-            
-            picksStatusContainer.innerHTML = '';
-            
-            if (shouldBlurPicks) {
-                picksStatusContainer.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 picks-blur-overlay';
-            } else if (isAdmin && gameData.pickingOpen) {
-                picksStatusContainer.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 admin-picks-visible';
-            } else {
-                picksStatusContainer.className = 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3';
-            }
-            
-            gameData.players.forEach(player => {
-                const statusDiv = document.createElement('div');
-                statusDiv.className = `p-3 bg-white rounded-lg border border-gray-200 ${shouldBlurPicks ? 'picks-blur' : ''}`;
-                
-                const hasPick = player.currentPick ? '✅' : '⏳';
-                let pickText;
-                
-                if (shouldBlurPicks) {
-                    pickText = player.currentPick ? 'Pick made' : 'No pick yet';
-                } else {
-                    pickText = player.currentPick || 'No pick yet';
-                }
-                
-                statusDiv.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <div class="flex items-center space-x-2">
-                            <span class="text-sm">🏉</span>
-                            <div class="font-medium text-gray-800">${player.displayName}</div>
-                        </div>
-                        <div class="text-lg">${hasPick}</div>
-                    </div>
-                    <div class="text-sm text-gray-600 mt-1">${pickText}</div>
-                `;
-                
-                picksStatusContainer.appendChild(statusDiv);
-            });
-        }
 
-        // Password Reset Functions
-        function showPasswordReset() {
-            document.getElementById('passwordResetForm').classList.remove('hidden');
-        }
-
-        function hidePasswordReset() {
-            document.getElementById('passwordResetForm').classList.add('hidden');
-            document.getElementById('resetEmail').value = '';
-            document.getElementById('resetDisplayName').value = '';
-            document.getElementById('newPassword').value = '';
-        }
-
-        function handlePasswordReset() {
-            const email = document.getElementById('resetEmail').value;
-            const displayName = document.getElementById('resetDisplayName').value;
-            const newPassword = document.getElementById('newPassword').value;
-            
-            if (!email || !displayName || !newPassword) {
-                alert('Please fill in all fields');
-                return;
-            }
-            
-            if (newPassword.length < 6) {
-                alert('New password must be at least 6 characters long');
-                return;
-            }
-            
-            const player = gameData.players.find(p => p.email === email && p.displayName === displayName);
-            if (!player) {
-                alert('No account found with that email and display name combination');
-                return;
-            }
-            
-            player.password = newPassword;
-            saveGameData();
-            alert('Password reset successful! You can now login with your new password.');
-            hidePasswordReset();
-        }
-
-        // Tab switching functions
-        function switchLMSTab(tab) {
-            const tabs = ['currentRoundTab', 'fixturesTab', 'upcomingTab'];
-            const sections = ['currentRoundSection', 'allFixturesSection', 'upcomingSection'];
-            
-            tabs.forEach(tabId => {
-                const element = document.getElementById(tabId);
-                if (tabId === tab + 'Tab') {
-                    element.className = 'px-4 py-2 lms-gradient text-white rounded-lg font-medium shadow-lg';
-                } else {
-                    element.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors';
-                }
-            });
-            
-            sections.forEach(sectionId => {
-                const element = document.getElementById(sectionId);
-                if (sectionId === tab + 'Section' || (tab === 'current' && sectionId === 'currentRoundSection') || (tab === 'fixtures' && sectionId === 'allFixturesSection') || (tab === 'upcoming' && sectionId === 'upcomingSection')) {
-                    element.classList.remove('hidden');
-                } else {
-                    element.classList.add('hidden');
-                }
-            });
-            
-            if (tab === 'fixtures') {
-                updateFixturesDisplay();
-            } else if (tab === 'upcoming') {
-                updateUpcomingDisplay();
-            }
-        }
-
-        function switchPickItTab(tab) {
-            const tabs = ['pickItCurrentTab', 'pickItLeaderboardTab', 'pickItFixturesTab'];
-            const sections = ['pickItCurrentSection', 'pickItLeaderboardSection', 'pickItAllFixturesSection'];
-            
-            tabs.forEach(tabId => {
-                const element = document.getElementById(tabId);
-                if (tabId === 'pickIt' + tab.charAt(0).toUpperCase() + tab.slice(1) + 'Tab') {
-                    element.className = 'px-4 py-2 pickit-gradient text-white rounded-lg font-medium shadow-lg';
-                } else {
-                    element.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium hover:bg-gray-300 transition-colors';
-                }
-            });
-            
-            sections.forEach(sectionId => {
-                const element = document.getElementById(sectionId);
-                element.classList.add('hidden');
-            });
+        function switchFixtureTab(tab) {
+            const currentTab = document.getElementById('currentRoundTab');
+            const fixturesTab = document.getElementById('fixturesTab');
+            const currentSection = document.getElementById('currentRoundSection');
+            const allSection = document.getElementById('allFixturesSection');
             
             if (tab === 'current') {
-                document.getElementById('pickItCurrentSection').classList.remove('hidden');
-                updatePickItMatches();
-            } else if (tab === 'leaderboard') {
-                document.getElementById('pickItLeaderboardSection').classList.remove('hidden');
-                updatePickItLeaderboard();
-            } else if (tab === 'fixtures') {
-                document.getElementById('pickItAllFixturesSection').classList.remove('hidden');
-                updatePickItFixturesDisplay();
-            }
-        }
-
-        function switchAdminTab(tab) {
-            const tabs = ['adminScoresTab', 'adminPlayersTab', 'adminPlayoffsTab'];
-            const sections = ['adminScoresSection', 'adminPlayersSection', 'adminPlayoffsSection'];
-            
-            tabs.forEach(tabId => {
-                const element = document.getElementById(tabId);
-                if (tabId === 'admin' + tab.charAt(0).toUpperCase() + tab.slice(1) + 'Tab') {
-                    element.className = 'px-4 py-2 bg-blue-600 text-white rounded-lg font-medium';
-                } else {
-                    element.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium';
-                }
-            });
-            
-            sections.forEach(sectionId => {
-                const element = document.getElementById(sectionId);
-                element.classList.add('hidden');
-            });
-            
-            if (tab === 'scores') {
-                document.getElementById('adminScoresSection').classList.remove('hidden');
-                updateAdminScoresDisplay();
-            } else if (tab === 'players') {
-                document.getElementById('adminPlayersSection').classList.remove('hidden');
-                updateAdminPlayersDisplay();
-            } else if (tab === 'playoffs') {
-                document.getElementById('adminPlayoffsSection').classList.remove('hidden');
-            }
-        }
-
-        // Settings functions
-        function openSettings() {
-            document.getElementById('settingsModal').classList.remove('hidden');
-            document.getElementById('settingsDisplayName').value = currentUser.displayName;
-            document.getElementById('settingsFavoriteTeam').value = currentUser.favoriteTeam || '';
-            
-            const currentPic = document.getElementById('currentProfilePic');
-            if (currentUser.profilePicture) {
-                currentPic.innerHTML = `<img src="${currentUser.profilePicture}" class="profile-pic-large">`;
-                document.getElementById('removePicBtn').classList.remove('hidden');
+                currentTab.className = 'px-4 py-2 bg-blue-600 text-white rounded-lg font-medium';
+                fixturesTab.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium';
+                currentSection.classList.remove('hidden');
+                allSection.classList.add('hidden');
             } else {
-                currentPic.innerHTML = '🏉';
-                currentPic.className = 'w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-2xl';
-                document.getElementById('removePicBtn').classList.add('hidden');
+                currentTab.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium';
+                fixturesTab.className = 'px-4 py-2 bg-blue-600 text-white rounded-lg font-medium';
+                currentSection.classList.add('hidden');
+                allSection.classList.remove('hidden');
+                updateAllFixtures();
             }
         }
 
-        function closeSettings() {
-            document.getElementById('settingsModal').classList.add('hidden');
-        }
-
-        function saveSettings(e) {
-            e.preventDefault();
-            const newDisplayName = document.getElementById('settingsDisplayName').value.trim();
-            const newFavoriteTeam = document.getElementById('settingsFavoriteTeam').value;
+        function updateAllFixtures() {
+            const selectedRound = document.getElementById('roundSelector').value;
+            const content = document.getElementById('allFixturesContent');
             
-            if (!newDisplayName) {
-                alert('Display name cannot be empty');
-                return;
+            let html = '';
+            
+            if (selectedRound === 'all') {
+                // Show all rounds
+                Object.keys(roundFixtures).forEach(roundNum => {
+                    const roundData = roundFixtures[roundNum];
+                    html += `
+                        <div class="mb-6">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-3">Round ${roundNum}</h4>
+                            <div class="space-y-2">
+                    `;
+                    
+                    // Group matches by day
+                    const matchesByDay = {};
+                    roundData.matches.forEach(match => {
+                        if (!matchesByDay[match.day]) {
+                            matchesByDay[match.day] = [];
+                        }
+                        matchesByDay[match.day].push(match);
+                    });
+                    
+                    Object.keys(matchesByDay).forEach(day => {
+                        html += `
+                            <div class="mb-3">
+                                <h5 class="font-medium text-gray-700 mb-2">${day}</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        `;
+                        
+                        matchesByDay[day].forEach(match => {
+                            const result = gameData.matchResults[match.id];
+                            let statusDisplay = '';
+                            
+                            if (result && result.finished) {
+                                statusDisplay = `<span class="text-xs text-green-600 font-medium">✅ ${result.winner}</span>`;
+                            } else if (isMatchLive(match)) {
+                                statusDisplay = `<span class="text-xs text-red-600 font-medium animate-pulse">🔴 LIVE</span>`;
+                            } else {
+                                statusDisplay = `<span class="text-xs text-gray-500">${match.time}</span>`;
+                            }
+                            
+                            html += `
+                                <div class="flex justify-between items-center p-2 bg-gray-50 rounded border">
+                                    <span>${match.home} vs ${match.away}</span>
+                                    ${statusDisplay}
+                                </div>
+                            `;
+                        });
+                        
+                        html += `
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    html += `
+                            </div>
+                        </div>
+                    `;
+                });
+            } else {
+                // Show specific round
+                const roundData = roundFixtures[selectedRound];
+                if (roundData) {
+                    html += `
+                        <div class="mb-6">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-3">Round ${selectedRound}</h4>
+                            <div class="space-y-2">
+                    `;
+                    
+                    // Group matches by day
+                    const matchesByDay = {};
+                    roundData.matches.forEach(match => {
+                        if (!matchesByDay[match.day]) {
+                            matchesByDay[match.day] = [];
+                        }
+                        matchesByDay[match.day].push(match);
+                    });
+                    
+                    Object.keys(matchesByDay).forEach(day => {
+                        html += `
+                            <div class="mb-3">
+                                <h5 class="font-medium text-gray-700 mb-2">${day}</h5>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+                        `;
+                        
+                        matchesByDay[day].forEach(match => {
+                            const result = gameData.matchResults[match.id];
+                            let statusDisplay = '';
+                            
+                            if (result && result.finished) {
+                                statusDisplay = `<span class="text-xs text-green-600 font-medium">✅ ${result.winner}</span>`;
+                            } else if (isMatchLive(match)) {
+                                statusDisplay = `<span class="text-xs text-red-600 font-medium animate-pulse">🔴 LIVE</span>`;
+                            } else {
+                                statusDisplay = `<span class="text-xs text-gray-500">${match.time}</span>`;
+                            }
+                            
+                            html += `
+                                <div class="flex justify-between items-center p-2 bg-gray-50 rounded border">
+                                    <span>${match.home} vs ${match.away}</span>
+                                    ${statusDisplay}
+                                </div>
+                            `;
+                        });
+                        
+                        html += `
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    html += `
+                            </div>
+                        </div>
+                    `;
+                }
             }
             
-            currentUser.displayName = newDisplayName;
-            currentUser.favoriteTeam = newFavoriteTeam;
+            content.innerHTML = html || '<div class="text-center text-gray-500 py-8">No fixtures available</div>';
+        }
+
+        function updateGameStatus() {
+            const status = calculatePickingStatus();
+            gameData.pickingOpen = status.isOpen;
             
-            document.getElementById('userName').textContent = newDisplayName;
+            document.getElementById('statusMessage').textContent = status.message;
+            document.getElementById('countdown').textContent = status.timeUntil || 'Deadline: Friday 26th September at 17:30';
             
-            saveGameData();
-            closeSettings();
-            alert('Settings saved successfully!');
+            // Update round status indicator
+            const indicator = document.getElementById('roundStatusIndicator');
+            if (status.isOpen) {
+                indicator.className = 'mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800';
+                indicator.innerHTML = '🟢 Round Open - Picking Available';
+            } else {
+                indicator.className = 'mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800';
+                indicator.innerHTML = '🔒 Round Closed - Picking Locked';
+            }
+        }
+
+        function generateTeamButtons() {
+            const teamButtonsContainer = document.getElementById('teamButtons');
+            const roundData = roundFixtures[gameData.currentRound];
+            const availableTeams = roundData ? roundData.teams : [];
+            const status = calculatePickingStatus();
+            
+            teamButtonsContainer.innerHTML = '';
+            
+            availableTeams.forEach(team => {
+                const isUsed = currentUser && currentUser.usedTeams.includes(team);
+                const isDisabled = isUsed || !status.isOpen || currentUser.isEliminated;
+                
+                const button = document.createElement('button');
+                button.className = `team-btn p-3 border-2 rounded-lg transition-colors ${
+                    isDisabled 
+                        ? 'border-gray-400 bg-gray-200 text-gray-500 cursor-not-allowed opacity-60' 
+                        : 'border-gray-200 hover:border-blue-500 hover:bg-blue-50'
+                }`;
+                button.dataset.team = team;
+                button.disabled = isDisabled;
+                
+                if (isUsed) {
+                    button.innerHTML = `${team} <span class="text-xs">✗</span>`;
+                } else if (!status.isOpen) {
+                    button.innerHTML = `${team} <span class="text-xs">🔒</span>`;
+                } else {
+                    button.innerHTML = team;
+                }
+                
+                if (!isDisabled) {
+                    button.addEventListener('click', () => selectTeam(team));
+                }
+                
+                teamButtonsContainer.appendChild(button);
+            });
+        }
+
+        // Game mode switching
+        function switchGameMode(mode) {
+            currentGameMode = mode;
+            
+            const lmsToggle = document.getElementById('lmsToggle');
+            const pickItToggle = document.getElementById('pickItToggle');
+            const lmsInterface = document.getElementById('lmsInterface');
+            const pickItInterface = document.getElementById('pickItInterface');
+            const lmsStats = document.getElementById('lmsStats');
+            const pickItStats = document.getElementById('pickItStats');
+            
+            if (mode === 'lms') {
+                lmsToggle.className = 'px-6 py-2 bg-blue-600 text-white rounded-lg font-medium transition-colors';
+                pickItToggle.className = 'px-6 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium transition-colors hover:bg-gray-200';
+                lmsInterface.classList.remove('hidden');
+                pickItInterface.classList.add('hidden');
+                lmsStats.classList.remove('hidden');
+                pickItStats.classList.add('hidden');
+            } else {
+                lmsToggle.className = 'px-6 py-2 bg-gray-100 text-gray-700 rounded-lg font-medium transition-colors hover:bg-gray-200';
+                pickItToggle.className = 'px-6 py-2 bg-green-600 text-white rounded-lg font-medium transition-colors';
+                lmsInterface.classList.add('hidden');
+                pickItInterface.classList.remove('hidden');
+                lmsStats.classList.add('hidden');
+                pickItStats.classList.remove('hidden');
+                
+                updatePickItInterface();
+            }
+            
             updateUI();
         }
 
-        function handleProfilePicUpload(e) {
-            const file = e.target.files[0];
-            if (!file) return;
+        // Pick it! tab switching
+        function switchPickItTab(tab) {
+            const currentTab = document.getElementById('pickItCurrentTab');
+            const leaderboardTab = document.getElementById('pickItLeaderboardTab');
+            const fixturesTab = document.getElementById('pickItFixturesTab');
+            const currentSection = document.getElementById('pickItCurrentSection');
+            const leaderboardSection = document.getElementById('pickItLeaderboardSection');
+            const fixturesSection = document.getElementById('pickItAllFixturesSection');
             
-            if (file.size > 5 * 1024 * 1024) {
-                alert('File size must be less than 5MB');
+            // Reset all tabs
+            currentTab.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium';
+            leaderboardTab.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium';
+            fixturesTab.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium';
+            currentSection.classList.add('hidden');
+            leaderboardSection.classList.add('hidden');
+            fixturesSection.classList.add('hidden');
+            
+            if (tab === 'current') {
+                currentTab.className = 'px-4 py-2 bg-green-600 text-white rounded-lg font-medium';
+                currentSection.classList.remove('hidden');
+                updatePickItInterface();
+            } else if (tab === 'leaderboard') {
+                leaderboardTab.className = 'px-4 py-2 bg-green-600 text-white rounded-lg font-medium';
+                leaderboardSection.classList.remove('hidden');
+                updatePickItLeaderboard();
+            } else if (tab === 'fixtures') {
+                fixturesTab.className = 'px-4 py-2 bg-green-600 text-white rounded-lg font-medium';
+                fixturesSection.classList.remove('hidden');
+                updatePickItAllFixtures();
+            }
+        }
+
+        function updateUI() {
+            if (!currentUser) return;
+            
+            document.getElementById('currentRound').textContent = gameData.currentRound;
+            document.getElementById('picksRoundNumber').textContent = gameData.currentRound;
+            document.getElementById('pickItRoundNumber').textContent = gameData.currentRound;
+            
+            if (currentGameMode === 'lms') {
+                // Update LMS stats
+                const standingPlayers = gameData.players.filter(p => !p.isEliminated);
+                const eliminatedPlayers = gameData.players.filter(p => p.isEliminated);
+                
+                document.getElementById('playersStanding').textContent = standingPlayers.length;
+                document.getElementById('playersEliminated').textContent = eliminatedPlayers.length;
+                document.getElementById('totalPlayers').textContent = gameData.players.length;
+                
+                // Show/hide eliminated toggle button
+                const toggleBtn = document.getElementById('toggleEliminated');
+                if (eliminatedPlayers.length > 0) {
+                    toggleBtn.classList.remove('hidden');
+                } else {
+                    toggleBtn.classList.add('hidden');
+                }
+                
+                generateTeamButtons();
+                updatePlayersList();
+                updatePicksStatus();
+                
+                if (currentUser.currentPick) {
+                    document.getElementById('selectedTeam').classList.remove('hidden');
+                    document.getElementById('selectedTeamName').textContent = currentUser.currentPick;
+                    document.getElementById('confirmPick').textContent = 'Pick Confirmed ✓';
+                    document.getElementById('confirmPick').disabled = true;
+                    document.getElementById('confirmPick').classList.add('bg-green-500');
+                }
+            } else {
+                // Update Pick it! stats
+                updatePickItStats();
+            }
+        }
+
+        function updatePickItStats() {
+            if (!currentUser || !currentUser.pickItStats) return;
+            
+            const stats = currentUser.pickItStats;
+            const leaderboard = calculatePickItLeaderboard();
+            const userRank = leaderboard.findIndex(p => p.id === currentUser.id) + 1;
+            
+            document.getElementById('currentRank').textContent = userRank > 0 ? `#${userRank}` : '-';
+            document.getElementById('pickPercentage').textContent = `${Math.round(stats.percentage || 0)}%`;
+            document.getElementById('correctPicks').textContent = `${stats.correctPicks || 0}/${stats.totalPicks || 0}`;
+        }
+
+        function updatePickItInterface() {
+            if (!currentUser) return;
+            
+            const roundData = roundFixtures[gameData.currentRound];
+            if (!roundData) return;
+            
+            const container = document.getElementById('pickItMatches');
+            const userPicks = currentUser.pickItPicks[gameData.currentRound] || {};
+            const status = calculatePickingStatus();
+            
+            let html = '';
+            let picksMade = 0;
+            
+            // Group matches by day
+            const matchesByDay = {};
+            roundData.matches.forEach(match => {
+                if (!matchesByDay[match.day]) {
+                    matchesByDay[match.day] = [];
+                }
+                matchesByDay[match.day].push(match);
+            });
+            
+            Object.keys(matchesByDay).forEach(day => {
+                html += `
+                    <div class="mb-4">
+                        <h5 class="font-medium text-gray-700 mb-3">${day}</h5>
+                        <div class="space-y-3">
+                `;
+                
+                matchesByDay[day].forEach(match => {
+                    const userPick = userPicks[match.id];
+                    if (userPick) picksMade++;
+                    
+                    const result = gameData.matchResults[match.id];
+                    let statusDisplay = '';
+                    
+                    if (result && result.finished) {
+                        const isCorrect = userPick === result.winner;
+                        statusDisplay = `<span class="text-xs ${isCorrect ? 'text-green-600' : 'text-red-600'} font-medium">${isCorrect ? '✅' : '❌'} ${result.winner}</span>`;
+                    } else {
+                        statusDisplay = `<span class="text-xs text-gray-500">${match.time}</span>`;
+                    }
+                    
+                    const isDisabled = (result && result.finished) || !status.isOpen;
+                    
+                    html += `
+                        <div class="border rounded-lg p-4 ${userPick ? 'bg-green-50 border-green-200' : 'bg-gray-50'}">
+                            <div class="flex justify-between items-center mb-3">
+                                <div class="font-medium">${match.home} vs ${match.away}</div>
+                                ${statusDisplay}
+                            </div>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="makePickItPick('${match.id}', '${match.home}')" 
+                                        class="px-3 py-2 border rounded-lg text-sm transition-colors ${userPick === match.home ? 'bg-green-500 text-white border-green-500' : 'border-gray-300 hover:bg-green-50'} ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}"
+                                        ${isDisabled ? 'disabled' : ''}>
+                                    ${match.home}
+                                </button>
+                                <button onclick="makePickItPick('${match.id}', '${match.away}')" 
+                                        class="px-3 py-2 border rounded-lg text-sm transition-colors ${userPick === match.away ? 'bg-green-500 text-white border-green-500' : 'border-gray-300 hover:bg-green-50'} ${isDisabled ? 'opacity-50 cursor-not-allowed' : ''}"
+                                        ${isDisabled ? 'disabled' : ''}>
+                                    ${match.away}
+                                </button>
+                            </div>
+                            ${userPick ? `<div class="mt-2 text-sm text-green-600 font-medium">Your pick: ${userPick}</div>` : ''}
+                        </div>
+                    `;
+                });
+                
+                html += `
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+            
+            // Update progress
+            document.getElementById('picksMade').textContent = picksMade;
+            document.getElementById('totalMatches').textContent = roundData.matches.length;
+            
+            // Update deadline display
+            document.getElementById('pickItDeadline').textContent = status.isOpen ? 
+                `Deadline: ${status.timeUntil}` : 
+                'Picking Closed';
+            
+            // Enable/disable save button
+            const saveBtn = document.getElementById('savePickItPicks');
+            const allPicksMade = picksMade === roundData.matches.length;
+            saveBtn.disabled = !allPicksMade || !status.isOpen;
+            
+            if (allPicksMade && status.isOpen) {
+                saveBtn.textContent = 'Save All Picks';
+                saveBtn.className = 'w-full bg-green-600 text-white py-3 px-4 rounded-lg hover:bg-green-700 font-medium';
+            } else if (!status.isOpen) {
+                saveBtn.textContent = 'Picking Closed';
+                saveBtn.className = 'w-full bg-gray-400 text-white py-3 px-4 rounded-lg font-medium cursor-not-allowed';
+            } else {
+                saveBtn.textContent = `Pick All Matches (${picksMade}/${roundData.matches.length})`;
+                saveBtn.className = 'w-full bg-gray-400 text-white py-3 px-4 rounded-lg font-medium cursor-not-allowed';
+            }
+        }
+
+        function makePickItPick(matchId, team) {
+            const status = calculatePickingStatus();
+            if (!currentUser || !status.isOpen) return;
+            
+            if (!currentUser.pickItPicks) {
+                currentUser.pickItPicks = {};
+            }
+            
+            if (!currentUser.pickItPicks[gameData.currentRound]) {
+                currentUser.pickItPicks[gameData.currentRound] = {};
+            }
+            
+            currentUser.pickItPicks[gameData.currentRound][matchId] = team;
+            
+            // Update the player in gameData
+            const playerIndex = gameData.players.findIndex(p => p.id === currentUser.id);
+            if (playerIndex !== -1) {
+                gameData.players[playerIndex] = { ...currentUser };
+            }
+            
+            saveGameData();
+            updatePickItInterface();
+        }
+
+        function savePickItPicks() {
+            if (!currentUser) return;
+            
+            const roundData = roundFixtures[gameData.currentRound];
+            const userPicks = currentUser.pickItPicks[gameData.currentRound] || {};
+            
+            if (Object.keys(userPicks).length !== roundData.matches.length) {
+                showNotification('Please pick all matches before saving!', 'error');
                 return;
             }
             
-            const reader = new FileReader();
-            reader.onload = function(event) {
-                currentUser.profilePicture = event.target.result;
-                const currentPic = document.getElementById('currentProfilePic');
-                currentPic.innerHTML = `<img src="${event.target.result}" class="profile-pic-large">`;
-                document.getElementById('removePicBtn').classList.remove('hidden');
-                
-                // Update main profile pic
-                const userPic = document.getElementById('userProfilePic');
-                userPic.innerHTML = `<img src="${event.target.result}" class="profile-pic">`;
-                
-                saveGameData();
-            };
-            reader.readAsDataURL(file);
+            showNotification('All picks saved successfully!', 'success');
         }
 
-        function removeProfilePic() {
-            currentUser.profilePicture = null;
-            const currentPic = document.getElementById('currentProfilePic');
-            currentPic.innerHTML = '🏉';
-            currentPic.className = 'w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center text-2xl';
-            document.getElementById('removePicBtn').classList.add('hidden');
-            
-            // Update main profile pic
-            document.getElementById('userProfilePic').innerHTML = '🏉';
-            
-            saveGameData();
+        function calculatePickItLeaderboard() {
+            return gameData.players
+                .filter(p => p.pickItStats && p.pickItStats.totalPicks > 0)
+                .map(player => {
+                    const stats = player.pickItStats;
+                    return {
+                        ...player,
+                        percentage: stats.totalPicks > 0 ? (stats.correctPicks / stats.totalPicks) * 100 : 0
+                    };
+                })
+                .sort((a, b) => {
+                    if (b.percentage !== a.percentage) {
+                        return b.percentage - a.percentage;
+                    }
+                    return b.pickItStats.correctPicks - a.pickItStats.correctPicks;
+                });
         }
 
-        // Modal functions
-        function showPicksModal() {
-            document.getElementById('picksModal').classList.remove('hidden');
+        function updatePickItLeaderboard() {
+            const container = document.getElementById('pickItLeaderboardContent');
+            const leaderboard = calculatePickItLeaderboard();
+            
+            if (leaderboard.length === 0) {
+                container.innerHTML = '<div class="text-center text-gray-500 py-8">No picks made yet</div>';
+                return;
+            }
+            
+            let html = '';
+            leaderboard.forEach((player, index) => {
+                const rank = index + 1;
+                const movement = player.pickItStats.weeklyMovement || 0;
+                let movementIcon = '';
+                
+                if (movement > 0) {
+                    movementIcon = `<span class="text-green-600 text-xs">↗ +${movement}</span>`;
+                } else if (movement < 0) {
+                    movementIcon = `<span class="text-red-600 text-xs">↘ ${movement}</span>`;
+                } else {
+                    movementIcon = `<span class="text-gray-400 text-xs">-</span>`;
+                }
+                
+                const isCurrentUser = player.id === currentUser?.id;
+                const bgClass = isCurrentUser ? 'bg-green-50 border-green-200' : 'bg-gray-50';
+                
+                html += `
+                    <div class="flex items-center justify-between p-4 border rounded-lg ${bgClass}">
+                        <div class="flex items-center space-x-3">
+                            <div class="text-lg font-bold text-gray-600">#${rank}</div>
+                            <div>
+                                <div class="font-medium ${isCurrentUser ? 'text-green-800' : 'text-gray-800'}">${player.displayName}</div>
+                                <div class="text-sm text-gray-600">${player.pickItStats.correctPicks}/${player.pickItStats.totalPicks} correct</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-lg font-bold text-green-600">${Math.round(player.percentage)}%</div>
+                            ${movementIcon}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function updatePickItAllFixtures() {
+            const selectedRound = document.getElementById('pickItRoundSelector').value;
+            const content = document.getElementById('pickItAllFixturesContent');
+            
+            // Use the same logic as LMS fixtures but show Pick it! specific info
+            updateAllFixtures(); // Reuse the existing function
+            content.innerHTML = document.getElementById('allFixturesContent').innerHTML;
+        }
+
+        function openLeaderboardModal() {
+            if (currentGameMode === 'pickit') {
+                switchPickItTab('leaderboard');
+            }
+        }
+
+
+
+        function updatePicksStatus() {
+            const container = document.getElementById('picksStatusList');
+            const standingPlayers = gameData.players.filter(p => !p.isEliminated);
+            const status = calculatePickingStatus();
+            
+            if (standingPlayers.length === 0) {
+                container.innerHTML = '<div class="col-span-full text-center text-gray-500 py-8">No active players</div>';
+                return;
+            }
+            
+            // Sort players: picked first, then alphabetically
+            standingPlayers.sort((a, b) => {
+                if (!!a.currentPick !== !!b.currentPick) {
+                    return !!b.currentPick - !!a.currentPick;
+                }
+                return a.displayName.localeCompare(b.displayName);
+            });
+            
+            let html = '';
+            standingPlayers.forEach(player => {
+                const hasPick = !!player.currentPick;
+                const lockIcon = hasPick ? '🔒' : '❌';
+                const statusClass = hasPick ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800';
+                
+                // Only show actual pick if picking is closed OR user is admin OR it's the current user
+                let pickText = '';
+                const isAdmin = currentUser?.email === 'sacksjordan@gmail.com';
+                const isCurrentUser = player.id === currentUser?.id;
+                
+                if (!hasPick) {
+                    pickText = 'Not picked';
+                } else if (status.isOpen && !isAdmin && !isCurrentUser) {
+                    pickText = '<span class="blur-sm">████████</span>';
+                } else if (status.isOpen && (isAdmin || isCurrentUser)) {
+                    pickText = player.currentPick;
+                } else {
+                    pickText = player.currentPick;
+                }
+                
+                let profilePic = '';
+                if (player.isCustomPic && player.profilePic && player.profilePic.startsWith('data:')) {
+                    profilePic = `<img src="${player.profilePic}" class="w-6 h-6 rounded-full object-cover border border-gray-300" alt="Profile">`;
+                } else {
+                    profilePic = `<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMFCSXJWsbmkra95ltt9Z9LJiRuMOsIBluqwF-g4&usqp=CAE&s" class="w-6 h-6 rounded-full object-cover border border-gray-300" alt="Profile" onerror="this.src=''; this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="w-6 h-6 rounded-full bg-gray-300 border border-gray-400" style="display: none;"></div>`;
+                }
+                
+                html += `
+                    <div class="p-3 border rounded-lg ${statusClass}">
+                        <div class="flex items-center justify-between mb-2">
+                            <div class="flex items-center space-x-2">
+                                ${profilePic}
+                                <span class="font-medium text-sm">${player.displayName}</span>
+                            </div>
+                            <span class="text-lg">${lockIcon}</span>
+                        </div>
+                        <div class="text-xs font-medium">${pickText}</div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+
+        function updatePlayersList() {
+            const container = document.getElementById('playersList');
+            let playersToShow = showEliminated ? 
+                gameData.players.filter(p => p.isEliminated) : 
+                gameData.players.filter(p => !p.isEliminated);
+            
+            // Sort eliminated players by elimination round, then alphabetically
+            // Sort standing players alphabetically
+            if (showEliminated) {
+                playersToShow.sort((a, b) => {
+                    if (a.eliminatedInRound !== b.eliminatedInRound) {
+                        return (b.eliminatedInRound || 0) - (a.eliminatedInRound || 0);
+                    }
+                    return a.displayName.localeCompare(b.displayName);
+                });
+            } else {
+                playersToShow.sort((a, b) => a.displayName.localeCompare(b.displayName));
+            }
+            
+            let html = '';
+            playersToShow.forEach(player => {
+                const statusIcon = player.isEliminated ? '💀' : '✅';
+                const statusClass = player.isEliminated ? 'text-red-600' : 'text-green-600';
+                
+                let profilePic = '';
+                if (player.isCustomPic && player.profilePic && player.profilePic.startsWith('data:')) {
+                    profilePic = `<img src="${player.profilePic}" class="w-8 h-8 rounded-full object-cover border border-gray-300 cursor-pointer hover:scale-110 transition-transform" onclick="openProfileModal(${player.id})" alt="Profile">`;
+                } else {
+                    profilePic = `<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMFCSXJWsbmkra95ltt9Z9LJiRuMOsIBluqwF-g4&usqp=CAE&s" class="w-8 h-8 rounded-full object-cover border border-gray-300 cursor-pointer hover:scale-110 transition-transform" onclick="openProfileModal(${player.id})" alt="Profile" onerror="this.src=''; this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="w-8 h-8 rounded-full bg-gray-300 border border-gray-400 cursor-pointer hover:scale-110 transition-transform" onclick="openProfileModal(${player.id})" style="display: none;"></div>`;
+                }
+                
+                // Calculate rounds survived
+                let roundsSurvived = 0;
+                if (player.isEliminated) {
+                    roundsSurvived = (player.eliminatedInRound || 1) - (player.roundJoined || 1);
+                } else {
+                    roundsSurvived = gameData.currentRound - (player.roundJoined || 1);
+                }
+                
+                let statusText = '';
+                if (player.isEliminated) {
+                    statusText = `Eliminated Round ${player.eliminatedInRound || 1}`;
+                } else {
+                    statusText = `${roundsSurvived} rounds survived`;
+                }
+                
+                html += `
+                    <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div class="flex items-center space-x-3">
+                            ${profilePic}
+                            <div>
+                                <div class="font-medium text-gray-800 cursor-pointer hover:text-blue-600 transition-colors" onclick="openProfileModal(${player.id})">${player.displayName}</div>
+                                ${player.favoriteTeam ? `<div class="text-xs text-blue-600">${player.favoriteTeam}</div>` : ''}
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span class="${statusClass}">${statusIcon}</span>
+                            <span class="text-sm text-gray-600">${statusText}</span>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html || '<div class="text-center text-gray-500 py-8">No players to show</div>';
+        }
+
+
+
+
+
+        function toggleEliminatedPlayers() {
+            showEliminated = !showEliminated;
+            const btn = document.getElementById('toggleEliminated');
+            btn.textContent = showEliminated ? 'Show Standing' : 'Show Eliminated';
+            updatePlayersList();
+        }
+
+        function openPicksModal() {
             document.getElementById('modalRoundNumber').textContent = gameData.currentRound;
             
             const picksContent = document.getElementById('picksContent');
-            picksContent.innerHTML = '';
+            const status = calculatePickingStatus();
+            let html = '';
             
-            gameData.players.forEach(player => {
-                const pickDiv = document.createElement('div');
-                pickDiv.className = 'flex justify-between items-center p-3 bg-gray-50 rounded-lg';
-                pickDiv.innerHTML = `
-                    <div class="flex items-center space-x-2">
-                        <span>🏉</span>
-                        <span class="font-medium">${player.displayName}</span>
-                    </div>
-                    <span class="text-gray-600">${player.currentPick || 'No pick'}</span>
-                `;
-                picksContent.appendChild(pickDiv);
-            });
+            const playersWithPicks = gameData.players.filter(p => !p.isEliminated);
+            
+            if (playersWithPicks.length === 0) {
+                html = '<div class="text-center text-gray-500 py-8">No active players</div>';
+            } else {
+                playersWithPicks.sort((a, b) => {
+                    // Sort by pick status first (picked vs not picked), then by name
+                    if (!!a.currentPick !== !!b.currentPick) {
+                        return !!b.currentPick - !!a.currentPick; // Picked players first
+                    }
+                    return a.displayName.localeCompare(b.displayName);
+                });
+                
+                const isAdmin = currentUser?.email === 'sacksjordan@gmail.com';
+                
+                playersWithPicks.forEach(player => {
+                    const hasPick = player.currentPick;
+                    const isCurrentUser = player.id === currentUser?.id;
+                    let pickDisplay = '';
+                    let statusIcon = '';
+                    let statusClass = '';
+                    
+                    if (!hasPick) {
+                        pickDisplay = '<span class="text-red-500 font-medium">❌ Not picked yet</span>';
+                        statusIcon = '⏳';
+                        statusClass = 'bg-red-50 border-l-4 border-red-400';
+                    } else {
+                        statusIcon = '✅';
+                        // Only show actual pick if picking is closed OR user is admin OR it's current user
+                        if (status.isOpen && !isAdmin && !isCurrentUser) {
+                            pickDisplay = `<span class="font-medium text-green-600">🔒 <span class="blur-sm">████████</span></span>`;
+                        } else if (status.isOpen && (isAdmin || isCurrentUser)) {
+                            pickDisplay = `<span class="font-medium text-green-600">🔒 ${player.currentPick}</span>`;
+                        } else {
+                            pickDisplay = `<span class="font-medium text-green-600">🔒 ${player.currentPick}</span>`;
+                        }
+                        statusClass = 'bg-green-50 border-l-4 border-green-400';
+                    }
+                    
+                    html += `
+                        <div class="flex justify-between items-center p-3 rounded-lg ${statusClass}">
+                            <div class="flex items-center space-x-2">
+                                <span class="text-lg">${statusIcon}</span>
+                                <span class="font-medium text-gray-800">${player.displayName}</span>
+                            </div>
+                            ${pickDisplay}
+                        </div>
+                    `;
+                });
+            }
+            
+            picksContent.innerHTML = html;
+            document.getElementById('picksModal').classList.remove('hidden');
         }
 
         function closePicksModal() {
             document.getElementById('picksModal').classList.add('hidden');
         }
 
-        function showPlayerList(type) {
-            document.getElementById('playerListModal').classList.remove('hidden');
-            
+        function openPlayerListModal(type) {
+            const modal = document.getElementById('playerListModal');
             const title = document.getElementById('playerListTitle');
             const content = document.getElementById('playerListContent');
             
-            let players;
+            let players = [];
+            let titleText = '';
+            let emptyMessage = '';
+            
             if (type === 'standing') {
                 players = gameData.players.filter(p => !p.isEliminated);
-                title.textContent = 'Players Standing';
-            } else {
+                titleText = `🟢 Players Standing (${players.length})`;
+                emptyMessage = 'No players remaining';
+            } else if (type === 'eliminated') {
                 players = gameData.players.filter(p => p.isEliminated);
-                title.textContent = 'Eliminated Players';
+                titleText = `💀 Players Eliminated (${players.length})`;
+                emptyMessage = 'No players eliminated yet';
             }
             
-            content.innerHTML = '';
-            players.forEach(player => {
-                const playerDiv = document.createElement('div');
-                playerDiv.className = 'flex items-center space-x-2 p-2 bg-gray-50 rounded';
-                playerDiv.innerHTML = `
-                    <span>🏉</span>
-                    <span>${player.displayName}</span>
-                `;
-                content.appendChild(playerDiv);
-            });
+            title.textContent = titleText;
+            
+            if (players.length === 0) {
+                content.innerHTML = `<div class="text-center text-gray-500 py-8">${emptyMessage}</div>`;
+            } else {
+                players.sort((a, b) => a.displayName.localeCompare(b.displayName));
+                
+                let html = '';
+                players.forEach(player => {
+                    let profilePic = '';
+                    if (player.isCustomPic && player.profilePic && player.profilePic.startsWith('data:')) {
+                        profilePic = `<img src="${player.profilePic}" class="w-8 h-8 rounded-full object-cover border border-gray-300 cursor-pointer hover:scale-110 transition-transform" onclick="openProfileModal(${player.id})" alt="Profile">`;
+                    } else {
+                        profilePic = `<div class="w-8 h-8 rounded-full bg-gray-300 border border-gray-400 cursor-pointer hover:scale-110 transition-transform" onclick="openProfileModal(${player.id})"></div>`;
+                    }
+                    
+                    html += `
+                        <div class="p-3 bg-gray-50 rounded-lg">
+                            <div class="flex items-center space-x-2 mb-1">
+                                ${profilePic}
+                                <div class="font-medium text-gray-800 cursor-pointer hover:text-blue-600 transition-colors" onclick="openProfileModal(${player.id})">${player.displayName}</div>
+                                ${player.favoriteTeam ? `<span class="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded">${player.favoriteTeam}</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+                content.innerHTML = html;
+            }
+            
+            modal.classList.remove('hidden');
         }
 
         function closePlayerListModal() {
             document.getElementById('playerListModal').classList.add('hidden');
         }
 
+        function openProfileModal(playerId) {
+            const player = gameData.players.find(p => p.id == playerId);
+            if (!player) return;
+            
+            const modal = document.getElementById('profileModal');
+            const content = document.getElementById('profileContent');
+            
+            const roundsPlayed = gameData.currentRound - (player.roundJoined || 1);
+            const roundsSurvived = player.isEliminated ? (player.eliminatedInRound - (player.roundJoined || 1)) : roundsPlayed;
+            
+            let pickHistory = '';
+            const status = calculatePickingStatus();
+            const isAdmin = currentUser?.email === 'sacksjordan@gmail.com';
+            const isCurrentUser = player.id === currentUser?.id;
+            
+            if (player.usedTeams.length > 0) {
+                pickHistory = player.usedTeams.map((team, index) => {
+                    const roundNum = (player.roundJoined || 1) + index;
+                    let teamDisplay = team;
+                    
+                    // Blur current round pick if picking is still open and not admin/current user
+                    if (roundNum === gameData.currentRound && status.isOpen && !isAdmin && !isCurrentUser) {
+                        teamDisplay = '<span class="blur-sm">████████</span>';
+                    }
+                    
+                    return `<div class="flex justify-between items-center py-1">
+                        <span>Round ${roundNum}:</span>
+                        <span class="font-medium">${teamDisplay}</span>
+                    </div>`;
+                }).join('');
+            } else {
+                pickHistory = '<div class="text-gray-500 text-center py-4">No picks made yet</div>';
+            }
+            
+            let seasonStatus = '';
+            if (player.isEliminated) {
+                seasonStatus = `
+                    <div class="bg-red-50 border border-red-200 rounded-lg p-4">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span class="text-2xl">💀</span>
+                            <span class="font-semibold text-red-800">Eliminated</span>
+                        </div>
+                        <p class="text-sm text-red-700">Round ${player.eliminatedInRound}</p>
+                        <p class="text-xs text-red-600 mt-1">${player.eliminatedBy || 'Team lost'}</p>
+                    </div>
+                `;
+            } else {
+                seasonStatus = `
+                    <div class="bg-green-50 border border-green-200 rounded-lg p-4">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span class="text-2xl">✅</span>
+                            <span class="font-semibold text-green-800">Still Standing</span>
+                        </div>
+                        <p class="text-sm text-green-700">Survived ${roundsSurvived} rounds</p>
+                        ${player.currentPick ? `<p class="text-xs text-green-600 mt-1">Current pick: ${status.isOpen && !isAdmin && !isCurrentUser ? '<span class="blur-sm">████████</span>' : player.currentPick}</p>` : ''}
+                    </div>
+                `;
+            }
+            
+            const joinDate = player.joinDate ? new Date(player.joinDate).toLocaleDateString() : 'Unknown';
+            
+            let profilePicDisplay = '';
+            if (player.isCustomPic && player.profilePic && player.profilePic.startsWith('data:')) {
+                profilePicDisplay = `<img src="${player.profilePic}" class="w-24 h-24 rounded-full mx-auto object-cover border-4 border-gray-200 mb-3" alt="Profile">`;
+            } else {
+                profilePicDisplay = `<div class="w-24 h-24 rounded-full bg-gray-300 border-4 border-gray-200 mx-auto mb-3"></div>`;
+            }
+            
+            content.innerHTML = `
+                <div class="text-center mb-6">
+                    ${profilePicDisplay}
+                    <h2 class="text-2xl font-bold text-gray-800 mb-1">${player.displayName}</h2>
+                    ${player.favoriteTeam ? `<p class="text-blue-600 font-medium">💙 ${player.favoriteTeam} Fan</p>` : ''}
+                    <p class="text-sm text-gray-500">Joined: ${joinDate}</p>
+                </div>
+                
+                <div class="space-y-4">
+                    ${seasonStatus}
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-gray-50 rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold text-gray-800">${roundsSurvived}</div>
+                            <div class="text-sm text-gray-600">Rounds Survived</div>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-4 text-center">
+                            <div class="text-2xl font-bold text-gray-800">${player.usedTeams.length}</div>
+                            <div class="text-sm text-gray-600">Teams Used</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-white border border-gray-200 rounded-lg p-4">
+                        <h3 class="font-semibold text-gray-800 mb-3">Pick History</h3>
+                        <div class="max-h-32 overflow-y-auto">
+                            ${pickHistory}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            modal.classList.remove('hidden');
+        }
+
         function closeProfileModal() {
             document.getElementById('profileModal').classList.add('hidden');
         }
 
-        // Admin functions
-        function openAdminPanel() {
-            if (currentUser.email !== 'sacksjordan@gmail.com') return;
-            document.getElementById('adminModal').classList.remove('hidden');
-            updateAdminScoresDisplay();
+        function openSettingsModal() {
+            if (!currentUser) return;
+            
+            const modal = document.getElementById('settingsModal');
+            
+            document.getElementById('settingsDisplayName').value = currentUser.displayName;
+            document.getElementById('settingsFavoriteTeam').value = currentUser.favoriteTeam || '';
+            
+            if (currentUser.isCustomPic && currentUser.profilePic && currentUser.profilePic.startsWith('data:')) {
+                document.getElementById('settingsCustomPicImage').src = currentUser.profilePic;
+                document.getElementById('settingsCustomPicPreview').classList.remove('hidden');
+                window.tempCustomPic = currentUser.profilePic;
+            } else {
+                document.getElementById('settingsCustomPicPreview').classList.add('hidden');
+                window.tempCustomPic = null;
+            }
+            
+            modal.classList.remove('hidden');
         }
 
-        function closeAdminPanel() {
+        function closeSettingsModal() {
+            document.getElementById('settingsModal').classList.add('hidden');
+        }
+
+        function saveSettings(e) {
+            e.preventDefault();
+            
+            if (!currentUser) return;
+            
+            const newDisplayName = document.getElementById('settingsDisplayName').value.trim();
+            const newFavoriteTeam = document.getElementById('settingsFavoriteTeam').value;
+            
+            if (!newDisplayName) {
+                showNotification('Display name cannot be empty', 'error');
+                return;
+            }
+            
+            if (containsProfanity(newDisplayName)) {
+                showNotification('Display name contains inappropriate language. Please choose a different name.', 'error');
+                return;
+            }
+            
+            let newProfilePic = currentUser.profilePic;
+            let isCustomPic = false;
+            
+            if (window.tempCustomPic) {
+                newProfilePic = window.tempCustomPic;
+                isCustomPic = true;
+            } else {
+                newProfilePic = null;
+                isCustomPic = false;
+            }
+            
+            currentUser.displayName = newDisplayName;
+            currentUser.favoriteTeam = newFavoriteTeam;
+            currentUser.profilePic = newProfilePic;
+            currentUser.isCustomPic = isCustomPic;
+            
+            const playerIndex = gameData.players.findIndex(p => p.id === currentUser.id);
+            if (playerIndex !== -1) {
+                gameData.players[playerIndex] = { ...currentUser };
+            }
+            
+            saveGameData();
+            updateUI();
+            closeSettingsModal();
+            
+            showNotification('Profile updated successfully!', 'success');
+        }
+
+        function switchAdminTab(tab) {
+            const scoresTab = document.getElementById('adminScoresTab');
+            const playersTab = document.getElementById('adminPlayersTab');
+            const playoffsTab = document.getElementById('adminPlayoffsTab');
+            const scoresSection = document.getElementById('adminScoresSection');
+            const playersSection = document.getElementById('adminPlayersSection');
+            const playoffsSection = document.getElementById('adminPlayoffsSection');
+            
+            // Reset all tabs
+            scoresTab.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium';
+            playersTab.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium';
+            playoffsTab.className = 'px-4 py-2 bg-gray-200 text-gray-700 rounded-lg font-medium';
+            scoresSection.classList.add('hidden');
+            playersSection.classList.add('hidden');
+            playoffsSection.classList.add('hidden');
+            
+            if (tab === 'scores') {
+                scoresTab.className = 'px-4 py-2 bg-blue-600 text-white rounded-lg font-medium';
+                scoresSection.classList.remove('hidden');
+                populateAdminScores();
+            } else if (tab === 'players') {
+                playersTab.className = 'px-4 py-2 bg-blue-600 text-white rounded-lg font-medium';
+                playersSection.classList.remove('hidden');
+                populateAdminPlayers();
+            } else if (tab === 'playoffs') {
+                playoffsTab.className = 'px-4 py-2 bg-blue-600 text-white rounded-lg font-medium';
+                playoffsSection.classList.remove('hidden');
+                populateAdminPlayoffs();
+            }
+        }
+
+        function populateAdminPlayoffs() {
+            if (currentUser?.email !== 'sacksjordan@gmail.com') return;
+            
+            // Load current playoff settings
+            if (gameData.semiTeams) {
+                document.getElementById('sf1Home').value = gameData.semiTeams.sf1Home || 'TBD';
+                document.getElementById('sf1Away').value = gameData.semiTeams.sf1Away || 'TBD';
+                document.getElementById('sf2Home').value = gameData.semiTeams.sf2Home || 'TBD';
+                document.getElementById('sf2Away').value = gameData.semiTeams.sf2Away || 'TBD';
+            }
+            
+            if (gameData.semiTimes) {
+                document.getElementById('sf1Time').value = gameData.semiTimes.sf1Time || '';
+                document.getElementById('sf2Time').value = gameData.semiTimes.sf2Time || '';
+            }
+            
+            if (gameData.finalTeams) {
+                document.getElementById('finalHome').value = gameData.finalTeams.finalHome || 'TBD';
+                document.getElementById('finalAway').value = gameData.finalTeams.finalAway || 'TBD';
+            }
+            
+            if (gameData.finalTimes) {
+                document.getElementById('finalTime').value = gameData.finalTimes.finalTime || '';
+            }
+        }
+
+        function openAdminModal() {
+            if (currentUser?.email !== 'sacksjordan@gmail.com') {
+                showNotification('Access denied - Admin only', 'error');
+                return;
+            }
+            
+            switchAdminTab('scores');
+            document.getElementById('adminModal').classList.remove('hidden');
+        }
+
+        function closeAdminModal() {
             document.getElementById('adminModal').classList.add('hidden');
         }
 
-        function updateAdminScoresDisplay() {
-            // Placeholder for admin scores display
-            const content = document.getElementById('adminScoreContent');
-            content.innerHTML = '<p class="text-gray-600">Admin score management will be implemented here.</p>';
+        function populateAdminScores() {
+            const container = document.getElementById('adminScoreContent');
+            const selectedRound = document.getElementById('adminRoundSelector').value;
+            const roundData = roundFixtures[selectedRound];
+            
+            if (!roundData || !roundData.matches) {
+                container.innerHTML = '<div class="text-center text-gray-500 py-8">No matches found for this round</div>';
+                return;
+            }
+            
+            let html = '';
+            
+            roundData.matches.forEach(game => {
+                const currentScore = { homeScore: 0, awayScore: 0 };
+                const isFinished = gameData.matchResults[game.id]?.finished || false;
+                
+                html += `
+                    <div class="border rounded-lg p-4 bg-gray-50">
+                        <div class="flex justify-between items-center mb-3">
+                            <h4 class="font-semibold">${game.home} vs ${game.away}</h4>
+                            <div class="text-right">
+                                <span class="text-sm px-2 py-1 rounded ${isFinished ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}">
+                                    ${isFinished ? 'Finished' : 'Upcoming'}
+                                </span>
+                                <div class="text-xs text-gray-500 mt-1">Kick-off: ${game.time}</div>
+                                <div class="text-xs text-gray-500">${game.day}</div>
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Winner</label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <button onclick="setGameWinner('${game.id}', '${game.home}', '${game.away}', ${selectedRound})" 
+                                        class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-blue-50 text-sm ${gameData.matchResults[game.id]?.winner === game.home ? 'bg-blue-100 border-blue-500' : ''}">
+                                    ${game.home}
+                                </button>
+                                <button onclick="setGameWinner('${game.id}', '${game.away}', '${game.home}', ${selectedRound})" 
+                                        class="px-3 py-2 border border-gray-300 rounded-lg hover:bg-blue-50 text-sm ${gameData.matchResults[game.id]?.winner === game.away ? 'bg-blue-100 border-blue-500' : ''}">
+                                    ${game.away}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button onclick="markGameFinished('${game.id}', ${selectedRound})" 
+                                    class="flex-1 bg-green-500 text-white px-3 py-2 rounded-lg hover:bg-green-600 text-sm ${!gameData.matchResults[game.id]?.winner ? 'opacity-50 cursor-not-allowed' : ''}" 
+                                    ${!gameData.matchResults[game.id]?.winner ? 'disabled' : ''}>
+                                Mark Finished
+                            </button>
+                            ${isFinished ? `<button onclick="resetGameResult('${game.id}')" 
+                                    class="bg-red-500 text-white px-3 py-2 rounded-lg hover:bg-red-600 text-sm">
+                                Reset
+                            </button>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
         }
 
-        function updateAdminPlayersDisplay() {
-            // Placeholder for admin players display
-            const content = document.getElementById('adminPlayerContent');
-            content.innerHTML = '<p class="text-gray-600">Admin player management will be implemented here.</p>';
+        function setGameWinner(gameId, winner, loser, roundNum) {
+            if (currentUser?.email !== 'sacksjordan@gmail.com') {
+                showNotification('Access denied - Admin only', 'error');
+                return;
+            }
+            
+            if (!gameData.matchResults[gameId]) {
+                gameData.matchResults[gameId] = {};
+            }
+            
+            gameData.matchResults[gameId].winner = winner;
+            gameData.matchResults[gameId].roundNum = roundNum;
+            saveGameData();
+            populateAdminScores();
+            showNotification(`Winner set: ${winner}`, 'info');
         }
 
-        // Fixtures display functions
-        function updateFixturesDisplay() {
-            const content = document.getElementById('allFixturesContent');
-            content.innerHTML = '<p class="text-gray-600">Fixtures display will be implemented here.</p>';
+        function markGameFinished(gameId, roundNum) {
+            if (currentUser?.email !== 'sacksjordan@gmail.com') {
+                showNotification('Access denied - Admin only', 'error');
+                return;
+            }
+            
+            const result = gameData.matchResults[gameId];
+            if (!result || !result.winner) {
+                showNotification('Please select a winner first', 'error');
+                return;
+            }
+            
+            result.finished = true;
+            result.roundNum = roundNum;
+            
+            // Process eliminations for LMS - check all players who picked teams in this match
+            const roundData = roundFixtures[roundNum];
+            const match = roundData.matches.find(m => m.id === gameId);
+            
+            if (match) {
+                let eliminatedCount = 0;
+                gameData.players.forEach(player => {
+                    // LMS elimination logic
+                    if (!player.isEliminated && player.currentPick && 
+                        (player.currentPick === match.home || player.currentPick === match.away) && 
+                        player.currentPick !== result.winner) {
+                        
+                        player.isEliminated = true;
+                        player.eliminatedInRound = parseInt(roundNum);
+                        player.eliminatedBy = `${player.currentPick} lost to ${result.winner}`;
+                        eliminatedCount++;
+                        
+                        if (player.id === currentUser?.id) {
+                            showNotification(`💀 You've been eliminated! ${player.currentPick} lost to ${result.winner}`, 'error');
+                        }
+                    }
+                    
+                    // Pick it! stats update
+                    if (player.pickItPicks && player.pickItPicks[roundNum] && player.pickItPicks[roundNum][gameId]) {
+                        if (!player.pickItStats) {
+                            player.pickItStats = {
+                                totalPicks: 0,
+                                correctPicks: 0,
+                                percentage: 0,
+                                weeklyMovement: 0,
+                                previousRank: null
+                            };
+                        }
+                        
+                        const userPick = player.pickItPicks[roundNum][gameId];
+                        player.pickItStats.totalPicks++;
+                        
+                        if (userPick === result.winner) {
+                            player.pickItStats.correctPicks++;
+                        }
+                        
+                        // Update percentage
+                        player.pickItStats.percentage = (player.pickItStats.correctPicks / player.pickItStats.totalPicks) * 100;
+                    }
+                });
+                
+                // Calculate Pick it! leaderboard movements
+                updatePickItRankings();
+                
+                if (eliminatedCount > 0) {
+                    showNotification(`Match finished: ${result.winner} wins! ${eliminatedCount} player(s) eliminated.`, 'success');
+                } else {
+                    showNotification(`Match finished: ${result.winner} wins!`, 'success');
+                }
+            }
+            
+            saveGameData();
+            updateUI();
+            populateAdminScores();
         }
 
-        function updateUpcomingDisplay() {
-            const content = document.getElementById('upcomingContent');
-            content.innerHTML = '<p class="text-gray-600">Upcoming fixtures will be displayed here.</p>';
+        function updatePickItRankings() {
+            const leaderboard = calculatePickItLeaderboard();
+            
+            gameData.players.forEach(player => {
+                if (player.pickItStats) {
+                    const currentRank = leaderboard.findIndex(p => p.id === player.id) + 1;
+                    const previousRank = player.pickItStats.previousRank;
+                    
+                    if (previousRank && currentRank > 0) {
+                        player.pickItStats.weeklyMovement = previousRank - currentRank;
+                    }
+                    
+                    player.pickItStats.previousRank = currentRank > 0 ? currentRank : null;
+                }
+            });
         }
 
-        function updatePickItFixturesDisplay() {
-            const content = document.getElementById('pickItAllFixturesContent');
-            content.innerHTML = '<p class="text-gray-600">Pick it! fixtures display will be implemented here.</p>';
+        function resetGameResult(gameId) {
+            if (currentUser?.email !== 'sacksjordan@gmail.com') {
+                showNotification('Access denied - Admin only', 'error');
+                return;
+            }
+            
+            if (confirm('Reset this match result? This will restore any eliminated players from this match.')) {
+                const result = gameData.matchResults[gameId];
+                if (result && result.finished) {
+                    // Find players who were eliminated by this match and restore them
+                    const roundNum = result.roundNum;
+                    const roundData = roundFixtures[roundNum];
+                    const match = roundData.matches.find(m => m.id === gameId);
+                    
+                    if (match) {
+                        gameData.players.forEach(player => {
+                            if (player.isEliminated && player.eliminatedInRound === roundNum && 
+                                player.eliminatedBy && player.eliminatedBy.includes(result.winner)) {
+                                player.isEliminated = false;
+                                delete player.eliminatedInRound;
+                                delete player.eliminatedBy;
+                            }
+                        });
+                    }
+                    
+                    // Reset the match result
+                    delete gameData.matchResults[gameId];
+                    
+                    saveGameData();
+                    updateUI();
+                    populateAdminScores();
+                    showNotification('Match result reset and players restored', 'success');
+                }
+            }
         }
 
-        // Pick it! functions
-        function updatePickItMatches() {
-            const content = document.getElementById('pickItMatches');
-            content.innerHTML = '<p class="text-gray-600">Pick it! matches will be displayed here.</p>';
+
+
+        function populateAdminPlayers() {
+            if (currentUser?.email !== 'sacksjordan@gmail.com') return;
+            
+            const container = document.getElementById('adminPlayerContent');
+            let html = '';
+            
+            const sortedPlayers = [...gameData.players].sort((a, b) => {
+                if (a.isEliminated !== b.isEliminated) {
+                    return a.isEliminated ? 1 : -1;
+                }
+                return a.displayName.localeCompare(b.displayName);
+            });
+            
+            sortedPlayers.forEach(player => {
+                const statusClass = player.isEliminated ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200';
+                const statusIcon = player.isEliminated ? '💀' : '✅';
+                const statusText = player.isEliminated ? 'ELIMINATED' : 'STANDING';
+                
+                const roundData = roundFixtures[gameData.currentRound];
+                const availableTeams = roundData ? roundData.teams : [];
+                
+                html += `
+                    <div class="border rounded-lg p-4 ${statusClass}">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h4 class="font-semibold text-lg">${statusIcon} ${player.displayName}</h4>
+                                <p class="text-sm text-gray-600">${player.email}</p>
+                                <p class="text-sm font-medium ${player.isEliminated ? 'text-red-600' : 'text-green-600'}">${statusText}</p>
+                                ${player.isEliminated && player.eliminatedBy ? `<p class="text-xs text-gray-500 mt-1">${player.eliminatedBy}</p>` : ''}
+                            </div>
+                            <div class="text-right">
+                                <p class="text-sm text-gray-600">Round ${player.roundJoined || 1} player</p>
+                                <p class="text-sm text-gray-600">Used ${player.usedTeams.length} teams</p>
+                            </div>
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Player Status</label>
+                                <div class="flex space-x-2 mb-2">
+                                    <button onclick="setPlayerStatus('${player.id}', false)" 
+                                            class="px-3 py-1 text-sm rounded ${!player.isEliminated ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700'} hover:opacity-80">
+                                        Standing
+                                    </button>
+                                    <button onclick="setPlayerStatus('${player.id}', true)" 
+                                            class="px-3 py-1 text-sm rounded ${player.isEliminated ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-700'} hover:opacity-80">
+                                        Eliminated
+                                    </button>
+                                </div>
+                                ${player.isEliminated ? `
+                                    <div class="flex space-x-2">
+                                        <select id="eliminatedRound_${player.id}" class="flex-1 text-xs border border-gray-300 rounded px-2 py-1">
+                                            ${Array.from({length: 18}, (_, i) => i + 1).map(round => 
+                                                `<option value="${round}" ${(player.eliminatedInRound || 1) === round ? 'selected' : ''}>Round ${round}</option>`
+                                            ).join('')}
+                                        </select>
+                                        <button onclick="updateEliminationRound('${player.id}')" 
+                                                class="px-2 py-1 text-xs bg-orange-500 text-white rounded hover:bg-orange-600">
+                                            Update
+                                        </button>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Pick Management</label>
+                                <div class="space-y-2">
+                                    <div class="flex space-x-2">
+                                        <select id="pickRound_${player.id}" class="text-sm border border-gray-300 rounded px-2 py-1">
+                                            ${Array.from({length: 18}, (_, i) => i + 1).map(round => 
+                                                `<option value="${round}" ${gameData.currentRound === round ? 'selected' : ''}>Round ${round}</option>`
+                                            ).join('')}
+                                        </select>
+                                        <select id="pick_${player.id}" class="flex-1 text-sm border border-gray-300 rounded px-2 py-1">
+                                            <option value="">No Pick</option>
+                                            ${availableTeams.map(team => 
+                                                `<option value="${team}" ${player.currentPick === team ? 'selected' : ''}>${team}</option>`
+                                            ).join('')}
+                                        </select>
+                                        <button onclick="setPlayerPick('${player.id}')" 
+                                                class="px-3 py-1 text-sm bg-blue-500 text-white rounded hover:bg-blue-600">
+                                            Update
+                                        </button>
+                                    </div>
+                                    ${player.currentPick ? `<p class="text-xs text-gray-500">Current Round ${gameData.currentRound}: ${player.currentPick}</p>` : ''}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        ${player.usedTeams.length > 0 ? `
+                            <div class="mt-3 pt-3 border-t border-gray-200">
+                                <p class="text-sm font-medium text-gray-700 mb-1">Used Teams:</p>
+                                <div class="flex flex-wrap gap-1">
+                                    ${player.usedTeams.map(team => 
+                                        `<span class="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded">${team}</span>`
+                                    ).join('')}
+                                </div>
+                                <button onclick="clearUsedTeams('${player.id}')" 
+                                        class="mt-2 px-3 py-1 text-xs bg-yellow-500 text-white rounded hover:bg-yellow-600">
+                                    Clear Used Teams
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
         }
 
-        function updatePickItLeaderboard() {
-            const content = document.getElementById('pickItLeaderboardContent');
-            content.innerHTML = '<p class="text-gray-600">Pick it! leaderboard will be displayed here.</p>';
+        function setPlayerStatus(playerId, isEliminated) {
+            if (currentUser?.email !== 'sacksjordan@gmail.com') {
+                showNotification('Access denied - Admin only', 'error');
+                return;
+            }
+            
+            const player = gameData.players.find(p => p.id == playerId);
+            if (!player) return;
+            
+            const wasEliminated = player.isEliminated;
+            player.isEliminated = isEliminated;
+            
+            if (isEliminated && !wasEliminated) {
+                player.eliminatedInRound = gameData.currentRound;
+                player.eliminatedBy = 'Admin override';
+                showNotification(`${player.displayName} marked as eliminated`, 'info');
+            } else if (!isEliminated && wasEliminated) {
+                delete player.eliminatedInRound;
+                delete player.eliminatedBy;
+                showNotification(`${player.displayName} restored to standing`, 'success');
+            }
+            
+            if (player.id === currentUser?.id) {
+                currentUser = player;
+                if (isEliminated) {
+                    showNotification('💀 Admin has marked you as eliminated', 'error');
+                } else {
+                    showNotification('🎉 Admin has restored you to standing!', 'success');
+                }
+            }
+            
+            saveGameData();
+            updateUI();
+            populateAdminPlayers();
         }
 
-        function savePickItPicks() {
-            alert('Pick it! picks saved successfully!');
+        function setPlayerPick(playerId) {
+            if (currentUser?.email !== 'sacksjordan@gmail.com') {
+                showNotification('Access denied - Admin only', 'error');
+                return;
+            }
+            
+            const player = gameData.players.find(p => p.id == playerId);
+            const selectedRound = parseInt(document.getElementById(`pickRound_${playerId}`).value);
+            const newPick = document.getElementById(`pick_${playerId}`).value;
+            
+            if (!player) return;
+            
+            // Handle current round pick
+            if (selectedRound === gameData.currentRound) {
+                const oldPick = player.currentPick;
+                player.currentPick = newPick || null;
+                
+                if (oldPick !== newPick) {
+                    const pickText = newPick ? `${newPick}` : 'No pick';
+                    showNotification(`${player.displayName}'s Round ${selectedRound} pick updated to: ${pickText}`, 'success');
+                    
+                    if (player.id === currentUser?.id) {
+                        currentUser = player;
+                        if (newPick) {
+                            showNotification(`🔧 Admin changed your Round ${selectedRound} pick to: ${newPick}`, 'info');
+                        } else {
+                            showNotification(`🔧 Admin cleared your Round ${selectedRound} pick`, 'info');
+                        }
+                    }
+                }
+            } else {
+                // Handle Pick it! picks for other rounds
+                if (!player.pickItPicks) player.pickItPicks = {};
+                if (!player.pickItPicks[selectedRound]) player.pickItPicks[selectedRound] = {};
+                
+                // For simplicity, we'll just show a message that this would need match-specific handling
+                showNotification(`Pick it! management for Round ${selectedRound} requires match-specific selection`, 'info');
+                return;
+            }
+            
+            saveGameData();
+            updateUI();
+            populateAdminPlayers();
         }
 
-        // Chat functions
+        function clearUsedTeams(playerId) {
+            if (currentUser?.email !== 'sacksjordan@gmail.com') {
+                showNotification('Access denied - Admin only', 'error');
+                return;
+            }
+            
+            const player = gameData.players.find(p => p.id == playerId);
+            if (!player) return;
+            
+            if (confirm(`Clear all used teams for ${player.displayName}? This will allow them to pick any team again.`)) {
+                player.usedTeams = [];
+                showNotification(`${player.displayName}'s used teams cleared`, 'success');
+                
+                if (player.id === currentUser?.id) {
+                    currentUser = player;
+                    showNotification('🔧 Admin cleared your used teams - you can now pick any team!', 'success');
+                }
+                
+                saveGameData();
+                updateUI();
+                populateAdminPlayers();
+            }
+        }
+
+        function updateEliminationRound(playerId) {
+            if (currentUser?.email !== 'sacksjordan@gmail.com') {
+                showNotification('Access denied - Admin only', 'error');
+                return;
+            }
+            
+            const player = gameData.players.find(p => p.id == playerId);
+            const newRound = parseInt(document.getElementById(`eliminatedRound_${playerId}`).value);
+            
+            if (!player) return;
+            
+            player.eliminatedInRound = newRound;
+            showNotification(`${player.displayName}'s elimination round updated to Round ${newRound}`, 'success');
+            
+            if (player.id === currentUser?.id) {
+                currentUser = player;
+            }
+            
+            saveGameData();
+            updateUI();
+            populateAdminPlayers();
+        }
+
+        // Chat functionality
         function toggleChat() {
             const sidebar = document.getElementById('chatSidebar');
             sidebar.classList.toggle('translate-x-full');
+            if (!sidebar.classList.contains('translate-x-full')) {
+                loadChatMessages();
+            }
         }
 
         function closeChat() {
@@ -1917,21 +3047,74 @@
             const input = document.getElementById('chatInput');
             const message = input.value.trim();
             
-            if (!message) return;
+            if (!message || !currentUser) return;
             
-            const newMessage = {
+            if (containsProfanity(message)) {
+                showNotification('Message contains inappropriate language and cannot be sent.', 'error');
+                return;
+            }
+            
+            const chatMessage = {
                 id: Date.now(),
-                user: currentUser.displayName,
+                sender: currentUser.displayName,
+                senderId: currentUser.id,
                 message: message,
-                timestamp: new Date().toISOString()
+                timestamp: new Date().toISOString(),
+                isAdmin: currentUser.email === 'sacksjordan@gmail.com'
             };
             
-            gameData.chatMessages.push(newMessage);
+            if (!gameData.chatMessages) {
+                gameData.chatMessages = [];
+            }
+            
+            gameData.chatMessages.push(chatMessage);
             saveGameData();
             
             input.value = '';
             updateCharCount();
-            updateChatDisplay();
+            loadChatMessages();
+            
+            showNotification('Message sent', 'success');
+            showNewMessageNotification(chatMessage);
+        }
+
+        function loadChatMessages() {
+            const container = document.getElementById('chatMessages');
+            const messages = gameData.chatMessages || [];
+            
+            if (messages.length === 0) {
+                container.innerHTML = '<div class="text-center text-gray-500 py-8">No messages yet. Start the conversation!</div>';
+                return;
+            }
+            
+            let html = '';
+            const isAdmin = currentUser?.email === 'sacksjordan@gmail.com';
+            
+            messages.forEach(msg => {
+                // Show message if: not private, or user is admin, or user sent the private message
+                const canSeeMessage = !msg.isPrivate || isAdmin || msg.senderId === currentUser?.id;
+                
+                if (canSeeMessage) {
+                    const time = new Date(msg.timestamp).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    const isOwnMessage = msg.senderId === currentUser?.id;
+                    const messageClass = isOwnMessage ? 'bg-blue-100 ml-8' : 'bg-gray-100 mr-8';
+                    const privateLabel = msg.isPrivate ? '<span class="text-xs text-red-600">[Private to Admin]</span> ' : '';
+                    const adminLabel = msg.isAdmin ? '<span class="text-xs text-purple-600">[Admin]</span> ' : '';
+                    
+                    html += `
+                        <div class="mb-3 p-3 rounded-lg ${messageClass}">
+                            <div class="flex justify-between items-start mb-1">
+                                <span class="font-medium text-sm">${adminLabel}${msg.sender}</span>
+                                <span class="text-xs text-gray-500">${time}</span>
+                            </div>
+                            <div class="text-sm">${privateLabel}${msg.message}</div>
+                        </div>
+                    `;
+                }
+            });
+            
+            container.innerHTML = html;
+            container.scrollTop = container.scrollHeight;
         }
 
         function updateCharCount() {
@@ -1940,39 +3123,13 @@
             counter.textContent = `${input.value.length}/200`;
         }
 
-        function updateChatDisplay() {
-            const container = document.getElementById('chatMessages');
-            container.innerHTML = '';
-            
-            if (gameData.chatMessages.length === 0) {
-                container.innerHTML = '<div class="text-center text-gray-500 py-8">No messages yet. Start the conversation!</div>';
+        // Playoff management functions
+        function updateSemiFinals() {
+            if (currentUser?.email !== 'sacksjordan@gmail.com') {
+                showNotification('Access denied - Admin only', 'error');
                 return;
             }
             
-            gameData.chatMessages.forEach(msg => {
-                const msgDiv = document.createElement('div');
-                msgDiv.className = 'mb-3 p-3 bg-gray-50 rounded-lg';
-                msgDiv.innerHTML = `
-                    <div class="flex justify-between items-start mb-1">
-                        <span class="font-medium text-gray-800">${msg.user}</span>
-                        <span class="text-xs text-gray-500">${new Date(msg.timestamp).toLocaleTimeString()}</span>
-                    </div>
-                    <div class="text-gray-700">${msg.message}</div>
-                `;
-                container.appendChild(msgDiv);
-            });
-            
-            container.scrollTop = container.scrollHeight;
-        }
-
-        // Utility functions
-        function toggleEliminatedPlayers() {
-            // Placeholder for toggle eliminated players functionality
-            alert('Toggle eliminated players functionality will be implemented here.');
-        }
-
-        // Playoff management functions
-        function updateSemiFinals() {
             const sf1Home = document.getElementById('sf1Home').value;
             const sf1Away = document.getElementById('sf1Away').value;
             const sf1Time = document.getElementById('sf1Time').value;
@@ -1980,33 +3137,130 @@
             const sf2Away = document.getElementById('sf2Away').value;
             const sf2Time = document.getElementById('sf2Time').value;
             
-            // Save semi-final data
-            if (!gameData.playoffs) gameData.playoffs = {};
-            gameData.playoffs.semiFinals = {
-                match1: { home: sf1Home, away: sf1Away, time: sf1Time },
-                match2: { home: sf2Home, away: sf2Away, time: sf2Time }
-            };
+            if (!gameData.semiTeams) gameData.semiTeams = {};
+            if (!gameData.semiTimes) gameData.semiTimes = {};
+            
+            gameData.semiTeams.sf1Home = sf1Home;
+            gameData.semiTeams.sf1Away = sf1Away;
+            gameData.semiTeams.sf2Home = sf2Home;
+            gameData.semiTeams.sf2Away = sf2Away;
+            gameData.semiTimes.sf1Time = sf1Time;
+            gameData.semiTimes.sf2Time = sf2Time;
+            
+            // Update the fixtures
+            roundFixtures[17].matches[0].home = sf1Home;
+            roundFixtures[17].matches[0].away = sf1Away;
+            roundFixtures[17].matches[0].time = sf1Time;
+            roundFixtures[17].matches[1].home = sf2Home;
+            roundFixtures[17].matches[1].away = sf2Away;
+            roundFixtures[17].matches[1].time = sf2Time;
             
             saveGameData();
-            alert('Semi Finals updated successfully!');
+            showNotification('Semi Finals updated successfully!', 'success');
         }
 
         function updateFinal() {
+            if (currentUser?.email !== 'sacksjordan@gmail.com') {
+                showNotification('Access denied - Admin only', 'error');
+                return;
+            }
+            
             const finalHome = document.getElementById('finalHome').value;
             const finalAway = document.getElementById('finalAway').value;
             const finalTime = document.getElementById('finalTime').value;
             
-            // Save final data
-            if (!gameData.playoffs) gameData.playoffs = {};
-            gameData.playoffs.final = {
-                home: finalHome,
-                away: finalAway,
-                time: finalTime
-            };
+            if (!gameData.finalTeams) gameData.finalTeams = {};
+            if (!gameData.finalTimes) gameData.finalTimes = {};
+            
+            gameData.finalTeams.finalHome = finalHome;
+            gameData.finalTeams.finalAway = finalAway;
+            gameData.finalTimes.finalTime = finalTime;
+            
+            // Update the fixtures
+            roundFixtures[18].matches[0].home = finalHome;
+            roundFixtures[18].matches[0].away = finalAway;
+            roundFixtures[18].matches[0].time = finalTime;
             
             saveGameData();
-            alert('Final updated successfully!');
+            showNotification('Final updated successfully!', 'success');
+        }
+
+        // Password reset functions
+        function showPasswordReset() {
+            document.getElementById('passwordResetForm').classList.remove('hidden');
+            document.getElementById('forgotPasswordBtn').style.display = 'none';
+        }
+
+        function hidePasswordReset() {
+            document.getElementById('passwordResetForm').classList.add('hidden');
+            document.getElementById('forgotPasswordBtn').style.display = 'block';
+            // Clear form fields
+            document.getElementById('resetEmail').value = '';
+            document.getElementById('resetDisplayName').value = '';
+            document.getElementById('newPassword').value = '';
+        }
+
+        function resetPassword() {
+            const email = document.getElementById('resetEmail').value.trim();
+            const displayName = document.getElementById('resetDisplayName').value.trim();
+            const newPassword = document.getElementById('newPassword').value;
+            
+            if (!email || !displayName || !newPassword) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
+            
+            if (newPassword.length < 6) {
+                showNotification('New password must be at least 6 characters long', 'error');
+                return;
+            }
+            
+            // Find player by email and display name for security
+            const player = gameData.players.find(p => 
+                p.email.toLowerCase() === email.toLowerCase() && 
+                p.displayName.toLowerCase() === displayName.toLowerCase()
+            );
+            
+            if (!player) {
+                showNotification('No account found with that email and display name combination', 'error');
+                return;
+            }
+            
+            // Update password
+            player.password = newPassword;
+            saveGameData();
+            
+            hidePasswordReset();
+            showNotification('Password reset successfully! You can now login with your new password.', 'success');
+        }
+
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg max-w-sm transform transition-all duration-300 translate-x-full`;
+            
+            const bgColor = {
+                'success': 'bg-green-500',
+                'error': 'bg-red-500',
+                'info': 'bg-blue-500',
+                'warning': 'bg-yellow-500'
+            }[type] || 'bg-gray-500';
+            
+            notification.className += ` ${bgColor} text-white`;
+            notification.textContent = message;
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+            
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 5000);
         }
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9849e2fd80753601',t:'MTc1ODc5NjY1MS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'984addaa85f954c9',t:'MTc1ODgwNjkxOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
