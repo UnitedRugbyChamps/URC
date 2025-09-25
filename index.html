@@ -742,6 +742,44 @@
             return (email || '').trim().toLowerCase();
         }
 
+        // Stable player id based on email, for cross-device consistency
+        function getStablePlayerIdForEmail(email) {
+            const e = normalizeEmail(email);
+            let hash = 0;
+            for (let i = 0; i < e.length; i++) {
+                hash = ((hash << 5) - hash) + e.charCodeAt(i);
+                hash |= 0;
+            }
+            return `uid_${Math.abs(hash)}`;
+        }
+
+        // Merge duplicates by email; keep canonical displayName and merged state
+        function dedupePlayersByEmail() {
+            if (!Array.isArray(gameData.players)) return;
+            const byEmail = new Map();
+            const result = [];
+            gameData.players.forEach(p => {
+                const key = normalizeEmail(p.email);
+                if (!key) return;
+                if (!byEmail.has(key)) {
+                    const copy = { ...p };
+                    copy.id = getStablePlayerIdForEmail(copy.email);
+                    byEmail.set(key, copy);
+                } else {
+                    const ex = byEmail.get(key);
+                    if (!ex.joinDate || (p.joinDate && new Date(p.joinDate) < new Date(ex.joinDate))) ex.joinDate = p.joinDate;
+                    if (Array.isArray(p.usedTeams) && (p.usedTeams.length > (ex.usedTeams?.length || 0))) ex.usedTeams = [...p.usedTeams];
+                    if (p.currentPick && !ex.currentPick) ex.currentPick = p.currentPick;
+                    if (p.isEliminated) ex.isEliminated = true;
+                    if (!ex.favoriteTeam && p.favoriteTeam) ex.favoriteTeam = p.favoriteTeam;
+                    if (p.pickItPicks) ex.pickItPicks = { ...(ex.pickItPicks || {}), ...p.pickItPicks };
+                    if (p.pickItStats) ex.pickItStats = { ...(ex.pickItStats || {}), ...p.pickItStats };
+                }
+            });
+            byEmail.forEach(v => result.push(v));
+            gameData.players = result;
+        }
+
         function refreshHeaderUserBadge() {
             const nameEl = document.getElementById('userName');
             if (nameEl && currentUser) {
@@ -758,28 +796,19 @@
         let syncGithub = null; // { owner, repo, branch, rootPath }
 
         async function syncPullAndMaybeUpdate() {
+            if (!syncUrl) return;
             try {
-                let remote = null;
-                if (syncGithub) {
-                    const savedEmail = localStorage.getItem('currentUserEmail');
-                    if (!savedEmail) return;
-                    const key = normalizeEmail(savedEmail).replace(/[^a-z0-9@._-]/g, '');
-                    const path = `${syncGithub.rootPath.replace(/\/$/, '')}/urc-${encodeURIComponent(key)}.json`;
-                    const token = getGithubToken();
-                    if (!token) return;
-                    const gh = await githubGetFile(syncGithub.owner, syncGithub.repo, syncGithub.branch, path, token);
-                    remote = gh?.json || null;
-                } else if (syncUrl) {
-                    const res = await fetch(syncUrl, { cache: 'no-store' });
-                    if (!res.ok) return;
-                    remote = await res.json();
-                }
+                const res = await fetch(syncUrl, { cache: 'no-store' });
+                if (!res.ok) return;
+                const remote = await res.json();
                 if (!remote || typeof remote !== 'object') return;
                 if (!remote.updatedAt || remote.updatedAt > (gameData.updatedAt || 0)) {
                     gameData = { ...gameData, ...remote };
+                    dedupePlayersByEmail();
                     localStorage.setItem('urcGameData', JSON.stringify(gameData));
+                    // Rebind currentUser by email if present
                     const savedEmail = localStorage.getItem('currentUserEmail');
-                    if (savedEmail && Array.isArray(gameData.players)) {
+                    if (savedEmail) {
                         const player = gameData.players.find(p => normalizeEmail(p.email) === normalizeEmail(savedEmail));
                         if (player) currentUser = player;
                     }
@@ -1411,6 +1440,7 @@
             if (saved) {
                 gameData = { ...gameData, ...JSON.parse(saved) };
             }
+            dedupePlayersByEmail();
             // Auto-attach current user if we previously stored an email
             const savedEmail = localStorage.getItem('currentUserEmail');
             if (savedEmail && Array.isArray(gameData.players)) {
@@ -1535,7 +1565,7 @@
             }
             
             const newPlayer = {
-                id: Date.now(),
+                id: getStablePlayerIdForEmail(email),
                 email: email,
                 password: password,
                 displayName: displayName || email.split('@')[0],
@@ -1644,31 +1674,15 @@
             window.tempCustomPic = null;
         }
 
-        function loginUser(email, password) {
+        async function loginUser(email, password) {
             email = normalizeEmail(email);
+            if (syncUrl) {
+                await syncPullAndMaybeUpdate();
+            }
             let player = gameData.players.find(p => normalizeEmail(p.email) === email);
             if (!player) {
-                // Auto-create account on login if not found (cross-device friendly)
-                const newPlayer = {
-                    id: Date.now(),
-                    email: email,
-                    password: password,
-                    displayName: email.split('@')[0],
-                    profilePic: null,
-                    isCustomPic: false,
-                    favoriteTeam: '',
-                    isEliminated: false,
-                    usedTeams: [],
-                    currentPick: null,
-                    roundJoined: gameData.currentRound,
-                    joinDate: new Date().toISOString(),
-                    pickItPicks: {},
-                    pickItStats: { totalPicks: 0, correctPicks: 0, percentage: 0, weeklyMovement: 0, previousRank: null }
-                };
-                gameData.players.push(newPlayer);
-                saveGameData();
-                player = newPlayer;
-                showNotification('Account created and logged in', 'success');
+                showNotification('Email not found. Please register first.', 'error');
+                return;
             }
             
             if (player.password !== password) {
