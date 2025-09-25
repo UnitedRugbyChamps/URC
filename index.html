@@ -1221,6 +1221,8 @@
             // Player list modals
             document.getElementById('standingPlayersCard').addEventListener('click', () => openPlayerListModal('standing'));
             document.getElementById('eliminatedPlayersCard').addEventListener('click', () => openPlayerListModal('eliminated'));
+            const closePlayerListBtn = document.getElementById('closePlayerListModal');
+            if (closePlayerListBtn) closePlayerListBtn.addEventListener('click', closePlayerListModal);
             
             // Admin modal
             document.getElementById('adminScores').addEventListener('click', openAdminModal);
@@ -1838,6 +1840,9 @@
                     indicator.innerHTML = '🟡 Round Started';
                 }
             }
+
+            // Always (re)build team buttons so they are visible regardless of mode toggles
+            try { generateTeamButtons(); } catch (e) {}
         }
 
         function generateTeamButtons() {
