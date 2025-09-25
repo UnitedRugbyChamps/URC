@@ -268,6 +268,7 @@
                 <!-- Current Round Section -->
                 <div id="currentRoundSection">
                     <div id="currentRoundHeader" class="mb-4">
+                        <div id="currentRoundCountdown" class="text-sm text-gray-600 mb-2"></div>
                         <h3 class="text-xl font-semibold text-gray-800 mb-2">Round 1 - September 2025</h3>
                         <p class="text-gray-600">Pick your team to win this round. Remember - you can only use each team once!</p>
                     </div>
@@ -359,6 +360,7 @@
                             </select>
                         </div>
                     </div>
+                    <div id="allFixturesCountdown" class="mb-2 text-sm text-gray-600"></div>
                     <div id="allFixturesContent">
                         <!-- Will be populated dynamically -->
                     </div>
@@ -1741,6 +1743,14 @@
             const lmsInline = document.getElementById('lmsCountdownInline');
             if (lmsInline) {
                 lmsInline.textContent = status.isOpen ? `⏳ ${status.timeUntil}` : '🔒 Picking Closed';
+            }
+            const currentRoundCountdown = document.getElementById('currentRoundCountdown');
+            if (currentRoundCountdown) {
+                currentRoundCountdown.textContent = status.isOpen ? `⏳ Round Open — ${status.timeUntil}` : (status.roundStart && new Date() < status.roundStart ? `🔒 Opens soon` : '🟡 Round Started');
+            }
+            const allFixturesCountdown = document.getElementById('allFixturesCountdown');
+            if (allFixturesCountdown) {
+                allFixturesCountdown.textContent = status.isOpen ? `⏳ Round Open — ${status.timeUntil}` : (status.roundStart && new Date() < status.roundStart ? `🔒 Opens soon` : '🟡 Round Started');
             }
             
             // Update round status indicator
