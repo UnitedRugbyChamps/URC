@@ -1888,19 +1888,21 @@
                 allFixturesCountdown.textContent = status.isOpen ? `⏳ Round Open — ${status.timeUntil}` : (status.roundStart && new Date() < status.roundStart ? `🔒 Opens soon` : '🟡 Round Started');
             }
             
-            // Update round status indicator
+            // Update round status indicator (compact dot + label)
             const indicator = document.getElementById('roundStatusIndicator');
             if (indicator) {
-                if (status.isOpen) {
-                    indicator.className = 'mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800';
-                    indicator.innerHTML = '🟢 Round Open - Picking Available';
-                } else if (status.earliestKickoff && new Date() < status.earliestKickoff) {
-                    indicator.className = 'mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-amber-100 text-amber-800';
-                    indicator.innerHTML = '🔒 Locked — Awaiting Kick-off';
-                } else {
-                    indicator.className = 'mt-3 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800';
-                    indicator.innerHTML = '🟡 Round Started';
+                let dot = '🟢';
+                let label = 'Picking OPEN';
+                if (!status.isOpen) {
+                    dot = '🔴';
+                    if (status.earliestKickoff && new Date() < status.earliestKickoff) {
+                        label = 'Locked';
+                    } else {
+                        label = 'Round In Progress';
+                    }
                 }
+                indicator.className = 'mt-3 inline-flex items-center gap-2 text-sm font-medium';
+                indicator.innerHTML = `${dot} ${label}`;
             }
 
             // Always (re)build team buttons so they are visible regardless of mode toggles
