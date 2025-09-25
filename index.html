@@ -1597,6 +1597,11 @@
             document.getElementById('authSection').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
             document.getElementById('userName').textContent = player.displayName;
+            // Hide LMS UI until user explicitly opens it
+            document.getElementById('roundStatus').classList.add('hidden');
+            document.getElementById('lmsInterface').classList.add('hidden');
+            const statsPanel = document.getElementById('lmsStats');
+            if (statsPanel) statsPanel.classList.add('hidden');
             try { generateTeamButtons(); } catch (e) {}
             
             const userProfilePicElement = document.getElementById('userProfilePic');
@@ -2001,12 +2006,7 @@
                 document.getElementById('playersEliminated').textContent = eliminatedPlayers.length;
                 document.getElementById('totalPlayers').textContent = gameData.players.length;
                 
-                // Show/hide eliminated toggle button (guarded)
-                const toggleBtn = document.getElementById('toggleEliminated');
-                if (toggleBtn) {
-                    if (eliminatedPlayers.length > 0) toggleBtn.classList.remove('hidden');
-                    else toggleBtn.classList.add('hidden');
-                }
+                // Do not auto-show stats; visible only after "My LMS Picks"
                 
                 generateTeamButtons();
                 
