@@ -2198,6 +2198,39 @@
             showNotification('All picks saved successfully!', 'success');
         }
 
+        // Admin: reset Pick It picks for a player (current round)
+        function resetPickItRound(playerId, roundNum) {
+            if (currentUser?.email !== 'sacksjordan@gmail.com') {
+                showNotification('Access denied - Admin only', 'error');
+                return;
+            }
+            const player = gameData.players.find(p => p.id == playerId);
+            if (!player) return;
+            if (player.pickItPicks && player.pickItPicks[roundNum]) {
+                delete player.pickItPicks[roundNum];
+                saveGameData();
+                showNotification(`Reset Pick It picks for ${player.displayName} in Round ${roundNum}`, 'success');
+                updatePickItInterface();
+                populateAdminPlayers();
+            }
+        }
+
+        // Admin: reset all Pick It picks for a player
+        function resetPickItAll(playerId) {
+            if (currentUser?.email !== 'sacksjordan@gmail.com') {
+                showNotification('Access denied - Admin only', 'error');
+                return;
+            }
+            const player = gameData.players.find(p => p.id == playerId);
+            if (!player) return;
+            player.pickItPicks = {};
+            player.pickItStats = { totalPicks: 0, correctPicks: 0, percentage: 0, weeklyMovement: 0, previousRank: null };
+            saveGameData();
+            showNotification(`Reset all Pick It picks for ${player.displayName}`, 'success');
+            updatePickItInterface();
+            populateAdminPlayers();
+        }
+
         function calculatePickItLeaderboard() {
             return gameData.players
                 .map(player => {
@@ -2302,14 +2335,16 @@
                 const lockIcon = hasPick ? '🔒' : '❌';
                 const statusClass = hasPick ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800';
                 
-                // Only show actual pick if picking is closed OR user is admin OR it's the current user
+                // Only show actual pick after round finished OR user is admin OR it's the current user
                 let pickText = '';
                 const isAdmin = currentUser?.email === 'sacksjordan@gmail.com';
                 const isCurrentUser = player.id === currentUser?.id;
+                const matchResults = Object.values(gameData.matchResults || {}).filter(r => r.roundNum === gameData.currentRound);
+                const roundFinished = matchResults.length > 0 && matchResults.every(r => r.finished);
                 
                 if (!hasPick) {
                     pickText = 'Not picked';
-                } else if (status.isOpen && !isAdmin && !isCurrentUser) {
+                } else if (!roundFinished && !isAdmin && !isCurrentUser) {
                     pickText = '<span class="blur-sm">████████</span>';
                 } else {
                     pickText = `<span class=\"font-semibold\">${player.currentPick}</span>`;
@@ -2551,15 +2586,12 @@
             const isCurrentUser = player.id === currentUser?.id;
             
             if (player.usedTeams.length > 0) {
+                const results = Object.values(gameData.matchResults || {});
                 pickHistory = player.usedTeams.map((team, index) => {
                     const roundNum = (player.roundJoined || 1) + index;
-                    let teamDisplay = team;
-                    
-                    // Blur current round pick if picking is still open and not admin/current user
-                    if (roundNum === gameData.currentRound && status.isOpen && !isAdmin && !isCurrentUser) {
-                        teamDisplay = '<span class="blur-sm">████████</span>';
-                    }
-                    
+                    const roundResults = results.filter(r => r.roundNum === roundNum);
+                    const roundFinished = roundResults.length > 0 && roundResults.every(r => r.finished);
+                    const teamDisplay = team && roundFinished ? team : '—';
                     return `<div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 py-1">
                         <span>Round ${roundNum}:</span>
                         <span class="font-medium">${teamDisplay}</span>
@@ -2847,6 +2879,11 @@
                 showNotification('Access denied - Admin only', 'error');
                 return;
             }
+            const status = calculatePickingStatus();
+            if (!status.isOpen) {
+                showNotification('Cannot set winners outside round open', 'error');
+                return;
+            }
             
             if (!gameData.matchResults[gameId]) {
                 gameData.matchResults[gameId] = {};
@@ -2863,6 +2900,16 @@
             if (currentUser?.email !== 'sacksjordan@gmail.com') {
                 showNotification('Access denied - Admin only', 'error');
                 return;
+            }
+            // Block finishing until after kickoff time
+            const rd = roundFixtures[roundNum];
+            const mt = rd?.matches.find(m => m.id === gameId);
+            if (mt) {
+                const kickoff = parseMatchLondonDate(mt.day, mt.time, new Date().getFullYear());
+                if (new Date() < kickoff) {
+                    showNotification('You can only finish a match after kickoff', 'error');
+                    return;
+                }
             }
             
             const result = gameData.matchResults[gameId];
@@ -2950,6 +2997,27 @@
                     player.pickItStats.previousRank = currentRank > 0 ? currentRank : null;
                 }
             });
+        }
+
+        // Recompute Pick It stats from finished results only
+        function computeAndUpdatePlayerPickItStats(player) {
+            if (!player) return { totalPicks: 0, correctPicks: 0, percentage: 0 };
+            const stats = { totalPicks: 0, correctPicks: 0, percentage: 0, weeklyMovement: player.pickItStats?.weeklyMovement || 0, previousRank: player.pickItStats?.previousRank || null };
+            const results = gameData.matchResults || {};
+            Object.keys(results).forEach(gameId => {
+                const res = results[gameId];
+                if (!res || !res.finished) return;
+                const roundNum = res.roundNum;
+                const roundPicks = player.pickItPicks?.[roundNum];
+                if (!roundPicks) return;
+                const pick = roundPicks[gameId];
+                if (!pick) return;
+                stats.totalPicks++;
+                if (pick === res.winner) stats.correctPicks++;
+            });
+            stats.percentage = stats.totalPicks > 0 ? (stats.correctPicks / stats.totalPicks) * 100 : 0;
+            player.pickItStats = stats;
+            return stats;
         }
 
         function resetGameResult(gameId) {
@@ -3074,7 +3142,15 @@
                                             Update
                                         </button>
                                     </div>
-                                    ${player.currentPick ? `<p class="text-xs text-gray-500">Current Round ${gameData.currentRound}: ${player.currentPick}</p>` : ''}
+                                    <div class="flex space-x-2">
+                                        <button onclick="resetPickItRound('${player.id}', ${gameData.currentRound})" class="px-3 py-1 text-xs bg-yellow-500 text-white rounded hover:bg-yellow-600">Reset Pick It (Round)</button>
+                                        <button onclick="resetPickItAll('${player.id}')" class="px-3 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600">Reset Pick It (All)</button>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button onclick="resetPickItRound('${player.id}', ${gameData.currentRound})" class="px-3 py-1 text-xs bg-yellow-500 text-white rounded hover:bg-yellow-600">Reset Pick It (Round)</button>
+                                        <button onclick="resetPickItAll('${player.id}')" class="px-3 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600">Reset Pick It (All)</button>
+                                    </div>
+                                    ${player.currentPick ? `<p class=\"text-xs text-gray-500\">Current Round ${gameData.currentRound}: ${player.currentPick}</p>` : ''}
                                 </div>
                             </div>
                         </div>
@@ -3103,6 +3179,11 @@
         function setPlayerStatus(playerId, isEliminated) {
             if (currentUser?.email !== 'sacksjordan@gmail.com') {
                 showNotification('Access denied - Admin only', 'error');
+                return;
+            }
+            const status = calculatePickingStatus();
+            if (!status.isOpen) {
+                showNotification('Admin override disabled outside round open', 'error');
                 return;
             }
             
@@ -3139,6 +3220,11 @@
         function setPlayerPick(playerId) {
             if (currentUser?.email !== 'sacksjordan@gmail.com') {
                 showNotification('Access denied - Admin only', 'error');
+                return;
+            }
+            const status = calculatePickingStatus();
+            if (!status.isOpen) {
+                showNotification('Admin override disabled outside round open', 'error');
                 return;
             }
             
