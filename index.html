@@ -847,6 +847,21 @@
             return (email || '').trim().toLowerCase();
         }
 
+        function refreshHeaderUserBadge() {
+            const nameEl = document.getElementById('userName');
+            if (nameEl && currentUser) {
+                nameEl.textContent = currentUser.displayName;
+            }
+            const userProfilePicElement = document.getElementById('userProfilePic');
+            if (userProfilePicElement && currentUser) {
+                if (currentUser.isCustomPic && currentUser.profilePic && currentUser.profilePic.startsWith('data:')) {
+                    userProfilePicElement.innerHTML = `<img src="${currentUser.profilePic}" class="w-8 h-8 rounded-full object-cover border border-gray-300" alt="Profile">`;
+                } else {
+                    userProfilePicElement.innerHTML = `<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMFCSXJWsbmkra95ltt9Z9LJiRuMOsIBluqwF-g4&usqp=CAE&s" class="w-8 h-8 rounded-full object-cover border border-gray-300" alt="Profile" onerror="this.src=''; this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="w-8 h-8 rounded-full bg-gray-300 border border-gray-400" style="display: none;"></div>`;
+                }
+            }
+        }
+
         // Timezone helpers (UK time handling and formatting)
         function pad2(num) { return String(num).padStart(2, '0'); }
 
@@ -2738,6 +2753,8 @@
             
             saveGameData();
             updateUI();
+            refreshHeaderUserBadge();
+            populateAdminPlayers();
             closeSettingsModal();
             
             showNotification('Profile updated successfully!', 'success');
