@@ -1409,8 +1409,13 @@
             document.getElementById('resetPasswordBtn').addEventListener('click', resetPassword);
             document.getElementById('cancelResetBtn').addEventListener('click', hidePasswordReset);
             
-            // Email verification
-            document.getElementById('resendCode').addEventListener('click', resendVerificationCode);
+			// Email verification (guard if element missing)
+			try {
+				const resendBtn = document.getElementById('resendCode');
+				if (resendBtn && typeof window.resendVerificationCode === 'function') {
+					resendBtn.addEventListener('click', window.resendVerificationCode);
+				}
+			} catch (_) {}
             
             // Custom profile picture uploads
                 
@@ -1513,19 +1518,46 @@
             }
         }
 
-        function handleAuth(e) {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const displayName = document.getElementById('displayName').value;
-            const authButtonText = document.getElementById('authButton').textContent;
-            
-            if (authButtonText === 'Login') {
-                loginUser(email, password);
-            } else if (authButtonText === 'Register') {
-                registerUser(email, password, displayName);
-            }
-        }
+		async function handleAuth(e) {
+			e.preventDefault();
+			const email = document.getElementById('email').value;
+			const password = document.getElementById('password').value;
+			const displayName = document.getElementById('displayName').value;
+			const authButtonEl = document.getElementById('authButton');
+			const authButtonText = authButtonEl.textContent;
+			
+			try {
+				authButtonEl.disabled = true;
+				if (authButtonText === 'Login') {
+					if (window.loginUser) {
+						await window.loginUser(email, password);
+					} else {
+						await loginUser(email, password);
+					}
+				} else if (authButtonText === 'Register') {
+					if (window.registerUser) {
+						await window.registerUser(email, password, displayName);
+					} else {
+						await registerUser(email, password, displayName);
+					}
+				}
+			} catch (err) {
+				let message = 'Authentication failed. Please try again.';
+				const code = (err && err.code) || '';
+				if (typeof code === 'string') {
+					if (code.includes('auth/invalid-email')) message = 'Invalid email address.';
+					else if (code.includes('auth/user-not-found')) message = 'No account found with that email.';
+					else if (code.includes('auth/wrong-password')) message = 'Incorrect password. Please try again.';
+					else if (code.includes('auth/email-already-in-use')) message = 'Email already registered. Please login instead.';
+					else if (code.includes('auth/weak-password')) message = 'Password must be at least 6 characters.';
+					else if (code.includes('auth/too-many-requests')) message = 'Too many attempts. Try again later.';
+					else if (err.message) message = err.message;
+				}
+				if (typeof window.showNotification === 'function') window.showNotification(message, 'error');
+			} finally {
+				authButtonEl.disabled = false;
+			}
+		}
 
         // Enhanced profanity filter function
         function containsProfanity(text) {
