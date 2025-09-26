@@ -70,17 +70,6 @@
                     <h3 class="text-xl font-semibold text-gray-800 mb-4">Your Fantasy League</h3>
 
                     <div class="bg-blue-50 rounded-lg p-4 mb-6">
-                        <h4 class="font-semibold text-blue-900 mb-2">How to Play:</h4>
-                        <ul class="text-sm text-blue-800 space-y-1">
-                            <li>• Pick one team per round from the available teams</li>
-                            <li>• If your team wins or draws, you advance to the next round</li>
-                            <li>• If your team loses, you're eliminated from the game</li>
-                            <li>• Each team can only be used once per player</li>
-                            <li>• Last player(s) remaining win the championship!</li>
-                        </ul>
-                    </div>
-
-                    <div class="bg-blue-50 rounded-lg p-4 mb-6">
                         <div class="flex justify-between items-center">
                             <div>
                                 <h4 class="text-lg font-semibold text-blue-900">Round <span id="currentRound">1</span></h4>
@@ -428,26 +417,18 @@
         }
 
         function submitTeamPick() {
-            if (!selectedTeam) {
-                showNotification('Please select a team first', 'error');
-                return;
+            if (!selectedTeam) return;
+
+            // Store user's pick
+            if (!gameData.userPicks[currentUser.id]) {
+                gameData.userPicks[currentUser.id] = {};
             }
 
-            try {
-                // Store user's pick
-                if (!gameData.userPicks[currentUser.id]) {
-                    gameData.userPicks[currentUser.id] = {};
-                }
+            gameData.userPicks[currentUser.id][gameData.currentRound] = selectedTeam;
+            localStorage.setItem('gameData', JSON.stringify(gameData));
 
-                gameData.userPicks[currentUser.id][gameData.currentRound] = selectedTeam;
-                localStorage.setItem('gameData', JSON.stringify(gameData));
-
-                showNotification(`Pick submitted: ${gameData.teams.find(t => t.id === selectedTeam).name}`, 'success');
-                updateGameDisplay();
-            } catch (error) {
-                console.error('Error submitting pick:', error);
-                showNotification('Error submitting your pick. Please try again.', 'error');
-            }
+            showNotification(`Pick submitted: ${gameData.teams.find(t => t.id === selectedTeam).name}`, 'success');
+            updateGameDisplay();
         }
 
         function updateMatchesList() {

@@ -1,0 +1,2160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>URC Fantasy League</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Load CryptoJS with fallback
+        if (!window.CryptoJS) {
+            document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"><\/script>');
+        }
+    </script>
+    <style>
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .shake {
+            animation: shake 0.5s ease-in-out;
+        }
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+    </style>
+</head>
+<body class="min-h-screen gradient-bg">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-white mb-2">🏉 URC Elimination Game</h1>
+            <p class="text-white/80">Pick a team to WIN each round - lose and you're out! Use each team only once.</p>
+        </div>
+
+        <!-- Authentication Section -->
+        <div id="authSection" class="max-w-md mx-auto bg-white rounded-xl card-shadow p-8 mb-8 fade-in">
+            <!-- Auth Tabs -->
+            <div class="flex mb-6 bg-gray-100 rounded-lg p-1">
+                <button type="button" id="loginTab" class="flex-1 py-2 px-4 bg-blue-600 text-white rounded-md font-medium transition-all duration-200">Login</button>
+                <button type="button" id="registerTab" class="flex-1 py-2 px-4 text-gray-600 rounded-md font-medium transition-all duration-200 hover:bg-gray-200">Register</button>
+            </div>
+            
+            <!-- Auth Form -->
+            <form id="authForm" class="space-y-4">
+                <!-- Email Field -->
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                    <input type="email" id="email" name="email" required 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                           placeholder="Enter your email">
+                    <div id="emailError" class="text-red-500 text-xs mt-1 hidden"></div>
+                </div>
+
+                <!-- Password Field -->
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                    <div class="relative">
+                        <input type="password" id="password" name="password" required 
+                               class="w-full px-3 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                               placeholder="Enter your password">
+                        <button type="button" id="togglePassword" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="passwordError" class="text-red-500 text-xs mt-1 hidden"></div>
+                </div>
+
+                <!-- Display Name Field (Register only) -->
+                <div id="displayNameField" class="hidden">
+                    <label for="displayName" class="block text-sm font-medium text-gray-700 mb-1">Display Name</label>
+                    <input type="text" id="displayName" name="displayName" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                           placeholder="Choose a display name">
+                    <div id="displayNameError" class="text-red-500 text-xs mt-1 hidden"></div>
+                </div>
+
+                <!-- Confirm Password Field (Register only) -->
+                <div id="confirmPasswordField" class="hidden">
+                    <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" 
+                           class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                           placeholder="Confirm your password">
+                    <div id="confirmPasswordError" class="text-red-500 text-xs mt-1 hidden"></div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="authButton" 
+                        class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 font-medium transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span id="buttonText">Login</span>
+                    <div id="buttonSpinner" class="hidden inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin ml-2"></div>
+                </button>
+
+                <!-- Forgot Password Link (Login only) -->
+                <div id="forgotPasswordLink" class="text-center">
+                    <button type="button" id="forgotPasswordBtn" class="text-sm text-blue-600 hover:text-blue-800 underline">
+                        Forgot your password?
+                    </button>
+                </div>
+            </form>
+
+            <!-- Password Reset Modal -->
+            <div id="passwordResetModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div class="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">Reset Password</h3>
+                    <form id="passwordResetForm" class="space-y-4">
+                        <div>
+                            <label for="resetEmail" class="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
+                            <input type="email" id="resetEmail" required 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="resetDisplayName" class="block text-sm font-medium text-gray-700 mb-1">Display Name</label>
+                            <input type="text" id="resetDisplayName" required 
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div>
+                            <label for="newPassword" class="block text-sm font-medium text-gray-700 mb-1">New Password</label>
+                            <input type="password" id="newPassword" required minlength="6"
+                                   class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        </div>
+                        <div class="flex space-x-3">
+                            <button type="submit" class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700">
+                                Reset Password
+                            </button>
+                            <button type="button" id="cancelReset" class="flex-1 bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400">
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main App (Hidden initially) -->
+        <div id="mainApp" class="hidden">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white rounded-xl card-shadow p-6 mb-6">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold text-gray-800">Welcome, <span id="userName"></span>!</h2>
+                        <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors">
+                            Logout
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Game Content -->
+                <div class="bg-white rounded-xl card-shadow p-6 mb-6">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Your Fantasy League</h3>
+                    
+                    <!-- Current Round Display -->
+                    <div class="bg-blue-50 rounded-lg p-4 mb-6">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h4 class="text-lg font-semibold text-blue-900">Round <span id="currentRound">1</span></h4>
+                                <p class="text-blue-700" id="gameStateText">Pick your team for this round's matches</p>
+                                <div id="deadlineInfo" class="text-sm text-gray-600 mt-1"></div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-2xl font-bold text-blue-900" id="userScore">0</div>
+                                <div class="text-sm text-blue-700">Rounds Survived</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Team Selection -->
+                    <div id="teamSelection" class="mb-6">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-4">Select Your Team</h4>
+                        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3" id="teamGrid">
+                            <!-- Teams will be populated by JavaScript -->
+                        </div>
+                        <div class="mt-4">
+                            <button id="submitPick" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                                Submit Pick
+                            </button>
+                            <button id="changePick" class="hidden bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed ml-2">
+                                Change Pick
+                            </button>
+                            <span id="pickStatus" class="ml-3 text-sm text-gray-600"></span>
+                        </div>
+                    </div>
+
+                    <!-- This Round's Matches -->
+                    <div class="mb-6">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-4">This Round's Matches</h4>
+                        <div id="matchesList" class="space-y-3">
+                            <!-- Matches will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Knockout Rounds -->
+                    <div class="mb-6" id="knockoutSection">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-lg font-semibold text-gray-800">Knockout Rounds</h4>
+                            <div class="flex space-x-2">
+                                <button id="toggleAdminView" class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
+                                    Admin View
+                                </button>
+                            </div>
+                        </div>
+                        <div id="knockoutRoundsList" class="space-y-3">
+                            <!-- Knockout rounds will be populated by JavaScript -->
+                        </div>
+
+                        <!-- Admin Interface (hidden by default) -->
+                        <div id="adminInterface" class="hidden mt-4 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                            <h5 class="font-semibold text-gray-800 mb-3">Admin Controls</h5>
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Quarter Finals Date</label>
+                                    <input type="date" id="quarterFinalsDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Semi Finals Date</label>
+                                    <input type="date" id="semiFinalsDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Final Date</label>
+                                    <input type="date" id="finalDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg">
+                                </div>
+                                <div class="flex space-x-2">
+                                    <button id="updateDates" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                                        Update Dates
+                                    </button>
+                                    <button id="setupQuarterFinals" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                                        Setup Quarter Finals
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- All Fixtures -->
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-lg font-semibold text-gray-800">All Fixtures</h4>
+                            <div class="flex space-x-2">
+                                <button id="showAllFixtures" class="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors">
+                                    Show All
+                                </button>
+                                <button id="showCurrentRound" class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
+                                    Current Round Only
+                                </button>
+                            </div>
+                        </div>
+                        <div id="allFixturesList" class="space-y-3 hidden">
+                            <!-- All fixtures will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- User's Picks History -->
+                    <div class="mb-6">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-4">Your Picks History</h4>
+                        <div id="picksHistory" class="space-y-2">
+                            <!-- History will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Leaderboard -->
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-lg font-semibold text-gray-800">Leaderboard</h4>
+                            <div class="flex space-x-2">
+                                <button id="showAllPlayers" class="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors">
+                                    All Players
+                                </button>
+                                <button id="showStandingPlayers" class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
+                                    Still Standing
+                                </button>
+                                <button id="showEliminatedPlayers" class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors">
+                                    Eliminated
+                                </button>
+                            </div>
+                        </div>
+                        <div id="leaderboard" class="space-y-2">
+                            <!-- Leaderboard will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notification Container -->
+        <div id="notificationContainer" class="fixed top-4 right-4 z-50 space-y-2"></div>
+    </div>
+
+    <script>
+        // Global state
+        let currentUser = null;
+        let isLoginMode = true;
+        let gameData = null;
+        let selectedTeam = null;
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM Content Loaded, initializing app...');
+
+            // Wait for external scripts to load
+            const initApp = () => {
+                try {
+                    console.log('Initializing authentication...');
+                    initializeAuth();
+                    console.log('Setting up event listeners...');
+                    setupEventListeners();
+                    console.log('Checking existing session...');
+                    checkExistingSession();
+                    console.log('Initializing game...');
+                    initializeGame();
+                    console.log('App initialization complete');
+                } catch (error) {
+                    console.error('Error during app initialization:', error);
+                }
+            };
+
+            // Wait for external scripts to load, then initialize
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initApp);
+            } else {
+                setTimeout(initApp, 100);
+            }
+
+            // Update game state every minute
+            setInterval(() => {
+                if (currentUser && gameData) {
+                    try {
+                        updateGameState();
+                        updateGameDisplay();
+                    } catch (error) {
+                        console.error('Error updating game state:', error);
+                    }
+                }
+            }, 60000); // 60 seconds
+        });
+
+        // Initialize authentication system
+        function initializeAuth() {
+            // Set initial state
+            switchAuthMode('login');
+            
+            // Check for existing session
+            const savedUser = localStorage.getItem('currentUser');
+            if (savedUser) {
+                try {
+                    currentUser = JSON.parse(savedUser);
+                    showMainApp();
+                } catch (e) {
+                    localStorage.removeItem('currentUser');
+                }
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            console.log('Setting up event listeners...');
+            
+            // Tab switching
+            const loginTab = document.getElementById('loginTab');
+            const registerTab = document.getElementById('registerTab');
+            
+            if (loginTab && registerTab) {
+                loginTab.addEventListener('click', () => switchAuthMode('login'));
+                registerTab.addEventListener('click', () => switchAuthMode('register'));
+                console.log('Tab listeners attached');
+            } else {
+                console.error('Tab elements not found');
+            }
+
+            // Form submission
+            const authForm = document.getElementById('authForm');
+            if (authForm) {
+                authForm.addEventListener('submit', handleAuthSubmit);
+                console.log('Form submit listener attached');
+            } else {
+                console.error('Auth form not found');
+            }
+
+            // Password visibility toggle
+            const togglePassword = document.getElementById('togglePassword');
+            if (togglePassword) {
+                togglePassword.addEventListener('click', togglePasswordVisibility);
+            }
+
+            // Forgot password
+            const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+            if (forgotPasswordBtn) {
+                forgotPasswordBtn.addEventListener('click', showPasswordResetModal);
+            }
+
+            // Password reset form
+            const passwordResetForm = document.getElementById('passwordResetForm');
+            if (passwordResetForm) {
+                passwordResetForm.addEventListener('submit', handlePasswordReset);
+            }
+            
+            const cancelReset = document.getElementById('cancelReset');
+            if (cancelReset) {
+                cancelReset.addEventListener('click', hidePasswordResetModal);
+            }
+
+            // Logout
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', logout);
+            }
+
+            // Game event listeners
+            const submitPick = document.getElementById('submitPick');
+            if (submitPick) {
+                submitPick.addEventListener('click', submitTeamPick);
+            }
+            
+            const changePick = document.getElementById('changePick');
+            if (changePick) {
+                changePick.addEventListener('click', changeTeamPick);
+            }
+            
+            // Fixture display toggles
+            const showAllFixtures = document.getElementById('showAllFixtures');
+            if (showAllFixtures) {
+                showAllFixtures.addEventListener('click', () => toggleFixturesDisplay('all'));
+            }
+            
+            const showCurrentRound = document.getElementById('showCurrentRound');
+            if (showCurrentRound) {
+                showCurrentRound.addEventListener('click', () => toggleFixturesDisplay('current'));
+            }
+            
+            // Leaderboard display toggles
+            const showAllPlayers = document.getElementById('showAllPlayers');
+            if (showAllPlayers) {
+                showAllPlayers.addEventListener('click', () => toggleLeaderboardDisplay('all'));
+            }
+            
+            const showStandingPlayers = document.getElementById('showStandingPlayers');
+            if (showStandingPlayers) {
+                showStandingPlayers.addEventListener('click', () => toggleLeaderboardDisplay('standing'));
+            }
+            
+            const showEliminatedPlayers = document.getElementById('showEliminatedPlayers');
+            if (showEliminatedPlayers) {
+                showEliminatedPlayers.addEventListener('click', () => toggleLeaderboardDisplay('eliminated'));
+            }
+
+            // Admin interface toggles
+            const toggleAdminView = document.getElementById('toggleAdminView');
+            if (toggleAdminView) {
+                toggleAdminView.addEventListener('click', toggleAdminInterface);
+            }
+            
+            const updateDates = document.getElementById('updateDates');
+            if (updateDates) {
+                updateDates.addEventListener('click', updateKnockoutDates);
+            }
+            
+            const setupQuarterFinalsBtn = document.getElementById('setupQuarterFinals');
+            if (setupQuarterFinalsBtn) {
+                setupQuarterFinalsBtn.addEventListener('click', setupQuarterFinals);
+            }
+            
+            console.log('All event listeners setup complete');
+        }
+
+        // Switch between login and register modes
+        function switchAuthMode(mode) {
+            isLoginMode = mode === 'login';
+            
+            const loginTab = document.getElementById('loginTab');
+            const registerTab = document.getElementById('registerTab');
+            const displayNameField = document.getElementById('displayNameField');
+            const confirmPasswordField = document.getElementById('confirmPasswordField');
+            const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+            const buttonText = document.getElementById('buttonText');
+
+            // Update tab styles
+            if (isLoginMode) {
+                loginTab.className = 'flex-1 py-2 px-4 bg-blue-600 text-white rounded-md font-medium transition-all duration-200';
+                registerTab.className = 'flex-1 py-2 px-4 text-gray-600 rounded-md font-medium transition-all duration-200 hover:bg-gray-200';
+                displayNameField.classList.add('hidden');
+                confirmPasswordField.classList.add('hidden');
+                forgotPasswordLink.classList.remove('hidden');
+                buttonText.textContent = 'Login';
+            } else {
+                loginTab.className = 'flex-1 py-2 px-4 text-gray-600 rounded-md font-medium transition-all duration-200 hover:bg-gray-200';
+                registerTab.className = 'flex-1 py-2 px-4 bg-blue-600 text-white rounded-md font-medium transition-all duration-200';
+                displayNameField.classList.remove('hidden');
+                confirmPasswordField.classList.remove('hidden');
+                forgotPasswordLink.classList.add('hidden');
+                buttonText.textContent = 'Register';
+            }
+
+            // Clear form and errors
+            clearForm();
+        }
+
+        // Handle form submission
+        async function handleAuthSubmit(e) {
+            e.preventDefault();
+            console.log('Form submitted, mode:', isLoginMode ? 'login' : 'register');
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const displayName = document.getElementById('displayName')?.value?.trim() || '';
+            const confirmPassword = document.getElementById('confirmPassword')?.value || '';
+
+            console.log('Form values:', { email, passwordLength: password.length, displayName });
+
+            // Clear previous errors
+            clearErrors();
+
+            // Validate form
+            if (!validateForm(email, password, displayName, confirmPassword)) {
+                console.log('Form validation failed');
+                return;
+            }
+
+            // Show loading state
+            setLoadingState(true);
+
+            try {
+                if (isLoginMode) {
+                    console.log('Attempting login...');
+                    await loginUser(email, password);
+                } else {
+                    console.log('Attempting registration...');
+                    await registerUser(email, password, displayName);
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+                showError(error.message);
+            } finally {
+                setLoadingState(false);
+            }
+        }
+
+        // Validate form data
+        function validateForm(email, password, displayName, confirmPassword) {
+            let isValid = true;
+
+            // Email validation
+            if (!email) {
+                showFieldError('email', 'Email is required');
+                isValid = false;
+            } else if (!isValidEmail(email)) {
+                showFieldError('email', 'Please enter a valid email address');
+                isValid = false;
+            }
+
+            // Password validation
+            if (!password) {
+                showFieldError('password', 'Password is required');
+                isValid = false;
+            } else if (password.length < 6) {
+                showFieldError('password', 'Password must be at least 6 characters');
+                isValid = false;
+            }
+
+            // Register-specific validation
+            if (!isLoginMode) {
+                if (!displayName) {
+                    showFieldError('displayName', 'Display name is required');
+                    isValid = false;
+                } else if (displayName.length < 2) {
+                    showFieldError('displayName', 'Display name must be at least 2 characters');
+                    isValid = false;
+                } else if (containsProfanity(displayName)) {
+                    showFieldError('displayName', 'Display name contains inappropriate content');
+                    isValid = false;
+                }
+
+                if (!confirmPassword) {
+                    showFieldError('confirmPassword', 'Please confirm your password');
+                    isValid = false;
+                } else if (password !== confirmPassword) {
+                    showFieldError('confirmPassword', 'Passwords do not match');
+                    isValid = false;
+                }
+            }
+
+            return isValid;
+        }
+
+        // Login user
+        async function loginUser(email, password) {
+            console.log('loginUser called with email:', email);
+            const users = getStoredUsers();
+            console.log('Stored users count:', users.length);
+            const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+            
+            if (!user) {
+                console.log('User not found for email:', email);
+                throw new Error('No account found with this email address');
+            }
+
+            // Verify password
+            const hashedPassword = hashPassword(password);
+            console.log('Password hash comparison:', user.password === hashedPassword);
+            if (user.password !== hashedPassword) {
+                throw new Error('Incorrect password');
+            }
+
+            // Set current user
+            currentUser = {
+                id: user.id,
+                email: user.email,
+                displayName: user.displayName,
+                createdAt: user.createdAt
+            };
+
+            // Save session
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            console.log('Login successful for:', user.displayName);
+            
+            showMainApp();
+            showNotification('Login successful!', 'success');
+        }
+
+        // Register user
+        async function registerUser(email, password, displayName) {
+            console.log('registerUser called with:', { email, displayName });
+            const users = getStoredUsers();
+            console.log('Existing users count:', users.length);
+            
+            // Check if user already exists
+            if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
+                console.log('User already exists with email:', email);
+                throw new Error('An account with this email already exists');
+            }
+
+            // Create new user
+            const newUser = {
+                id: generateUserId(),
+                email: email.toLowerCase(),
+                password: hashPassword(password),
+                displayName: displayName,
+                createdAt: new Date().toISOString()
+            };
+            console.log('Created new user object:', { ...newUser, password: '[hidden]' });
+
+            // Save user
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            console.log('User saved to localStorage');
+
+            // Auto-login
+            currentUser = {
+                id: newUser.id,
+                email: newUser.email,
+                displayName: newUser.displayName,
+                createdAt: newUser.createdAt
+            };
+
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            console.log('Registration successful for:', displayName);
+            
+            showMainApp();
+            showNotification('Registration successful! Welcome to URC Fantasy League!', 'success');
+        }
+
+        // Password reset
+        async function handlePasswordReset(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('resetEmail').value.trim();
+            const displayName = document.getElementById('resetDisplayName').value.trim();
+            const newPassword = document.getElementById('newPassword').value;
+
+            if (!email || !displayName || !newPassword) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
+
+            if (newPassword.length < 6) {
+                showNotification('Password must be at least 6 characters', 'error');
+                return;
+            }
+
+            const users = getStoredUsers();
+            const userIndex = users.findIndex(u => 
+                u.email.toLowerCase() === email.toLowerCase() && 
+                u.displayName.toLowerCase() === displayName.toLowerCase()
+            );
+
+            if (userIndex === -1) {
+                showNotification('No account found with this email and display name combination', 'error');
+                return;
+            }
+
+            // Update password
+            users[userIndex].password = hashPassword(newPassword);
+            localStorage.setItem('users', JSON.stringify(users));
+
+            hidePasswordResetModal();
+            showNotification('Password reset successful! You can now login with your new password.', 'success');
+        }
+
+        // Utility functions
+        function hashPassword(password) {
+            // Check if CryptoJS is loaded
+            if (typeof CryptoJS === 'undefined' || !CryptoJS.SHA256) {
+                console.warn('CryptoJS not loaded, using fallback hash');
+                // Simple fallback hash function (not cryptographically secure but functional)
+                let hash = 0;
+                for (let i = 0; i < password.length; i++) {
+                    const char = password.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash; // Convert to 32bit integer
+                }
+                return 'fallback_' + hash.toString();
+            }
+            return CryptoJS.SHA256(password).toString();
+        }
+
+        function generateUserId() {
+            return 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        function getStoredUsers() {
+            const users = localStorage.getItem('users');
+            return users ? JSON.parse(users) : [];
+        }
+
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function containsProfanity(text) {
+            const profanityList = [
+                'fuck', 'shit', 'damn', 'bitch', 'asshole', 'bastard', 'cunt', 'dick', 'piss', 'cock', 'pussy', 'whore', 'slut', 'fag', 'nigger', 'retard',
+                'f*ck', 'sh*t', 'b*tch', 'a**hole', 'c*nt', 'd*ck', 'p*ss', 'wh*re', 'sl*t',
+                'fck', 'sht', 'btch', 'cnt', 'dck', 'pss', 'whr', 'slt',
+                'fucker', 'fucking', 'fucked', 'shitty', 'shitting', 'bitchy', 'dickhead', 'pissed',
+                'sex', 'porn', 'xxx', 'anal', 'oral', 'nude', 'naked', 'boobs', 'tits', 'ass',
+                'hate', 'kill', 'die', 'death', 'murder', 'suicide', 'nazi', 'hitler',
+                'stupid', 'idiot', 'moron', 'dumb', 'loser', 'gay', 'homo', 'lesbian'
+            ];
+            
+            const lowerText = text.toLowerCase();
+            return profanityList.some(word => lowerText.includes(word));
+        }
+
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const toggleBtn = document.getElementById('togglePassword');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                toggleBtn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path></svg>';
+            } else {
+                passwordInput.type = 'password';
+                toggleBtn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>';
+            }
+        }
+
+        function showPasswordResetModal() {
+            document.getElementById('passwordResetModal').classList.remove('hidden');
+        }
+
+        function hidePasswordResetModal() {
+            document.getElementById('passwordResetModal').classList.add('hidden');
+            document.getElementById('passwordResetForm').reset();
+        }
+
+        function showMainApp() {
+            document.getElementById('authSection').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            document.getElementById('userName').textContent = currentUser.displayName;
+            loadGameData();
+        }
+
+        // Game functionality
+        function initializeGame() {
+            try {
+                console.log('Starting game initialization...');
+
+                // Initialize game data if it doesn't exist
+                if (!localStorage.getItem('gameData')) {
+                    console.log('No game data found, initializing...');
+                    initializeGameData();
+                }
+
+                const storedGameData = localStorage.getItem('gameData');
+                if (storedGameData) {
+                    gameData = JSON.parse(storedGameData);
+                    console.log('Game data loaded successfully');
+                } else {
+                    console.error('Failed to load game data');
+                    return;
+                }
+
+                // Check if we need to reset for a new round
+                checkRoundReset();
+                console.log('Game initialization complete');
+            } catch (error) {
+                console.error('Error initializing game:', error);
+                // Try to reinitialize if there's an error
+                try {
+                    localStorage.removeItem('gameData');
+                    initializeGameData();
+                    gameData = JSON.parse(localStorage.getItem('gameData'));
+                } catch (reinitError) {
+                    console.error('Failed to reinitialize game data:', reinitError);
+                }
+            }
+        }
+
+        function initializeGameData() {
+            const teams = [
+                { id: 'leinster', name: 'Leinster', country: 'Ireland' },
+                { id: 'munster', name: 'Munster', country: 'Ireland' },
+                { id: 'ulster', name: 'Ulster', country: 'Ireland' },
+                { id: 'connacht', name: 'Connacht', country: 'Ireland' },
+                { id: 'glasgow', name: 'Glasgow Warriors', country: 'Scotland' },
+                { id: 'edinburgh', name: 'Edinburgh', country: 'Scotland' },
+                { id: 'cardiff', name: 'Cardiff Rugby', country: 'Wales' },
+                { id: 'ospreys', name: 'Ospreys', country: 'Wales' },
+                { id: 'scarlets', name: 'Scarlets', country: 'Wales' },
+                { id: 'dragons', name: 'Dragons', country: 'Wales' },
+                { id: 'bulls', name: 'Bulls', country: 'South Africa' },
+                { id: 'stormers', name: 'Stormers', country: 'South Africa' },
+                { id: 'sharks', name: 'Sharks', country: 'South Africa' },
+                { id: 'lions', name: 'Lions', country: 'South Africa' },
+                { id: 'zebre', name: 'Zebre Parma', country: 'Italy' },
+                { id: 'benetton', name: 'Benetton', country: 'Italy' }
+            ];
+
+            // URC 2025/26 season fixtures (Rounds 1-18)
+            const fixtures = [
+                // Round 1 - September 26-27, 2025
+                { round: 1, home: 'stormers', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2025-09-26', time: '18:00', firstGame: true },
+                { round: 1, home: 'glasgow', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2025-09-26', time: '20:05' },
+                { round: 1, home: 'ulster', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2025-09-26', time: '20:05' },
+                { round: 1, home: 'bulls', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2025-09-27', time: '13:00' },
+                { round: 1, home: 'zebre', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2025-09-27', time: '15:05' },
+                { round: 1, home: 'scarlets', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2025-09-27', time: '17:30' },
+                { round: 1, home: 'cardiff', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2025-09-27', time: '19:45' },
+                { round: 1, home: 'connacht', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2025-09-27', time: '19:45', lastGame: true },
+
+                // Round 2 - October 3-5, 2025
+                { round: 2, home: 'stormers', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2025-10-03', time: '18:00', firstGame: true },
+                { round: 2, home: 'dragons', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2025-10-03', time: '20:05' },
+                { round: 2, home: 'edinburgh', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2025-10-03', time: '20:05' },
+                { round: 2, home: 'connacht', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2025-10-04', time: '13:45' },
+                { round: 2, home: 'benetton', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2025-10-04', time: '17:30' },
+                { round: 2, home: 'bulls', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2025-10-04', time: '17:30' },
+                { round: 2, home: 'munster', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2025-10-04', time: '19:45' },
+                { round: 2, home: 'zebre', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2025-10-05', time: '15:00', lastGame: true },
+
+                // Round 3 - October 10-11, 2025
+                { round: 3, home: 'munster', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2025-10-10', time: '19:45', firstGame: true },
+                { round: 3, home: 'scarlets', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2025-10-10', time: '19:45' },
+                { round: 3, home: 'benetton', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2025-10-11', time: '15:00' },
+                { round: 3, home: 'ospreys', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2025-10-11', time: '15:00' },
+                { round: 3, home: 'glasgow', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2025-10-11', time: '17:30' },
+                { round: 3, home: 'leinster', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2025-10-11', time: '17:30' },
+                { round: 3, home: 'cardiff', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2025-10-11', time: '19:45' },
+                { round: 3, home: 'ulster', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2025-10-11', time: '19:45', lastGame: true },
+
+                // Round 4 - October 17-18, 2025
+                { round: 4, home: 'connacht', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2025-10-17', time: '19:45', firstGame: true },
+                { round: 4, home: 'dragons', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2025-10-17', time: '19:45' },
+                { round: 4, home: 'edinburgh', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2025-10-17', time: '19:45' },
+                { round: 4, home: 'lions', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2025-10-18', time: '12:45' },
+                { round: 4, home: 'sharks', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2025-10-18', time: '15:00' },
+                { round: 4, home: 'leinster', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2025-10-18', time: '17:15' },
+                { round: 4, home: 'ospreys', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2025-10-18', time: '19:45' },
+                { round: 4, home: 'zebre', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2025-10-18', time: '19:45', lastGame: true },
+
+                // Round 5 - October 24-25, 2025
+                { round: 5, home: 'glasgow', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2025-10-24', time: '19:45', firstGame: true },
+                { round: 5, home: 'lions', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2025-10-25', time: '12:45' },
+                { round: 5, home: 'sharks', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2025-10-25', time: '15:00' },
+                { round: 5, home: 'benetton', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2025-10-25', time: '17:30' },
+                { round: 5, home: 'dragons', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2025-10-25', time: '17:30' },
+                { round: 5, home: 'leinster', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2025-10-25', time: '17:30' },
+                { round: 5, home: 'cardiff', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2025-10-25', time: '19:45' },
+                { round: 5, home: 'munster', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2025-10-25', time: '19:45', lastGame: true },
+
+                // Round 6 - November 28-29, 2025
+                { round: 6, home: 'dragons', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2025-11-28', time: '19:45', firstGame: true },
+                { round: 6, home: 'ulster', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2025-11-28', time: '19:45' },
+                { round: 6, home: 'bulls', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2025-11-29', time: '12:00' },
+                { round: 6, home: 'zebre', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2025-11-29', time: '13:00' },
+                { round: 6, home: 'edinburgh', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2025-11-29', time: '17:30' },
+                { round: 6, home: 'munster', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2025-11-29', time: '17:30' },
+                { round: 6, home: 'connacht', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2025-11-29', time: '19:45' },
+                { round: 6, home: 'scarlets', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2025-11-29', time: '19:45', lastGame: true },
+
+                // Round 7 - December 19-20, 2025
+                { round: 7, home: 'cardiff', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2025-12-19', time: '19:45', firstGame: true },
+                { round: 7, home: 'leinster', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2025-12-19', time: '19:45' },
+                { round: 7, home: 'stormers', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2025-12-20', time: '13:30' },
+                { round: 7, home: 'benetton', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2025-12-20', time: '14:00' },
+                { round: 7, home: 'glasgow', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2025-12-20', time: '15:00' },
+                { round: 7, home: 'sharks', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2025-12-20', time: '16:00' },
+                { round: 7, home: 'ospreys', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2025-12-20', time: '17:30' },
+                { round: 7, home: 'dragons', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2025-12-20', time: '19:45', lastGame: true },
+
+                // Round 8 - December 26-27, 2025
+                { round: 8, home: 'bulls', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2025-12-26', time: '00:00', firstGame: true },
+                { round: 8, home: 'lions', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2025-12-26', time: '00:00' },
+                { round: 8, home: 'cardiff', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2025-12-26', time: '15:00' },
+                { round: 8, home: 'scarlets', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2025-12-26', time: '17:30' },
+                { round: 8, home: 'zebre', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2025-12-27', time: '14:30' },
+                { round: 8, home: 'edinburgh', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2025-12-27', time: '15:00' },
+                { round: 8, home: 'connacht', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2025-12-27', time: '17:30' },
+                { round: 8, home: 'munster', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2025-12-27', time: '19:45', lastGame: true },
+
+                // Round 9 - January 1-3, 2026
+                { round: 9, home: 'dragons', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2026-01-01', time: '15:00', firstGame: true },
+                { round: 9, home: 'ospreys', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2026-01-01', time: '17:30' },
+                { round: 9, home: 'ulster', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2026-01-02', time: '19:45' },
+                { round: 9, home: 'sharks', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2026-01-03', time: '13:30' },
+                { round: 9, home: 'stormers', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2026-01-03', time: '16:00' },
+                { round: 9, home: 'benetton', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2026-01-03', time: '17:30' },
+                { round: 9, home: 'leinster', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2026-01-03', time: '17:30' },
+                { round: 9, home: 'glasgow', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2026-01-03', time: '19:45', lastGame: true },
+
+                // Round 10 - January 23-24, 2026
+                { round: 10, home: 'edinburgh', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2026-01-23', time: '19:45', firstGame: true },
+                { round: 10, home: 'munster', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2026-01-23', time: '19:45' },
+                { round: 10, home: 'ospreys', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2026-01-23', time: '19:45' },
+                { round: 10, home: 'scarlets', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2026-01-24', time: '15:00' },
+                { round: 10, home: 'connacht', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2026-01-24', time: '17:30' },
+                { round: 10, home: 'stormers', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2026-01-24', time: '17:30' },
+                { round: 10, home: 'cardiff', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2026-01-24', time: '19:45' },
+                { round: 10, home: 'zebre', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2026-01-24', time: '19:45', lastGame: true },
+
+                // Round 11 - January 30-31, 2026
+                { round: 11, home: 'benetton', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2026-01-30', time: '19:45', firstGame: true },
+                { round: 11, home: 'glasgow', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2026-01-30', time: '19:45' },
+                { round: 11, home: 'lions', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2026-01-31', time: '12:30' },
+                { round: 11, home: 'sharks', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2026-01-31', time: '15:00' },
+                { round: 11, home: 'zebre', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2026-01-31', time: '15:00' },
+                { round: 11, home: 'leinster', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2026-01-31', time: '17:30' },
+                { round: 11, home: 'ospreys', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2026-01-31', time: '19:45' },
+                { round: 11, home: 'ulster', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2026-01-31', time: '19:45', lastGame: true },
+
+                // Round 12 - February 27-28, 2026
+                { round: 12, home: 'cardiff', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2026-02-27', time: '19:45', firstGame: true },
+                { round: 12, home: 'edinburgh', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2026-02-27', time: '19:45' },
+                { round: 12, home: 'lions', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2026-02-28', time: '12:30' },
+                { round: 12, home: 'bulls', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2026-02-28', time: '15:00' },
+                { round: 12, home: 'connacht', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2026-02-28', time: '15:00' },
+                { round: 12, home: 'dragons', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2026-02-28', time: '17:30' },
+                { round: 12, home: 'munster', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2026-02-28', time: '17:30' },
+                { round: 12, home: 'ospreys', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2026-02-28', time: '19:45', lastGame: true },
+
+                // Round 13 - March 20-21, 2026
+                { round: 13, home: 'bulls', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2026-03-20', time: '17:00', firstGame: true },
+                { round: 13, home: 'scarlets', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2026-03-20', time: '19:45' },
+                { round: 13, home: 'ulster', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2026-03-20', time: '19:45' },
+                { round: 13, home: 'lions', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2026-03-21', time: '12:45' },
+                { round: 13, home: 'benetton', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2026-03-21', time: '15:00' },
+                { round: 13, home: 'sharks', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2026-03-21', time: '15:00' },
+                { round: 13, home: 'glasgow', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2026-03-21', time: '17:30' },
+                { round: 13, home: 'stormers', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2026-03-21', time: '17:30', lastGame: true },
+
+                // Round 14 - March 27-28, 2026
+                { round: 14, home: 'sharks', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2026-03-27', time: '17:00', firstGame: true },
+                { round: 14, home: 'glasgow', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2026-03-27', time: '19:45' },
+                { round: 14, home: 'bulls', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2026-03-28', time: '12:00' },
+                { round: 14, home: 'connacht', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2026-03-28', time: '14:15' },
+                { round: 14, home: 'lions', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2026-03-28', time: '14:30' },
+                { round: 14, home: 'stormers', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2026-03-28', time: '17:00' },
+                { round: 14, home: 'leinster', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2026-03-28', time: '17:30' },
+                { round: 14, home: 'zebre', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2026-03-28', time: '19:45', lastGame: true },
+
+                // Round 15 - April 17-18, 2026
+                { round: 15, home: 'dragons', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2026-04-17', time: '19:45', firstGame: true },
+                { round: 15, home: 'edinburgh', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2026-04-17', time: '19:45' },
+                { round: 15, home: 'ulster', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2026-04-17', time: '19:45' },
+                { round: 15, home: 'lions', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2026-04-18', time: '14:45' },
+                { round: 15, home: 'stormers', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2026-04-18', time: '17:15' },
+                { round: 15, home: 'scarlets', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2026-04-18', time: '17:30' },
+                { round: 15, home: 'benetton', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2026-04-18', time: '19:45' },
+                { round: 15, home: 'ospreys', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2026-04-18', time: '19:45', lastGame: true },
+
+                // Round 16 - April 24-25, 2026
+                { round: 16, home: 'cardiff', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2026-04-24', time: '19:45', firstGame: true },
+                { round: 16, home: 'edinburgh', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2026-04-24', time: '19:45' },
+                { round: 16, home: 'zebre', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2026-04-24', time: '19:45' },
+                { round: 16, home: 'lions', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2026-04-25', time: '15:00' },
+                { round: 16, home: 'munster', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2026-04-25', time: '17:30' },
+                { round: 16, home: 'stormers', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2026-04-25', time: '17:30' },
+                { round: 16, home: 'benetton', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2026-04-25', time: '19:45' },
+                { round: 16, home: 'scarlets', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2026-04-25', time: '19:45', lastGame: true },
+
+                // Round 17 - May 8-9, 2026
+                { round: 17, home: 'glasgow', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2026-05-08', time: '19:45', firstGame: true },
+                { round: 17, home: 'ulster', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2026-05-08', time: '19:45' },
+                { round: 17, home: 'bulls', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2026-05-09', time: '12:45' },
+                { round: 17, home: 'sharks', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2026-05-09', time: '15:00' },
+                { round: 17, home: 'leinster', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2026-05-09', time: '17:30' },
+                { round: 17, home: 'ospreys', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2026-05-09', time: '17:30' },
+                { round: 17, home: 'connacht', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2026-05-09', time: '19:45' },
+                { round: 17, home: 'dragons', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2026-05-09', time: '19:45', lastGame: true },
+
+                // Round 18 - May 15-16, 2026
+                { round: 18, home: 'cardiff', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2026-05-15', time: '19:45', firstGame: true },
+                { round: 18, home: 'edinburgh', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2026-05-15', time: '19:45' },
+                { round: 18, home: 'ulster', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2026-05-15', time: '19:45' },
+                { round: 18, home: 'sharks', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2026-05-16', time: '12:45' },
+                { round: 18, home: 'bulls', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2026-05-16', time: '15:00' },
+                { round: 18, home: 'leinster', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2026-05-16', time: '17:15' },
+                { round: 18, home: 'scarlets', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2026-05-16', time: '17:15' },
+                { round: 18, home: 'munster', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2026-05-16', time: '19:45', lastGame: true }
+            ];
+
+            // Initialize knockout rounds (Rounds 19-21)
+            const knockoutRounds = {
+                19: { name: 'Quarter Finals', date: '2026-05-29', teams: [], fixtures: [] },
+                20: { name: 'Semi Finals', date: null, teams: [], fixtures: [] },
+                21: { name: 'Final', date: null, teams: [], fixtures: [] }
+            };
+
+            const gameData = {
+                currentRound: 1,
+                teams: teams,
+                fixtures: fixtures,
+                knockoutRounds: knockoutRounds,
+                userPicks: {},
+                eliminatedUsers: {},
+                lastResetDate: new Date().toISOString(),
+                gameState: 'picking', // 'picking', 'locked', 'completed'
+                seasonPhase: 'regular' // 'regular', 'knockout', 'completed'
+            };
+
+            localStorage.setItem('gameData', JSON.stringify(gameData));
+        }
+
+        // Check if we need to reset for a new round
+        function checkRoundReset() {
+            const now = new Date();
+            const lastReset = new Date(gameData.lastResetDate);
+            const daysSinceReset = Math.floor((now - lastReset) / (1000 * 60 * 60 * 24));
+
+            // If it's been 7+ days since last reset, advance to next round
+            if (daysSinceReset >= 7) {
+                advanceToNextRound();
+            }
+
+            // Update game state based on current time and fixtures
+            updateGameState();
+        }
+
+        // Advance to the next round
+        function advanceToNextRound() {
+            // Check if regular season is complete and we need to set up knockout rounds
+            if (gameData.currentRound === 18 && gameData.seasonPhase === 'regular') {
+                determineKnockoutTeams();
+                return;
+            }
+
+            // Handle knockout round advancement
+            if (gameData.currentRound >= 19 && gameData.currentRound <= 20) {
+                advanceKnockoutRound();
+                return;
+            }
+
+            // Regular round advancement
+            gameData.currentRound++;
+            gameData.lastResetDate = new Date().toISOString();
+            gameData.gameState = 'picking';
+
+            // Reset all team usage for the new round (only for regular season rounds)
+            if (gameData.currentRound <= 18) {
+                gameData.teams.forEach(team => {
+                    team.used = false;
+                });
+            }
+
+            localStorage.setItem('gameData', JSON.stringify(gameData));
+            showNotification(`Round ${gameData.currentRound} has begun! Make your picks.`, 'info');
+        }
+
+        // Advance to the next knockout round
+        function advanceKnockoutRound() {
+            const currentKnockoutRound = gameData.knockoutRounds[gameData.currentRound];
+
+            if (!currentKnockoutRound) {
+                // Season is complete
+                gameData.seasonPhase = 'completed';
+                gameData.gameState = 'completed';
+                localStorage.setItem('gameData', JSON.stringify(gameData));
+                showNotification('Season completed! Check the leaderboard for final standings.', 'success');
+                return;
+            }
+
+            // Get winners from current knockout round
+            const winners = [];
+            if (currentKnockoutRound.fixtures) {
+                currentKnockoutRound.fixtures.forEach(fixture => {
+                    if (fixture.completed) {
+                        const winner = fixture.homeScore > fixture.awayScore ? fixture.home :
+                                    fixture.awayScore > fixture.homeScore ? fixture.away : null;
+                        if (winner) winners.push(winner);
+                    }
+                });
+            }
+
+            // Set up next knockout round
+            gameData.currentRound++;
+            const nextRoundNumber = gameData.currentRound;
+            const nextKnockoutRound = gameData.knockoutRounds[nextRoundNumber];
+
+            if (nextKnockoutRound) {
+                nextKnockoutRound.teams = winners;
+                nextKnockoutRound.fixtures = generateKnockoutFixtures(winners, nextKnockoutRound.name);
+                gameData.gameState = 'picking';
+
+                const roundName = nextRoundNumber === 20 ? 'Semi Finals' : 'Final';
+                showNotification(`${roundName} teams have been determined! Make your picks.`, 'info');
+            }
+
+            localStorage.setItem('gameData', JSON.stringify(gameData));
+        }
+
+        // Update game state based on current time and fixtures
+        function updateGameState() {
+            const now = new Date();
+
+            // Determine if we're in regular season or knockout phase
+            if (gameData.currentRound <= 18) {
+                // Regular season
+                const currentRoundFixtures = gameData.fixtures.filter(f => f.round === gameData.currentRound);
+
+                if (currentRoundFixtures.length === 0) {
+                    gameData.gameState = 'completed';
+                    return;
+                }
+
+                // Find first and last games of the round
+                const firstGame = currentRoundFixtures.find(f => f.firstGame);
+                const lastGame = currentRoundFixtures.find(f => f.lastGame);
+
+                if (!firstGame || !lastGame) return;
+
+                const firstGameTime = new Date(`${firstGame.date}T${firstGame.time}:00`);
+                const lastGameTime = new Date(`${lastGame.date}T${lastGame.time}:00`);
+                const deadlineTime = new Date(firstGameTime.getTime() - (30 * 60 * 1000)); // 30 minutes before first game
+
+                if (now < deadlineTime) {
+                    gameData.gameState = 'picking';
+                } else if (now >= deadlineTime && now < lastGameTime) {
+                    gameData.gameState = 'locked';
+                } else if (now >= lastGameTime) {
+                    gameData.gameState = 'completed';
+                    // Process eliminations for this round
+                    processRoundEliminations();
+                }
+            } else {
+                // Knockout phase
+                const knockoutRound = gameData.knockoutRounds[gameData.currentRound];
+                if (!knockoutRound || !knockoutRound.date) {
+                    gameData.gameState = 'completed';
+                    return;
+                }
+
+                const knockoutDate = new Date(`${knockoutRound.date}T00:00:00`);
+                const now = new Date();
+
+                if (now < knockoutDate) {
+                    gameData.gameState = 'picking';
+                } else {
+                    gameData.gameState = 'completed';
+                    // Process eliminations for knockout round
+                    processKnockoutEliminations();
+                }
+            }
+
+            localStorage.setItem('gameData', JSON.stringify(gameData));
+        }
+
+        // Process eliminations after a round is completed
+        function processRoundEliminations() {
+            const currentRoundFixtures = gameData.fixtures.filter(f => f.round === gameData.currentRound && f.completed);
+
+            Object.keys(gameData.userPicks).forEach(userId => {
+                const userPicks = gameData.userPicks[userId];
+                const roundPick = userPicks[gameData.currentRound];
+
+                if (!roundPick) {
+                    // User didn't pick - eliminate them
+                    gameData.eliminatedUsers[userId] = {
+                        round: gameData.currentRound,
+                        reason: 'No pick made',
+                        timestamp: new Date().toISOString()
+                    };
+                    return;
+                }
+
+                // Find the fixture for this pick
+                const fixture = currentRoundFixtures.find(f =>
+                    f.home === roundPick.teamId || f.away === roundPick.teamId
+                );
+
+                if (!fixture) return;
+
+                // Check if the picked team won
+                const isHomeTeam = fixture.home === roundPick.teamId;
+                const teamScore = isHomeTeam ? fixture.homeScore : fixture.awayScore;
+                const opponentScore = isHomeTeam ? fixture.awayScore : fixture.homeScore;
+
+                if (teamScore <= opponentScore) {
+                    // Team didn't win - eliminate player
+                    gameData.eliminatedUsers[userId] = {
+                        round: gameData.currentRound,
+                        reason: `${roundPick.teamName} didn't win`,
+                        teamPicked: roundPick.teamName,
+                        timestamp: new Date().toISOString()
+                    };
+                }
+            });
+
+            localStorage.setItem('gameData', JSON.stringify(gameData));
+        }
+
+        // Process eliminations for knockout rounds
+        function processKnockoutEliminations() {
+            const knockoutRound = gameData.knockoutRounds[gameData.currentRound];
+            if (!knockoutRound || !knockoutRound.teams || knockoutRound.teams.length === 0) return;
+
+            Object.keys(gameData.userPicks).forEach(userId => {
+                // Skip already eliminated users
+                if (gameData.eliminatedUsers[userId]) return;
+
+                const userPicks = gameData.userPicks[userId];
+                const roundPick = userPicks[gameData.currentRound];
+
+                if (!roundPick) {
+                    // User didn't pick - eliminate them
+                    gameData.eliminatedUsers[userId] = {
+                        round: gameData.currentRound,
+                        reason: 'No pick made',
+                        timestamp: new Date().toISOString()
+                    };
+                    return;
+                }
+
+                // Check if the picked team is in this knockout round
+                const pickedTeamInRound = knockoutRound.teams.includes(roundPick.teamId);
+
+                if (!pickedTeamInRound) {
+                    // User's team is not in this knockout round - eliminate them
+                    gameData.eliminatedUsers[userId] = {
+                        round: gameData.currentRound,
+                        reason: `${roundPick.teamName} not in knockout round`,
+                        teamPicked: roundPick.teamName,
+                        timestamp: new Date().toISOString()
+                    };
+                }
+            });
+
+            localStorage.setItem('gameData', JSON.stringify(gameData));
+        }
+
+        // Determine teams that advance to knockout rounds based on regular season performance
+        function determineKnockoutTeams() {
+            // Get all users who survived the regular season (rounds 1-18)
+            const regularSeasonSurvivors = Object.keys(gameData.userPicks).filter(userId => {
+                return !gameData.eliminatedUsers[userId] &&
+                       Object.keys(gameData.userPicks[userId] || {}).some(round => parseInt(round) <= 18);
+            });
+
+            // For now, randomly select 8 teams for quarter finals
+            // In a real implementation, this would be based on regular season standings
+            const availableTeams = gameData.teams.map(t => t.id);
+            const knockoutTeams = [];
+
+            // Randomly select 8 teams for quarter finals
+            for (let i = 0; i < 8 && availableTeams.length > 0; i++) {
+                const randomIndex = Math.floor(Math.random() * availableTeams.length);
+                knockoutTeams.push(availableTeams.splice(randomIndex, 1)[0]);
+            }
+
+            // Set up quarter finals
+            gameData.knockoutRounds[19].teams = knockoutTeams;
+            gameData.knockoutRounds[19].fixtures = generateKnockoutFixtures(knockoutTeams, 'Quarter Finals');
+
+            // Update game state to move to knockout phase
+            gameData.currentRound = 19;
+            gameData.seasonPhase = 'knockout';
+            gameData.gameState = 'picking';
+
+            localStorage.setItem('gameData', JSON.stringify(gameData));
+            showNotification('Regular season completed! Quarter Finals teams have been determined.', 'info');
+        }
+
+        // Generate fixtures for knockout rounds
+        function generateKnockoutFixtures(teams, roundName) {
+            const fixtures = [];
+            const shuffledTeams = [...teams].sort(() => Math.random() - 0.5);
+
+            for (let i = 0; i < shuffledTeams.length; i += 2) {
+                if (i + 1 < shuffledTeams.length) {
+                    fixtures.push({
+                        home: shuffledTeams[i],
+                        away: shuffledTeams[i + 1],
+                        roundName: roundName,
+                        completed: false
+                    });
+                }
+            }
+
+            return fixtures;
+        }
+
+        // Toggle admin interface visibility
+        function toggleAdminInterface() {
+            const adminInterface = document.getElementById('adminInterface');
+            if (adminInterface.classList.contains('hidden')) {
+                adminInterface.classList.remove('hidden');
+                populateAdminForm();
+            } else {
+                adminInterface.classList.add('hidden');
+            }
+        }
+
+        // Populate admin form with current knockout round dates
+        function populateAdminForm() {
+            document.getElementById('quarterFinalsDate').value = gameData.knockoutRounds[19]?.date || '';
+            document.getElementById('semiFinalsDate').value = gameData.knockoutRounds[20]?.date || '';
+            document.getElementById('finalDate').value = gameData.knockoutRounds[21]?.date || '';
+        }
+
+        // Update knockout round dates
+        function updateKnockoutDates() {
+            gameData.knockoutRounds[19].date = document.getElementById('quarterFinalsDate').value;
+            gameData.knockoutRounds[20].date = document.getElementById('semiFinalsDate').value;
+            gameData.knockoutRounds[21].date = document.getElementById('finalDate').value;
+
+            localStorage.setItem('gameData', JSON.stringify(gameData));
+            updateKnockoutRoundsList();
+            showNotification('Knockout round dates updated successfully!', 'success');
+        }
+
+        // Manually setup quarter finals
+        function setupQuarterFinals() {
+            if (gameData.currentRound < 18) {
+                showNotification('Regular season must be completed before setting up knockout rounds!', 'error');
+                return;
+            }
+
+            determineKnockoutTeams();
+            showNotification('Quarter Finals have been set up!', 'success');
+        }
+
+        // Update knockout rounds display
+        function updateKnockoutRoundsList() {
+            const knockoutList = document.getElementById('knockoutRoundsList');
+            const knockoutSection = document.getElementById('knockoutSection');
+
+            // Only show knockout section if we're in knockout phase or have completed rounds
+            if (gameData.currentRound < 18) {
+                knockoutSection.classList.add('hidden');
+                return;
+            } else {
+                knockoutSection.classList.remove('hidden');
+            }
+
+            knockoutList.innerHTML = '';
+
+            Object.keys(gameData.knockoutRounds).forEach(roundNumber => {
+                const knockoutRound = gameData.knockoutRounds[roundNumber];
+                const roundDiv = document.createElement('div');
+                roundDiv.className = 'bg-gray-50 rounded-lg p-4';
+
+                let roundContent = `
+                    <div class="flex justify-between items-center mb-2">
+                        <h5 class="font-semibold text-gray-800">${knockoutRound.name}</h5>
+                        <span class="text-sm text-gray-500">${knockoutRound.date || 'TBD'}</span>
+                    </div>
+                `;
+
+                if (knockoutRound.teams && knockoutRound.teams.length > 0) {
+                    roundContent += '<div class="mb-2"><div class="text-sm font-medium text-gray-700">Teams:</div>';
+                    knockoutRound.teams.forEach(teamId => {
+                        const team = gameData.teams.find(t => t.id === teamId);
+                        if (team) {
+                            roundContent += `<div class="text-sm text-gray-600 ml-2">• ${team.name}</div>`;
+                        }
+                    });
+                    roundContent += '</div>';
+                }
+
+                if (knockoutRound.fixtures && knockoutRound.fixtures.length > 0) {
+                    roundContent += '<div class="text-sm font-medium text-gray-700 mb-1">Fixtures:</div>';
+                    knockoutRound.fixtures.forEach(fixture => {
+                        const homeTeam = gameData.teams.find(t => t.id === fixture.home);
+                        const awayTeam = gameData.teams.find(t => t.id === fixture.away);
+                        const scoreDisplay = fixture.completed ?
+                            `${fixture.homeScore || 0} - ${fixture.awayScore || 0}` :
+                            'TBD';
+
+                        roundContent += `
+                            <div class="text-sm text-gray-600 ml-2 mb-1">
+                                ${homeTeam ? homeTeam.name : fixture.home} ${scoreDisplay} ${awayTeam ? awayTeam.name : fixture.away}
+                            </div>
+                        `;
+                    });
+                }
+
+                if ((!knockoutRound.teams || knockoutRound.teams.length === 0) &&
+                    (!knockoutRound.fixtures || knockoutRound.fixtures.length === 0)) {
+                    roundContent += '<div class="text-sm text-gray-500">Teams and fixtures to be determined</div>';
+                }
+
+                roundDiv.innerHTML = roundContent;
+                knockoutList.appendChild(roundDiv);
+            });
+        }
+
+        function loadGameData() {
+            if (!currentUser) return;
+
+            try {
+                const storedGameData = localStorage.getItem('gameData');
+                if (storedGameData) {
+                    gameData = JSON.parse(storedGameData);
+                    console.log('Game data loaded in loadGameData');
+                    updateGameDisplay();
+                } else {
+                    console.error('No game data available in loadGameData');
+                }
+            } catch (error) {
+                console.error('Error loading game data:', error);
+            }
+        }
+
+        function updateGameDisplay() {
+            try {
+                updateCurrentRound();
+                updateTeamSelection();
+                updateMatchesList();
+                updateKnockoutRoundsList();
+                updateAllFixturesList();
+                updatePicksHistory();
+                updateLeaderboard();
+                updateUserScore();
+            } catch (error) {
+                console.error('Error updating game display:', error);
+            }
+        }
+
+        function updateCurrentRound() {
+            document.getElementById('currentRound').textContent = gameData.currentRound;
+            updateGameStateDisplay();
+        }
+
+        function updateGameStateDisplay() {
+            const gameStateText = document.getElementById('gameStateText');
+            const deadlineInfo = document.getElementById('deadlineInfo');
+            
+            if (gameData.eliminatedUsers[currentUser.id]) {
+                gameStateText.textContent = 'You have been eliminated!';
+                gameStateText.className = 'text-red-700';
+                deadlineInfo.innerHTML = '';
+                return;
+            }
+            
+            const currentRoundFixtures = gameData.fixtures.filter(f => f.round === gameData.currentRound);
+            const firstGame = currentRoundFixtures.find(f => f.firstGame);
+            const lastGame = currentRoundFixtures.find(f => f.lastGame);
+            
+            if (firstGame && lastGame) {
+                const firstGameTime = new Date(`${firstGame.date}T${firstGame.time}:00`);
+                const lastGameTime = new Date(`${lastGame.date}T${lastGame.time}:00`);
+                const deadlineTime = new Date(firstGameTime.getTime() - (30 * 60 * 1000));
+                const now = new Date();
+                
+                if (gameData.gameState === 'picking') {
+                    gameStateText.textContent = 'Pick your team for this round\'s matches';
+                    gameStateText.className = 'text-blue-700';
+
+                    const timeUntilDeadline = deadlineTime - now;
+                    if (timeUntilDeadline > 0) {
+                        const hours = Math.floor(timeUntilDeadline / (1000 * 60 * 60));
+                        const minutes = Math.floor((timeUntilDeadline % (1000 * 60 * 60)) / (1000 * 60));
+                        deadlineInfo.textContent = `Deadline: ${hours}h ${minutes}m before first game`;
+                    } else {
+                        deadlineInfo.textContent = 'Deadline has passed - picks are locked';
+                    }
+                } else if (gameData.gameState === 'locked') {
+                    gameStateText.textContent = 'Picks are locked - wait for games to complete';
+                    gameStateText.className = 'text-yellow-700';
+
+                    const timeUntilLastGame = lastGameTime - now;
+                    if (timeUntilLastGame > 0) {
+                        const hours = Math.floor(timeUntilLastGame / (1000 * 60 * 60));
+                        const minutes = Math.floor((timeUntilLastGame % (1000 * 60 * 60)) / (1000 * 60));
+                        deadlineInfo.textContent = `Last game in: ${hours}h ${minutes}m`;
+                    } else {
+                        deadlineInfo.textContent = 'All games completed - processing results...';
+                    }
+                } else if (gameData.gameState === 'completed') {
+                    gameStateText.textContent = 'Round completed - check results below';
+                    gameStateText.className = 'text-green-700';
+                    deadlineInfo.textContent = 'Next round will begin on Monday';
+                }
+            }
+        }
+
+        function updateTeamSelection() {
+            const teamGrid = document.getElementById('teamGrid');
+            const submitBtn = document.getElementById('submitPick');
+            const changeBtn = document.getElementById('changePick');
+            const pickStatus = document.getElementById('pickStatus');
+
+            teamGrid.innerHTML = '';
+
+            // Check if user is eliminated
+            const isEliminated = gameData.eliminatedUsers[currentUser.id];
+            if (isEliminated) {
+                teamGrid.innerHTML = `
+                    <div class="col-span-full text-center py-8">
+                        <div class="text-red-600 text-lg font-semibold mb-2">You've been eliminated!</div>
+                        <div class="text-gray-600">${isEliminated.reason}</div>
+                        <div class="text-sm text-gray-500 mt-1">Round ${isEliminated.round}</div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Check if picks are locked
+            if (gameData.gameState === 'locked') {
+                teamGrid.innerHTML = `
+                    <div class="col-span-full text-center py-8">
+                        <div class="text-yellow-600 text-lg font-semibold mb-2">Picks are locked!</div>
+                        <div class="text-gray-600">Deadline has passed. Wait for games to complete.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Check if user has already picked
+            const userPicks = gameData.userPicks[currentUser.id] || {};
+            const currentRoundPick = userPicks[gameData.currentRound];
+
+            if (currentRoundPick) {
+                // User has already picked - show change option
+                teamGrid.innerHTML = `
+                    <div class="col-span-full text-center py-8">
+                        <div class="text-blue-600 text-lg font-semibold mb-2">Current Pick: ${currentRoundPick.teamName}</div>
+                        <div class="text-gray-600 mb-4">Select a different team below to change your pick</div>
+                    </div>
+                `;
+                submitBtn.classList.add('hidden');
+                changeBtn.classList.remove('hidden');
+                pickStatus.textContent = `Current: ${currentRoundPick.teamName}`;
+            } else {
+                // User hasn't picked yet
+                submitBtn.classList.remove('hidden');
+                changeBtn.classList.add('hidden');
+                pickStatus.textContent = '';
+            }
+
+            // Determine available teams based on current round
+            let availableTeams = gameData.teams;
+            if (gameData.currentRound > 18) {
+                // Knockout phase - only show teams in this knockout round
+                const knockoutRound = gameData.knockoutRounds[gameData.currentRound];
+                if (knockoutRound && knockoutRound.teams && knockoutRound.teams.length > 0) {
+                    availableTeams = gameData.teams.filter(team => knockoutRound.teams.includes(team.id));
+                } else {
+                    // No teams available for this knockout round
+                    teamGrid.innerHTML = `
+                        <div class="col-span-full text-center py-8">
+                            <div class="text-yellow-600 text-lg font-semibold mb-2">Knockout Round Setup</div>
+                            <div class="text-gray-600">Teams for this knockout round are being determined.</div>
+                        </div>
+                    `;
+                    return;
+                }
+            }
+
+            // Get teams this user has already used
+            const userPicks = gameData.userPicks[currentUser.id] || {};
+            const usedTeamIds = Object.values(userPicks).map(pick => pick.teamId);
+
+            availableTeams.forEach(team => {
+                const isUsedByUser = usedTeamIds.includes(team.id);
+                const teamCard = document.createElement('div');
+                teamCard.className = `p-3 border rounded-lg cursor-pointer transition-all duration-200 ${
+                    isUsedByUser ? 'bg-gray-100 border-gray-300 cursor-not-allowed opacity-50' : 
+                    selectedTeam === team.id ? 'bg-blue-100 border-blue-500' : 
+                    'bg-white border-gray-300 hover:border-blue-400 hover:shadow-md'
+                }`;
+                
+                teamCard.innerHTML = `
+                    <div class="text-center">
+                        <div class="font-semibold text-gray-800">${team.name}</div>
+                        <div class="text-sm text-gray-600">${team.country}</div>
+                        ${isUsedByUser ? '<div class="text-xs text-red-600 mt-1">Already Used</div>' : ''}
+                    </div>
+                `;
+
+                if (!isUsedByUser) {
+                    teamCard.addEventListener('click', () => selectTeam(team.id));
+                }
+
+                teamGrid.appendChild(teamCard);
+            });
+        }
+
+        function selectTeam(teamId) {
+            selectedTeam = teamId;
+            updateTeamSelection();
+            updateSubmitButton();
+        }
+
+        function updateSubmitButton() {
+            const submitBtn = document.getElementById('submitPick');
+            const changeBtn = document.getElementById('changePick');
+            const pickStatus = document.getElementById('pickStatus');
+
+            if (selectedTeam) {
+                submitBtn.disabled = false;
+                changeBtn.disabled = false;
+                pickStatus.textContent = `Selected: ${gameData.teams.find(t => t.id === selectedTeam).name}`;
+            } else {
+                submitBtn.disabled = true;
+                changeBtn.disabled = true;
+                pickStatus.textContent = '';
+            }
+        }
+
+        function submitTeamPick() {
+            if (!selectedTeam) return;
+
+            const userId = currentUser.id;
+            const round = gameData.currentRound;
+
+            // Check if user is eliminated
+            if (gameData.eliminatedUsers[userId]) {
+                showNotification('You have been eliminated and cannot make picks!', 'error');
+                return;
+            }
+
+            // Check if picks are locked
+            if (gameData.gameState === 'locked') {
+                showNotification('Picks are locked! Deadline has passed.', 'error');
+                return;
+            }
+
+            // Check if user already picked for this round
+            if (gameData.userPicks[userId] && gameData.userPicks[userId][round]) {
+                // Allow changing picks if deadline hasn't passed
+                const currentRoundFixtures = gameData.fixtures.filter(f => f.round === gameData.currentRound);
+                const firstGame = currentRoundFixtures.find(f => f.firstGame);
+
+                if (firstGame) {
+                    const firstGameTime = new Date(`${firstGame.date}T${firstGame.time}:00`);
+                    const deadlineTime = new Date(firstGameTime.getTime() - (30 * 60 * 1000));
+                    const now = new Date();
+
+                    if (now >= deadlineTime) {
+                        showNotification('Deadline has passed! You cannot change your pick.', 'error');
+                        return;
+                    } else {
+                        // Allow changing pick - remove old pick
+                        delete gameData.userPicks[userId][round];
+                        showNotification('Changing your previous pick...', 'info');
+                    }
+                } else {
+                    showNotification('You have already picked a team for this round!', 'error');
+                    return;
+                }
+            }
+
+            // Check if user has already used this team
+            const userPicks = gameData.userPicks[userId] || {};
+            const usedTeamIds = Object.values(userPicks).map(pick => pick.teamId);
+            if (usedTeamIds.includes(selectedTeam)) {
+                showNotification('You have already used this team!', 'error');
+                return;
+            }
+
+            // Initialize user picks if needed
+            if (!gameData.userPicks[userId]) {
+                gameData.userPicks[userId] = {};
+            }
+
+            // Record the pick
+            gameData.userPicks[userId][round] = {
+                teamId: selectedTeam,
+                teamName: gameData.teams.find(t => t.id === selectedTeam).name,
+                round: round,
+                timestamp: new Date().toISOString()
+            };
+
+            // Save data
+            localStorage.setItem('gameData', JSON.stringify(gameData));
+
+            // Update display
+            const teamName = gameData.teams.find(t => t.id === selectedTeam).name;
+            selectedTeam = null;
+            updateGameDisplay();
+            showNotification(`Team pick submitted: ${teamName}`, 'success');
+        }
+
+        function changeTeamPick() {
+            if (!selectedTeam) return;
+
+            const userId = currentUser.id;
+            const round = gameData.currentRound;
+
+            // Check if user has already picked for this round
+            if (!gameData.userPicks[userId] || !gameData.userPicks[userId][round]) {
+                showNotification('No existing pick to change!', 'error');
+                return;
+            }
+
+            // Check if picks are locked
+            if (gameData.gameState === 'locked') {
+                showNotification('Picks are locked! Deadline has passed.', 'error');
+                return;
+            }
+
+            // Check if user has already used this team (excluding current round)
+            const userPicks = gameData.userPicks[userId] || {};
+            const otherPicks = Object.keys(userPicks)
+                .filter(r => parseInt(r) !== round)
+                .map(r => userPicks[r])
+                .map(pick => pick.teamId);
+
+            if (otherPicks.includes(selectedTeam)) {
+                showNotification('You have already used this team in another round!', 'error');
+                return;
+            }
+
+            // Update the pick
+            gameData.userPicks[userId][round] = {
+                teamId: selectedTeam,
+                teamName: gameData.teams.find(t => t.id === selectedTeam).name,
+                round: round,
+                timestamp: new Date().toISOString()
+            };
+
+            // Save data
+            localStorage.setItem('gameData', JSON.stringify(gameData));
+
+            // Update display
+            const newTeamName = gameData.teams.find(t => t.id === selectedTeam).name;
+            selectedTeam = null;
+            updateGameDisplay();
+            showNotification(`Team pick changed to: ${newTeamName}`, 'success');
+        }
+
+        function updateMatchesList() {
+            const matchesList = document.getElementById('matchesList');
+            matchesList.innerHTML = '';
+
+            const currentRoundFixtures = gameData.fixtures.filter(f => f.round === gameData.currentRound);
+
+            currentRoundFixtures.forEach(fixture => {
+                const homeTeam = gameData.teams.find(t => t.id === fixture.home);
+                const awayTeam = gameData.teams.find(t => t.id === fixture.away);
+                
+                const matchDiv = document.createElement('div');
+                matchDiv.className = 'bg-gray-50 rounded-lg p-4 flex justify-between items-center';
+                
+                const scoreDisplay = fixture.completed ? 
+                    `${fixture.homeScore} - ${fixture.awayScore}` : 
+                    'TBD';
+                
+                // Parse date with timezone to avoid issues
+                const matchDate = new Date(fixture.date + 'T00:00:00');
+                const formattedDate = !isNaN(matchDate) ? matchDate.toLocaleDateString('en-GB', { 
+                    weekday: 'short', 
+                    day: 'numeric', 
+                    month: 'short' 
+                }) : fixture.date;
+                
+                matchDiv.innerHTML = `
+                    <div class="flex items-center space-x-4">
+                        <div class="text-sm font-medium">${homeTeam.name}</div>
+                        <div class="text-lg font-bold">${scoreDisplay}</div>
+                        <div class="text-sm font-medium">${awayTeam.name}</div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-xs text-gray-500">
+                            ${fixture.completed ? 'Completed' : 'Upcoming'}
+                        </div>
+                        <div class="text-xs text-gray-600 font-medium">
+                            ${formattedDate} ${fixture.time}
+                        </div>
+                    </div>
+                `;
+                
+                matchesList.appendChild(matchDiv);
+            });
+        }
+
+        function updatePicksHistory() {
+            const picksHistory = document.getElementById('picksHistory');
+            picksHistory.innerHTML = '';
+
+            const userId = currentUser.id;
+            const userPicks = gameData.userPicks[userId] || {};
+
+            if (Object.keys(userPicks).length === 0) {
+                picksHistory.innerHTML = '<div class="text-gray-500 text-sm">No picks made yet</div>';
+                return;
+            }
+
+            Object.values(userPicks).forEach(pick => {
+                const pickDiv = document.createElement('div');
+                pickDiv.className = 'bg-gray-50 rounded-lg p-3 flex justify-between items-center';
+
+                pickDiv.innerHTML = `
+                    <div>
+                        <div class="font-medium">Round ${pick.round}</div>
+                        <div class="text-sm text-gray-600">${pick.teamName}</div>
+                    </div>
+                    <div class="text-xs text-gray-500">
+                        ${pick.timestamp ? new Date(pick.timestamp).toLocaleDateString() : 'Unknown'}
+                    </div>
+                `;
+
+                picksHistory.appendChild(pickDiv);
+            });
+        }
+
+        function updateLeaderboard(filterMode = 'all') {
+            const leaderboard = document.getElementById('leaderboard');
+            leaderboard.innerHTML = '';
+
+            // Get all users
+            const allUsers = getStoredUsers();
+            
+            // Calculate stats
+            const totalUsers = allUsers.length;
+            const eliminatedCount = Object.keys(gameData.eliminatedUsers).length;
+            const standingCount = totalUsers - eliminatedCount;
+
+            // Add stats header
+            const statsDiv = document.createElement('div');
+            statsDiv.className = 'bg-gray-100 rounded-lg p-4 mb-4 text-center';
+            statsDiv.innerHTML = `
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <div class="text-2xl font-bold text-blue-600">${totalUsers}</div>
+                        <div class="text-sm text-gray-600">Total Players</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-green-600">${standingCount}</div>
+                        <div class="text-sm text-gray-600">Still Standing</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-red-600">${eliminatedCount}</div>
+                        <div class="text-sm text-gray-600">Eliminated</div>
+                    </div>
+                </div>
+            `;
+            leaderboard.appendChild(statsDiv);
+
+            // Calculate rounds survived for each user
+            const userStats = {};
+
+            allUsers.forEach(user => {
+                const userPicks = gameData.userPicks[user.id] || {};
+                const roundsSurvived = Object.keys(userPicks).length;
+                const isEliminated = gameData.eliminatedUsers[user.id];
+
+                userStats[user.id] = {
+                    ...user,
+                    roundsSurvived: roundsSurvived,
+                    eliminated: !!isEliminated,
+                    eliminationInfo: isEliminated
+                };
+            });
+
+            // Sort users by rounds survived (descending), then by elimination status
+            let sortedUsers = Object.values(userStats).sort((a, b) => {
+                if (a.eliminated !== b.eliminated) {
+                    return a.eliminated ? 1 : -1; // Non-eliminated first
+                }
+                return b.roundsSurvived - a.roundsSurvived;
+            });
+
+            // Apply filtering
+            if (filterMode === 'standing') {
+                sortedUsers = sortedUsers.filter(user => !user.eliminated);
+            } else if (filterMode === 'eliminated') {
+                sortedUsers = sortedUsers.filter(user => user.eliminated);
+            }
+
+            if (sortedUsers.length === 0) {
+                const noUsersDiv = document.createElement('div');
+                noUsersDiv.className = 'text-center text-gray-500 py-8';
+                noUsersDiv.textContent = filterMode === 'standing' ? 'No players still standing' : 
+                                       filterMode === 'eliminated' ? 'No eliminated players' : 
+                                       'No players found';
+                leaderboard.appendChild(noUsersDiv);
+                return;
+            }
+
+            sortedUsers.forEach((user, index) => {
+                const userDiv = document.createElement('div');
+                const isEliminated = user.eliminated;
+                const bgColor = user.id === currentUser.id ? 
+                    (isEliminated ? 'bg-red-50 border border-red-200' : 'bg-blue-50 border border-blue-200') : 
+                    (isEliminated ? 'bg-red-50' : 'bg-gray-50');
+                
+                userDiv.className = `rounded-lg p-3 flex justify-between items-center ${bgColor}`;
+                
+                const eliminationText = user.eliminationInfo ?
+                    `Eliminated Round ${user.eliminationInfo.round}` :
+                    'Still Standing';
+                
+                userDiv.innerHTML = `
+                    <div class="flex items-center space-x-3">
+                        <div class="w-6 h-6 rounded-full ${isEliminated ? 'bg-red-600' : 'bg-green-600'} text-white text-xs flex items-center justify-center font-bold">
+                            ${index + 1}
+                        </div>
+                        <div>
+                            <div class="font-medium flex items-center space-x-2">
+                                <span>${user.displayName}</span>
+                                ${isEliminated ? '<span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">Eliminated</span>' : '<span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Active</span>'}
+                            </div>
+                            <div class="text-sm text-gray-600">${user.email}</div>
+                            <div class="text-xs text-gray-500">${eliminationText}</div>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-lg font-bold ${isEliminated ? 'text-red-600' : 'text-green-600'}">${user.roundsSurvived}</div>
+                        <div class="text-xs text-gray-500">Rounds Survived</div>
+                    </div>
+                `;
+                
+                leaderboard.appendChild(userDiv);
+            });
+        }
+
+        function updateUserScore() {
+            const userId = currentUser.id;
+            const userPicks = gameData.userPicks[userId] || {};
+            const roundsSurvived = Object.keys(userPicks).length;
+
+            document.getElementById('userScore').textContent = roundsSurvived;
+        }
+
+        // Fixture display functions
+        function updateAllFixturesList() {
+            const allFixturesList = document.getElementById('allFixturesList');
+            allFixturesList.innerHTML = '';
+
+            // Group fixtures by round
+            const fixturesByRound = {};
+            gameData.fixtures.forEach(fixture => {
+                if (!fixturesByRound[fixture.round]) {
+                    fixturesByRound[fixture.round] = [];
+                }
+                fixturesByRound[fixture.round].push(fixture);
+            });
+
+            // Display fixtures by round
+            Object.keys(fixturesByRound).sort((a, b) => parseInt(a) - parseInt(b)).forEach(round => {
+                const roundDiv = document.createElement('div');
+                roundDiv.className = 'mb-4';
+
+                const roundHeader = document.createElement('div');
+                roundHeader.className = 'text-lg font-semibold text-gray-800 mb-2 pb-2 border-b border-gray-200';
+                roundHeader.textContent = `Round ${round}`;
+                roundDiv.appendChild(roundHeader);
+
+                const fixturesContainer = document.createElement('div');
+                fixturesContainer.className = 'space-y-2';
+
+                fixturesByRound[round].forEach(fixture => {
+                    const homeTeam = gameData.teams.find(t => t.id === fixture.home);
+                    const awayTeam = gameData.teams.find(t => t.id === fixture.away);
+                    
+                    const matchDiv = document.createElement('div');
+                    matchDiv.className = 'bg-gray-50 rounded-lg p-3 flex justify-between items-center';
+                    
+                    const scoreDisplay = fixture.completed ? 
+                        `${fixture.homeScore} - ${fixture.awayScore}` : 
+                        'TBD';
+                    
+                    // Parse date with timezone to avoid issues
+                    const matchDate = new Date(fixture.date + 'T00:00:00');
+                    const formattedDate = !isNaN(matchDate) ? matchDate.toLocaleDateString('en-GB', { 
+                        weekday: 'short', 
+                        day: 'numeric', 
+                        month: 'short' 
+                    }) : fixture.date;
+                    
+                    matchDiv.innerHTML = `
+                        <div class="flex items-center space-x-3">
+                            <div class="text-sm font-medium">${homeTeam.name}</div>
+                            <div class="text-base font-bold">${scoreDisplay}</div>
+                            <div class="text-sm font-medium">${awayTeam.name}</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs text-gray-500">
+                                ${fixture.completed ? 'Completed' : 'Upcoming'}
+                            </div>
+                            <div class="text-xs text-gray-600 font-medium">
+                                ${formattedDate} ${fixture.time}
+                            </div>
+                        </div>
+                    `;
+                    
+                    fixturesContainer.appendChild(matchDiv);
+                });
+
+                roundDiv.appendChild(fixturesContainer);
+                allFixturesList.appendChild(roundDiv);
+            });
+        }
+
+        function toggleFixturesDisplay(mode) {
+            const matchesList = document.getElementById('matchesList');
+            const allFixturesList = document.getElementById('allFixturesList');
+            const showAllBtn = document.getElementById('showAllFixtures');
+            const showCurrentBtn = document.getElementById('showCurrentRound');
+
+            if (mode === 'all') {
+                matchesList.classList.add('hidden');
+                allFixturesList.classList.remove('hidden');
+                showAllBtn.className = 'px-3 py-1 text-sm bg-blue-600 text-white rounded-md transition-colors';
+                showCurrentBtn.className = 'px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors';
+            } else {
+                matchesList.classList.remove('hidden');
+                allFixturesList.classList.add('hidden');
+                showAllBtn.className = 'px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors';
+                showCurrentBtn.className = 'px-3 py-1 text-sm bg-blue-600 text-white rounded-md transition-colors';
+            }
+        }
+
+        // Leaderboard filtering functions
+        function toggleLeaderboardDisplay(mode) {
+            // Update button styles
+            const allBtn = document.getElementById('showAllPlayers');
+            const standingBtn = document.getElementById('showStandingPlayers');
+            const eliminatedBtn = document.getElementById('showEliminatedPlayers');
+
+            // Reset all buttons
+            allBtn.className = 'px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors';
+            standingBtn.className = 'px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors';
+            eliminatedBtn.className = 'px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors';
+
+            // Highlight selected button
+            if (mode === 'all') {
+                allBtn.className = 'px-3 py-1 text-sm bg-blue-600 text-white rounded-md transition-colors';
+            } else if (mode === 'standing') {
+                standingBtn.className = 'px-3 py-1 text-sm bg-blue-600 text-white rounded-md transition-colors';
+            } else if (mode === 'eliminated') {
+                eliminatedBtn.className = 'px-3 py-1 text-sm bg-red-600 text-white rounded-md transition-colors';
+            }
+
+            // Update leaderboard display
+            updateLeaderboard(mode);
+        }
+
+
+        function logout() {
+            currentUser = null;
+            localStorage.removeItem('currentUser');
+            document.getElementById('authSection').classList.remove('hidden');
+            document.getElementById('mainApp').classList.add('hidden');
+            clearForm();
+            showNotification('Logged out successfully', 'info');
+        }
+
+        function checkExistingSession() {
+            if (currentUser) {
+                showMainApp();
+            }
+        }
+
+        function clearForm() {
+            document.getElementById('authForm').reset();
+            clearErrors();
+        }
+
+        function clearErrors() {
+            const errorElements = document.querySelectorAll('[id$="Error"]');
+            errorElements.forEach(el => {
+                el.classList.add('hidden');
+                el.textContent = '';
+            });
+        }
+
+        function showFieldError(fieldName, message) {
+            const errorElement = document.getElementById(fieldName + 'Error');
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.classList.remove('hidden');
+            }
+        }
+
+        function showError(message) {
+            showNotification(message, 'error');
+        }
+
+        function setLoadingState(loading) {
+            const button = document.getElementById('authButton');
+            const buttonText = document.getElementById('buttonText');
+            const buttonSpinner = document.getElementById('buttonSpinner');
+            
+            button.disabled = loading;
+            if (loading) {
+                buttonText.classList.add('hidden');
+                buttonSpinner.classList.remove('hidden');
+            } else {
+                buttonText.classList.remove('hidden');
+                buttonSpinner.classList.add('hidden');
+            }
+        }
+
+        function showNotification(message, type = 'info') {
+            const container = document.getElementById('notificationContainer');
+            const notification = document.createElement('div');
+            
+            const bgColor = {
+                'success': 'bg-green-500',
+                'error': 'bg-red-500',
+                'info': 'bg-blue-500',
+                'warning': 'bg-yellow-500'
+            }[type] || 'bg-gray-500';
+
+            notification.className = `${bgColor} text-white px-4 py-3 rounded-lg shadow-lg max-w-sm transform transition-all duration-300 translate-x-full`;
+            notification.textContent = message;
+
+            container.appendChild(notification);
+
+            // Animate in
+            setTimeout(() => {
+                notification.classList.remove('translate-x-full');
+            }, 100);
+
+            // Auto remove after 5 seconds
+            setTimeout(() => {
+                notification.classList.add('translate-x-full');
+                setTimeout(() => {
+                    if (container.contains(notification)) {
+                        container.removeChild(notification);
+                    }
+                }, 300);
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

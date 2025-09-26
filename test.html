@@ -4,148 +4,121 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>URC Fantasy League - Test</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .test { margin: 10px 0; padding: 10px; border: 1px solid #ccc; }
-        .pass { background: #d4edda; color: #155724; }
-        .fail { background: #f8d7da; color: #721c24; }
-        h2 { color: #333; }
+        .card-shadow {
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
     </style>
 </head>
-<body>
-    <h1>URC Fantasy League - System Test</h1>
-    <div id="results"></div>
+<body class="min-h-screen gradient-bg">
+    <div class="container mx-auto px-4 py-8">
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-white mb-2">URC Fantasy League - Test</h1>
+            <p class="text-white/80">Testing basic functionality</p>
+        </div>
+
+        <div class="max-w-md mx-auto bg-white rounded-xl card-shadow p-8">
+            <h2 class="text-xl font-bold text-gray-800 mb-4">Test Status</h2>
+            <div id="testResults" class="space-y-2">
+                <div class="text-sm text-gray-600">Loading tests...</div>
+            </div>
+            <div class="mt-6">
+                <button id="runTests" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                    Run Tests
+                </button>
+                <button id="clearStorage" class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 ml-2">
+                    Clear Data
+                </button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        const results = document.getElementById('results');
-        let testsPassed = 0;
-        let totalTests = 0;
+        let testResults = [];
 
-        function addTest(name, passed, details) {
-            totalTests++;
-            if (passed) testsPassed++;
-            
-            const div = document.createElement('div');
-            div.className = `test ${passed ? 'pass' : 'fail'}`;
-            div.innerHTML = `
-                <strong>${name}:</strong> ${passed ? '✓ PASS' : '✗ FAIL'}
-                ${details ? `<br><small>${details}</small>` : ''}
-            `;
-            results.appendChild(div);
-        }
-
-        // Test 1: CryptoJS Library
-        addTest(
-            'CryptoJS Library Loaded',
-            typeof CryptoJS !== 'undefined' && typeof CryptoJS.SHA256 === 'function',
-            `CryptoJS available: ${typeof CryptoJS !== 'undefined'}`
-        );
-
-        // Test 2: Password Hashing
-        try {
-            const testPassword = 'test123';
-            const hash = CryptoJS.SHA256(testPassword).toString();
-            addTest(
-                'Password Hashing',
-                hash.length === 64,
-                `Hash length: ${hash.length} (expected: 64)`
-            );
-        } catch (e) {
-            addTest('Password Hashing', false, e.message);
-        }
-
-        // Test 3: Date Parsing with Timezone
-        const testDate = '2025-09-26';
-        const testTime = '18:00';
-        const date1 = new Date(testDate + 'T00:00:00');
-        const date2 = new Date(`${testDate}T${testTime}:00`);
-        
-        addTest(
-            'Date Parsing (with T00:00:00)',
-            !isNaN(date1),
-            `Date: ${date1}`
-        );
-        
-        addTest(
-            'Date Time Parsing (with full time)',
-            !isNaN(date2),
-            `DateTime: ${date2}`
-        );
-
-        // Test 4: Date Formatting
-        if (!isNaN(date2)) {
+        function runTest(testName, testFunction) {
             try {
-                const formatted = date2.toLocaleDateString('en-GB', {
-                    weekday: 'short',
-                    day: 'numeric',
-                    month: 'short'
-                });
-                addTest(
-                    'Date Formatting',
-                    formatted.length > 0,
-                    `Formatted: ${formatted}`
-                );
-            } catch (e) {
-                addTest('Date Formatting', false, e.message);
+                const result = testFunction();
+                testResults.push({ name: testName, success: true, result: result });
+                console.log(`✓ ${testName}: ${result}`);
+            } catch (error) {
+                testResults.push({ name: testName, success: false, error: error.message });
+                console.error(`✗ ${testName}: ${error.message}`);
             }
         }
 
-        // Test 5: LocalStorage
-        try {
-            localStorage.setItem('test', 'value');
-            const value = localStorage.getItem('test');
-            localStorage.removeItem('test');
-            addTest(
-                'LocalStorage Access',
-                value === 'value',
-                'LocalStorage is working'
-            );
-        } catch (e) {
-            addTest('LocalStorage Access', false, e.message);
+        function updateTestDisplay() {
+            const container = document.getElementById('testResults');
+            container.innerHTML = testResults.map(test => `
+                <div class="flex items-center ${test.success ? 'text-green-600' : 'text-red-600'}">
+                    <span class="mr-2">${test.success ? '✓' : '✗'}</span>
+                    <span class="font-medium">${test.name}</span>
+                    ${test.success ? '<span class="text-sm ml-2">- ' + test.result + '</span>' : '<span class="text-sm ml-2">- ' + test.error + '</span>'}
+                </div>
+            `).join('');
         }
 
-        // Test 6: Form Elements
-        const testForm = document.createElement('form');
-        const testInput = document.createElement('input');
-        testInput.type = 'email';
-        testInput.value = 'test@example.com';
-        testForm.appendChild(testInput);
-        document.body.appendChild(testForm);
-        
-        addTest(
-            'Form Elements Creation',
-            testInput.value === 'test@example.com',
-            'Form elements can be created and accessed'
-        );
-        
-        document.body.removeChild(testForm);
+        function runAllTests() {
+            testResults = [];
+            console.log('Running tests...');
 
-        // Summary
-        const summary = document.createElement('div');
-        summary.style.marginTop = '20px';
-        summary.style.fontSize = '1.2em';
-        summary.style.fontWeight = 'bold';
-        summary.style.color = testsPassed === totalTests ? 'green' : 'red';
-        summary.textContent = `Tests Passed: ${testsPassed}/${totalTests}`;
-        results.appendChild(summary);
+            // Test localStorage
+            runTest('localStorage Available', () => {
+                try {
+                    localStorage.setItem('test', 'value');
+                    localStorage.removeItem('test');
+                    return 'localStorage is available';
+                } catch (e) {
+                    throw new Error('localStorage not available');
+                }
+            });
 
-        // Recommendations
-        if (testsPassed < totalTests) {
-            const rec = document.createElement('div');
-            rec.style.marginTop = '10px';
-            rec.style.padding = '10px';
-            rec.style.background = '#fff3cd';
-            rec.style.border = '1px solid #ffc107';
-            rec.innerHTML = `
-                <strong>Recommendations:</strong><br>
-                - Clear browser cache and reload<br>
-                - Check browser console for errors<br>
-                - Ensure JavaScript is enabled<br>
-                - Try a different browser if issues persist
-            `;
-            results.appendChild(rec);
+            // Test game data initialization
+            runTest('Game Data Initialization', () => {
+                if (localStorage.getItem('gameData')) {
+                    const gameData = JSON.parse(localStorage.getItem('gameData'));
+                    return `Game data exists with ${gameData.teams?.length || 0} teams and ${gameData.fixtures?.length || 0} fixtures`;
+                } else {
+                    throw new Error('No game data found');
+                }
+            });
+
+            // Test user storage
+            runTest('User Storage', () => {
+                const users = localStorage.getItem('users');
+                const userCount = users ? JSON.parse(users).length : 0;
+                return `User storage working, ${userCount} users stored`;
+            });
+
+            // Test DOM elements
+            runTest('DOM Elements', () => {
+                const elements = ['authSection', 'mainApp', 'authForm', 'teamGrid'];
+                const found = elements.filter(id => document.getElementById(id));
+                return `Found ${found.length}/${elements.length} DOM elements`;
+            });
+
+            updateTestDisplay();
         }
+
+        function clearAllData() {
+            if (confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+                localStorage.clear();
+                alert('All data cleared. Refresh the page to reinitialize.');
+                testResults = [];
+                updateTestDisplay();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            runAllTests();
+
+            document.getElementById('runTests').addEventListener('click', runAllTests);
+            document.getElementById('clearStorage').addEventListener('click', clearAllData);
+        });
     </script>
 </body>
 </html>
