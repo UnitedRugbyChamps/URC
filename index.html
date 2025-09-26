@@ -152,10 +152,53 @@
                     </div>
                 </div>
 
-                <!-- Game Content Placeholder -->
-                <div class="bg-white rounded-xl card-shadow p-6">
-                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Your Fantasy League</h3>
-                    <p class="text-gray-600">Game content will be displayed here...</p>
+                <!-- Game Content -->
+                <div id="gameContent" class="bg-white rounded-xl card-shadow p-6">
+                    <!-- Week Navigation -->
+                    <div class="flex justify-between items-center mb-6">
+                        <button id="prevWeekBtn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                            ← Previous Week
+                        </button>
+                        <div class="text-center">
+                            <h3 class="text-xl font-semibold text-gray-800">Week <span id="currentWeek">1</span></h3>
+                            <p class="text-sm text-gray-600" id="weekDates">January 1-7, 2024</p>
+                        </div>
+                        <button id="nextWeekBtn" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300">
+                            Next Week →
+                        </button>
+                    </div>
+
+                    <!-- Current Picks Display -->
+                    <div id="currentPicksSection" class="mb-6">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-3">Your Picks This Week</h4>
+                        <div id="currentPicksList" class="space-y-2">
+                            <p class="text-gray-500 italic">No picks made yet this week</p>
+                        </div>
+                        <div class="mt-3 flex space-x-2">
+                            <button id="clearPicksBtn" class="px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                                Clear Picks
+                            </button>
+                            <button id="submitPicksBtn" class="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                                Submit Picks
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Available Teams -->
+                    <div>
+                        <h4 class="text-lg font-semibold text-gray-800 mb-3">Available Teams</h4>
+                        <div id="teamsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <!-- Teams will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Past Weeks Summary -->
+                    <div id="pastWeeksSection" class="mt-8 pt-6 border-t border-gray-200">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-3">Past Weeks</h4>
+                        <div id="pastWeeksList" class="space-y-3">
+                            <!-- Past weeks will be populated by JavaScript -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -169,11 +212,18 @@
         let currentUser = null;
         let isLoginMode = true;
 
+        // Game state
+        let currentWeek = 1;
+        let currentWeekPicks = [];
+        let allUserPicks = {};
+        let gameData = {};
+
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
             initializeAuth();
             setupEventListeners();
             checkExistingSession();
+            initializeGame();
         });
 
         // Initialize authentication system
@@ -431,6 +481,324 @@
             showNotification('Password reset successful! You can now login with your new password.', 'success');
         }
 
+        // URC Teams Data
+        const URC_TEAMS = [
+            { id: 'blues', name: 'Cardiff Blues', country: 'Wales', color: 'bg-blue-600' },
+            { id: 'bulls', name: 'Bulls', country: 'South Africa', color: 'bg-blue-800' },
+            { id: 'connacht', name: 'Connacht', country: 'Ireland', color: 'bg-green-600' },
+            { id: 'dragons', name: 'Dragons', country: 'Wales', color: 'bg-red-600' },
+            { id: 'edinburgh', name: 'Edinburgh', country: 'Scotland', color: 'bg-purple-600' },
+            { id: 'glasgow', name: 'Glasgow Warriors', country: 'Scotland', color: 'bg-blue-500' },
+            { id: 'leicester', name: 'Leicester Tigers', country: 'England', color: 'bg-green-700' },
+            { id: 'leinster', name: 'Leinster', country: 'Ireland', color: 'bg-blue-700' },
+            { id: 'lions', name: 'Lions', country: 'South Africa', color: 'bg-red-700' },
+            { id: 'munster', name: 'Munster', country: 'Ireland', color: 'bg-red-500' },
+            { id: 'ospreys', name: 'Ospreys', country: 'Wales', color: 'bg-black' },
+            { id: 'scarlets', name: 'Scarlets', country: 'Wales', color: 'bg-red-800' },
+            { id: 'sharks', name: 'Sharks', country: 'South Africa', color: 'bg-gray-800' },
+            { id: 'stormers', name: 'Stormers', country: 'South Africa', color: 'bg-blue-900' },
+            { id: 'ulster', name: 'Ulster', country: 'Ireland', color: 'bg-white border border-gray-300' },
+            { id: 'zebre', name: 'Zebre', country: 'Italy', color: 'bg-gray-600' }
+        ];
+
+        // Initialize game
+        function initializeGame() {
+            if (currentUser) {
+                loadGameData();
+                renderTeams();
+                updateWeekDisplay();
+                setupGameEventListeners();
+            }
+        }
+
+        // Load game data from localStorage
+        function loadGameData() {
+            const savedData = localStorage.getItem(`gameData_${currentUser.id}`);
+            if (savedData) {
+                gameData = JSON.parse(savedData);
+            } else {
+                // Initialize new game data
+                gameData = {
+                    currentWeek: 1,
+                    totalWeeks: 18,
+                    userPicks: {},
+                    scores: {}
+                };
+                saveGameData();
+            }
+            currentWeek = gameData.currentWeek;
+            allUserPicks = gameData.userPicks;
+        }
+
+        // Save game data to localStorage
+        function saveGameData() {
+            localStorage.setItem(`gameData_${currentUser.id}`, JSON.stringify(gameData));
+        }
+
+        // Setup game event listeners
+        function setupGameEventListeners() {
+            document.getElementById('prevWeekBtn').addEventListener('click', () => changeWeek(-1));
+            document.getElementById('nextWeekBtn').addEventListener('click', () => changeWeek(1));
+            document.getElementById('clearPicksBtn').addEventListener('click', clearCurrentPicks);
+            document.getElementById('submitPicksBtn').addEventListener('click', submitPicks);
+        }
+
+        // Change week
+        function changeWeek(direction) {
+            const newWeek = currentWeek + direction;
+            if (newWeek >= 1 && newWeek <= gameData.totalWeeks) {
+                currentWeek = newWeek;
+                gameData.currentWeek = currentWeek;
+                saveGameData();
+                updateWeekDisplay();
+                loadCurrentWeekPicks();
+                updateTeamAvailability();
+            }
+        }
+
+        // Update week display
+        function updateWeekDisplay() {
+            document.getElementById('currentWeek').textContent = currentWeek;
+            document.getElementById('weekDates').textContent = getWeekDates(currentWeek);
+
+            // Update navigation buttons
+            document.getElementById('prevWeekBtn').disabled = currentWeek === 1;
+            document.getElementById('nextWeekBtn').disabled = currentWeek === gameData.totalWeeks;
+        }
+
+        // Get week dates (mock dates for now)
+        function getWeekDates(weekNumber) {
+            const startDate = new Date('2024-01-01');
+            startDate.setDate(startDate.getDate() + (weekNumber - 1) * 7);
+            const endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + 6);
+
+            return startDate.toLocaleDateString() + ' - ' + endDate.toLocaleDateString();
+        }
+
+        // Render teams
+        function renderTeams() {
+            const teamsGrid = document.getElementById('teamsGrid');
+            teamsGrid.innerHTML = '';
+
+            URC_TEAMS.forEach(team => {
+                const teamCard = document.createElement('div');
+                teamCard.className = `team-card p-4 rounded-lg border-2 border-gray-200 cursor-pointer transition-all duration-200 hover:shadow-md ${team.color}`;
+                teamCard.dataset.teamId = team.id;
+                teamCard.innerHTML = `
+                    <div class="text-white text-center">
+                        <h5 class="font-semibold">${team.name}</h5>
+                        <p class="text-sm opacity-90">${team.country}</p>
+                    </div>
+                `;
+
+                teamCard.addEventListener('click', () => selectTeam(team.id));
+                teamsGrid.appendChild(teamCard);
+            });
+        }
+
+        // Select team
+        function selectTeam(teamId) {
+            const isSelected = currentWeekPicks.includes(teamId);
+            const isUsedInOtherWeek = isTeamUsedInOtherWeeks(teamId);
+
+            if (isUsedInOtherWeek) {
+                showNotification('This team has already been used in another week!', 'error');
+                return;
+            }
+
+            if (isSelected) {
+                // Deselect team
+                currentWeekPicks = currentWeekPicks.filter(id => id !== teamId);
+                updateTeamVisual(teamId, false);
+            } else {
+                // Select team (limit to 3 picks per week)
+                if (currentWeekPicks.length >= 3) {
+                    showNotification('You can only pick 3 teams per week!', 'warning');
+                    return;
+                }
+                currentWeekPicks.push(teamId);
+                updateTeamVisual(teamId, true);
+            }
+
+            updateCurrentPicksDisplay();
+            updateButtonsState();
+        }
+
+        // Update team visual state
+        function updateTeamVisual(teamId, selected) {
+            const teamCard = document.querySelector(`[data-team-id="${teamId}"]`);
+            if (selected) {
+                teamCard.classList.add('ring-4', 'ring-yellow-400', 'border-yellow-400');
+            } else {
+                teamCard.classList.remove('ring-4', 'ring-yellow-400', 'border-yellow-400');
+            }
+        }
+
+        // Update current picks display
+        function updateCurrentPicksDisplay() {
+            const picksList = document.getElementById('currentPicksList');
+
+            if (currentWeekPicks.length === 0) {
+                picksList.innerHTML = '<p class="text-gray-500 italic">No picks made yet this week</p>';
+                return;
+            }
+
+            picksList.innerHTML = '';
+            currentWeekPicks.forEach(teamId => {
+                const team = URC_TEAMS.find(t => t.id === teamId);
+                const pickItem = document.createElement('div');
+                pickItem.className = `flex justify-between items-center p-2 rounded ${team.color} text-white`;
+                pickItem.innerHTML = `
+                    <span>${team.name}</span>
+                    <button class="text-white hover:text-red-200 ml-2" onclick="removePick('${teamId}')">×</button>
+                `;
+                picksList.appendChild(pickItem);
+            });
+        }
+
+        // Remove pick (make it global so it can be called from onclick)
+        window.removePick = function(teamId) {
+            currentWeekPicks = currentWeekPicks.filter(id => id !== teamId);
+            updateTeamVisual(teamId, false);
+            updateCurrentPicksDisplay();
+            updateButtonsState();
+        };
+
+        // Update buttons state
+        function updateButtonsState() {
+            const hasPicks = currentWeekPicks.length > 0;
+            document.getElementById('clearPicksBtn').disabled = !hasPicks;
+            document.getElementById('submitPicksBtn').disabled = !hasPicks;
+        }
+
+        // Clear current picks
+        function clearCurrentPicks() {
+            currentWeekPicks.forEach(teamId => {
+                updateTeamVisual(teamId, false);
+            });
+            currentWeekPicks = [];
+            updateCurrentPicksDisplay();
+            updateButtonsState();
+        }
+
+        // Submit picks
+        function submitPicks() {
+            if (currentWeekPicks.length === 0) {
+                showNotification('Please select at least one team!', 'warning');
+                return;
+            }
+
+            // Save picks for current week
+            allUserPicks[currentWeek] = [...currentWeekPicks];
+            gameData.userPicks = allUserPicks;
+
+            // Generate mock results for past weeks
+            generateMockResults();
+
+            saveGameData();
+            updatePastWeeksDisplay();
+            showNotification(`Week ${currentWeek} picks submitted successfully!`, 'success');
+
+            // Move to next week
+            if (currentWeek < gameData.totalWeeks) {
+                changeWeek(1);
+            }
+        }
+
+        // Load current week picks
+        function loadCurrentWeekPicks() {
+            currentWeekPicks = allUserPicks[currentWeek] || [];
+            updateCurrentPicksDisplay();
+            updateButtonsState();
+
+            // Update team visuals
+            currentWeekPicks.forEach(teamId => {
+                updateTeamVisual(teamId, true);
+            });
+        }
+
+        // Check if team is used in other weeks
+        function isTeamUsedInOtherWeeks(teamId) {
+            for (let week = 1; week <= gameData.totalWeeks; week++) {
+                if (week !== currentWeek && allUserPicks[week] && allUserPicks[week].includes(teamId)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        // Update team availability
+        function updateTeamAvailability() {
+            URC_TEAMS.forEach(team => {
+                const isUsed = isTeamUsedInOtherWeeks(team.id);
+                const teamCard = document.querySelector(`[data-team-id="${team.id}"]`);
+
+                if (isUsed) {
+                    teamCard.classList.add('opacity-50', 'cursor-not-allowed');
+                    teamCard.classList.remove('cursor-pointer', 'hover:shadow-md');
+                } else {
+                    teamCard.classList.remove('opacity-50', 'cursor-not-allowed');
+                    teamCard.classList.add('cursor-pointer', 'hover:shadow-md');
+                }
+            });
+        }
+
+        // Generate mock results for past weeks
+        function generateMockResults() {
+            if (!gameData.scores) {
+                gameData.scores = {};
+            }
+
+            // Generate results for completed weeks
+            for (let week = 1; week < currentWeek; week++) {
+                if (!gameData.scores[week]) {
+                    gameData.scores[week] = {};
+
+                    // Mock scores for each team (simple random scoring)
+                    URC_TEAMS.forEach(team => {
+                        const baseScore = Math.floor(Math.random() * 20) + 10; // 10-30 points
+                        gameData.scores[week][team.id] = baseScore;
+                    });
+                }
+            }
+
+            saveGameData();
+        }
+
+        // Update past weeks display
+        function updatePastWeeksDisplay() {
+            const pastWeeksList = document.getElementById('pastWeeksList');
+            pastWeeksList.innerHTML = '';
+
+            for (let week = 1; week < currentWeek; week++) {
+                const weekPicks = allUserPicks[week] || [];
+                const weekScores = gameData.scores[week] || {};
+
+                let totalScore = 0;
+                weekPicks.forEach(teamId => {
+                    totalScore += weekScores[teamId] || 0;
+                });
+
+                const weekDiv = document.createElement('div');
+                weekDiv.className = 'border border-gray-200 rounded-lg p-4';
+                weekDiv.innerHTML = `
+                    <div class="flex justify-between items-center mb-2">
+                        <h5 class="font-semibold">Week ${week}</h5>
+                        <span class="text-sm font-medium text-blue-600">Total: ${totalScore} pts</span>
+                    </div>
+                    <div class="text-sm text-gray-600">
+                        Teams: ${weekPicks.map(id => URC_TEAMS.find(t => t.id === id).name).join(', ')}
+                    </div>
+                `;
+                pastWeeksList.appendChild(weekDiv);
+            }
+
+            if (pastWeeksList.children.length === 0) {
+                pastWeeksList.innerHTML = '<p class="text-gray-500 italic">No completed weeks yet</p>';
+            }
+        }
+
         // Utility functions
         function hashPassword(password) {
             return CryptoJS.SHA256(password).toString();
@@ -491,6 +859,7 @@
             document.getElementById('authSection').classList.add('hidden');
             document.getElementById('mainApp').classList.remove('hidden');
             document.getElementById('userName').textContent = currentUser.displayName;
+            initializeGame();
         }
 
         function logout() {
