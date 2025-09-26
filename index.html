@@ -301,10 +301,13 @@
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
-            initializeAuth();
-            setupEventListeners();
-            checkExistingSession();
-            initializeGame();
+            // Wait for external scripts to load
+            setTimeout(() => {
+                initializeAuth();
+                setupEventListeners();
+                checkExistingSession();
+                initializeGame();
+            }, 100);
             
             // Update game state every minute
             setInterval(() => {
@@ -590,6 +593,18 @@
 
         // Utility functions
         function hashPassword(password) {
+            // Check if CryptoJS is loaded
+            if (typeof CryptoJS === 'undefined' || !CryptoJS.SHA256) {
+                console.error('CryptoJS not loaded, using fallback hash');
+                // Simple fallback hash function
+                let hash = 0;
+                for (let i = 0; i < password.length; i++) {
+                    const char = password.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash; // Convert to 32bit integer
+                }
+                return hash.toString();
+            }
             return CryptoJS.SHA256(password).toString();
         }
 
@@ -995,8 +1010,8 @@
 
                 if (!firstGame || !lastGame) return;
 
-                const firstGameTime = new Date(`${firstGame.date}T${firstGame.time}`);
-                const lastGameTime = new Date(`${lastGame.date}T${lastGame.time}`);
+                const firstGameTime = new Date(`${firstGame.date}T${firstGame.time}:00`);
+                const lastGameTime = new Date(`${lastGame.date}T${lastGame.time}:00`);
                 const deadlineTime = new Date(firstGameTime.getTime() - (30 * 60 * 1000)); // 30 minutes before first game
 
                 if (now < deadlineTime) {
@@ -1309,8 +1324,8 @@
             const lastGame = currentRoundFixtures.find(f => f.lastGame);
             
             if (firstGame && lastGame) {
-                const firstGameTime = new Date(`${firstGame.date}T${firstGame.time}`);
-                const lastGameTime = new Date(`${lastGame.date}T${lastGame.time}`);
+                const firstGameTime = new Date(`${firstGame.date}T${firstGame.time}:00`);
+                const lastGameTime = new Date(`${lastGame.date}T${lastGame.time}:00`);
                 const deadlineTime = new Date(firstGameTime.getTime() - (30 * 60 * 1000));
                 const now = new Date();
                 
@@ -1495,7 +1510,7 @@
                 const firstGame = currentRoundFixtures.find(f => f.firstGame);
 
                 if (firstGame) {
-                    const firstGameTime = new Date(`${firstGame.date}T${firstGame.time}`);
+                    const firstGameTime = new Date(`${firstGame.date}T${firstGame.time}:00`);
                     const deadlineTime = new Date(firstGameTime.getTime() - (30 * 60 * 1000));
                     const now = new Date();
 
@@ -1609,12 +1624,13 @@
                     `${fixture.homeScore} - ${fixture.awayScore}` : 
                     'TBD';
                 
-                const matchDate = new Date(fixture.date);
-                const formattedDate = matchDate.toLocaleDateString('en-GB', { 
+                // Parse date with timezone to avoid issues
+                const matchDate = new Date(fixture.date + 'T00:00:00');
+                const formattedDate = !isNaN(matchDate) ? matchDate.toLocaleDateString('en-GB', { 
                     weekday: 'short', 
                     day: 'numeric', 
                     month: 'short' 
-                });
+                }) : fixture.date;
                 
                 matchDiv.innerHTML = `
                     <div class="flex items-center space-x-4">
@@ -1658,7 +1674,7 @@
                         <div class="text-sm text-gray-600">${pick.teamName}</div>
                     </div>
                     <div class="text-xs text-gray-500">
-                        ${new Date(pick.timestamp).toLocaleDateString()}
+                        ${pick.timestamp ? new Date(pick.timestamp).toLocaleDateString() : 'Unknown'}
                     </div>
                 `;
 
@@ -1823,12 +1839,13 @@
                         `${fixture.homeScore} - ${fixture.awayScore}` : 
                         'TBD';
                     
-                    const matchDate = new Date(fixture.date);
-                    const formattedDate = matchDate.toLocaleDateString('en-GB', { 
+                    // Parse date with timezone to avoid issues
+                    const matchDate = new Date(fixture.date + 'T00:00:00');
+                    const formattedDate = !isNaN(matchDate) ? matchDate.toLocaleDateString('en-GB', { 
                         weekday: 'short', 
                         day: 'numeric', 
                         month: 'short' 
-                    });
+                    }) : fixture.date;
                     
                     matchDiv.innerHTML = `
                         <div class="flex items-center space-x-3">
