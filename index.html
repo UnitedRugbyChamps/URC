@@ -337,43 +337,113 @@
 
         // Setup event listeners
         function setupEventListeners() {
+            console.log('Setting up event listeners...');
+            
             // Tab switching
-            document.getElementById('loginTab').addEventListener('click', () => switchAuthMode('login'));
-            document.getElementById('registerTab').addEventListener('click', () => switchAuthMode('register'));
+            const loginTab = document.getElementById('loginTab');
+            const registerTab = document.getElementById('registerTab');
+            
+            if (loginTab && registerTab) {
+                loginTab.addEventListener('click', () => switchAuthMode('login'));
+                registerTab.addEventListener('click', () => switchAuthMode('register'));
+                console.log('Tab listeners attached');
+            } else {
+                console.error('Tab elements not found');
+            }
 
             // Form submission
-            document.getElementById('authForm').addEventListener('submit', handleAuthSubmit);
+            const authForm = document.getElementById('authForm');
+            if (authForm) {
+                authForm.addEventListener('submit', handleAuthSubmit);
+                console.log('Form submit listener attached');
+            } else {
+                console.error('Auth form not found');
+            }
 
             // Password visibility toggle
-            document.getElementById('togglePassword').addEventListener('click', togglePasswordVisibility);
+            const togglePassword = document.getElementById('togglePassword');
+            if (togglePassword) {
+                togglePassword.addEventListener('click', togglePasswordVisibility);
+            }
 
             // Forgot password
-            document.getElementById('forgotPasswordBtn').addEventListener('click', showPasswordResetModal);
+            const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+            if (forgotPasswordBtn) {
+                forgotPasswordBtn.addEventListener('click', showPasswordResetModal);
+            }
 
             // Password reset form
-            document.getElementById('passwordResetForm').addEventListener('submit', handlePasswordReset);
-            document.getElementById('cancelReset').addEventListener('click', hidePasswordResetModal);
+            const passwordResetForm = document.getElementById('passwordResetForm');
+            if (passwordResetForm) {
+                passwordResetForm.addEventListener('submit', handlePasswordReset);
+            }
+            
+            const cancelReset = document.getElementById('cancelReset');
+            if (cancelReset) {
+                cancelReset.addEventListener('click', hidePasswordResetModal);
+            }
 
             // Logout
-            document.getElementById('logoutBtn').addEventListener('click', logout);
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', logout);
+            }
 
             // Game event listeners
-            document.getElementById('submitPick').addEventListener('click', submitTeamPick);
-            document.getElementById('changePick').addEventListener('click', changeTeamPick);
+            const submitPick = document.getElementById('submitPick');
+            if (submitPick) {
+                submitPick.addEventListener('click', submitTeamPick);
+            }
+            
+            const changePick = document.getElementById('changePick');
+            if (changePick) {
+                changePick.addEventListener('click', changeTeamPick);
+            }
             
             // Fixture display toggles
-            document.getElementById('showAllFixtures').addEventListener('click', () => toggleFixturesDisplay('all'));
-            document.getElementById('showCurrentRound').addEventListener('click', () => toggleFixturesDisplay('current'));
+            const showAllFixtures = document.getElementById('showAllFixtures');
+            if (showAllFixtures) {
+                showAllFixtures.addEventListener('click', () => toggleFixturesDisplay('all'));
+            }
+            
+            const showCurrentRound = document.getElementById('showCurrentRound');
+            if (showCurrentRound) {
+                showCurrentRound.addEventListener('click', () => toggleFixturesDisplay('current'));
+            }
             
             // Leaderboard display toggles
-            document.getElementById('showAllPlayers').addEventListener('click', () => toggleLeaderboardDisplay('all'));
-            document.getElementById('showStandingPlayers').addEventListener('click', () => toggleLeaderboardDisplay('standing'));
-            document.getElementById('showEliminatedPlayers').addEventListener('click', () => toggleLeaderboardDisplay('eliminated'));
+            const showAllPlayers = document.getElementById('showAllPlayers');
+            if (showAllPlayers) {
+                showAllPlayers.addEventListener('click', () => toggleLeaderboardDisplay('all'));
+            }
+            
+            const showStandingPlayers = document.getElementById('showStandingPlayers');
+            if (showStandingPlayers) {
+                showStandingPlayers.addEventListener('click', () => toggleLeaderboardDisplay('standing'));
+            }
+            
+            const showEliminatedPlayers = document.getElementById('showEliminatedPlayers');
+            if (showEliminatedPlayers) {
+                showEliminatedPlayers.addEventListener('click', () => toggleLeaderboardDisplay('eliminated'));
+            }
 
             // Admin interface toggles
-            document.getElementById('toggleAdminView').addEventListener('click', toggleAdminInterface);
-            document.getElementById('updateDates').addEventListener('click', updateKnockoutDates);
-            document.getElementById('setupQuarterFinals').addEventListener('click', setupQuarterFinals);
+            const toggleAdminView = document.getElementById('toggleAdminView');
+            if (toggleAdminView) {
+                toggleAdminView.addEventListener('click', toggleAdminInterface);
+            }
+            
+            const updateDates = document.getElementById('updateDates');
+            if (updateDates) {
+                updateDates.addEventListener('click', updateKnockoutDates);
+            }
+            
+            const setupQuarterFinalsBtn = document.getElementById('setupQuarterFinals');
+            if (setupQuarterFinalsBtn) {
+                setupQuarterFinalsBtn.addEventListener('click', setupQuarterFinals);
+            }
+            
+            console.log('All event listeners setup complete');
         }
 
         // Switch between login and register modes
@@ -411,17 +481,21 @@
         // Handle form submission
         async function handleAuthSubmit(e) {
             e.preventDefault();
+            console.log('Form submitted, mode:', isLoginMode ? 'login' : 'register');
             
             const email = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
-            const displayName = document.getElementById('displayName').value.trim();
-            const confirmPassword = document.getElementById('confirmPassword').value;
+            const displayName = document.getElementById('displayName')?.value?.trim() || '';
+            const confirmPassword = document.getElementById('confirmPassword')?.value || '';
+
+            console.log('Form values:', { email, passwordLength: password.length, displayName });
 
             // Clear previous errors
             clearErrors();
 
             // Validate form
             if (!validateForm(email, password, displayName, confirmPassword)) {
+                console.log('Form validation failed');
                 return;
             }
 
@@ -430,11 +504,14 @@
 
             try {
                 if (isLoginMode) {
+                    console.log('Attempting login...');
                     await loginUser(email, password);
                 } else {
+                    console.log('Attempting registration...');
                     await registerUser(email, password, displayName);
                 }
             } catch (error) {
+                console.error('Auth error:', error);
                 showError(error.message);
             } finally {
                 setLoadingState(false);
@@ -490,15 +567,19 @@
 
         // Login user
         async function loginUser(email, password) {
+            console.log('loginUser called with email:', email);
             const users = getStoredUsers();
+            console.log('Stored users count:', users.length);
             const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
             
             if (!user) {
+                console.log('User not found for email:', email);
                 throw new Error('No account found with this email address');
             }
 
             // Verify password
             const hashedPassword = hashPassword(password);
+            console.log('Password hash comparison:', user.password === hashedPassword);
             if (user.password !== hashedPassword) {
                 throw new Error('Incorrect password');
             }
@@ -513,6 +594,7 @@
 
             // Save session
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            console.log('Login successful for:', user.displayName);
             
             showMainApp();
             showNotification('Login successful!', 'success');
@@ -520,10 +602,13 @@
 
         // Register user
         async function registerUser(email, password, displayName) {
+            console.log('registerUser called with:', { email, displayName });
             const users = getStoredUsers();
+            console.log('Existing users count:', users.length);
             
             // Check if user already exists
             if (users.find(u => u.email.toLowerCase() === email.toLowerCase())) {
+                console.log('User already exists with email:', email);
                 throw new Error('An account with this email already exists');
             }
 
@@ -535,10 +620,12 @@
                 displayName: displayName,
                 createdAt: new Date().toISOString()
             };
+            console.log('Created new user object:', { ...newUser, password: '[hidden]' });
 
             // Save user
             users.push(newUser);
             localStorage.setItem('users', JSON.stringify(users));
+            console.log('User saved to localStorage');
 
             // Auto-login
             currentUser = {
@@ -549,6 +636,7 @@
             };
 
             localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            console.log('Registration successful for:', displayName);
             
             showMainApp();
             showNotification('Registration successful! Welcome to URC Fantasy League!', 'success');
