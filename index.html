@@ -60,9 +60,14 @@
                 <div class="bg-white rounded-xl card-shadow p-6 mb-6">
                     <div class="flex justify-between items-center">
                         <h2 class="text-2xl font-bold text-gray-800">Welcome, <span id="userName"></span>!</h2>
-                        <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
-                            Logout
-                        </button>
+                        <div class="flex gap-2">
+                            <button id="toggleAdminBtn" class="bg-gray-500 text-white px-3 py-2 rounded-lg hover:bg-gray-600 text-sm">
+                                Admin
+                            </button>
+                            <button id="logoutBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
+                                Logout
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -83,8 +88,8 @@
                     <div class="bg-blue-50 rounded-lg p-4 mb-6">
                         <div class="flex justify-between items-center">
                             <div>
-                                <h4 class="text-lg font-semibold text-blue-900">Round <span id="currentRound">1</span></h4>
-                                <p class="text-blue-700">Pick your team for this round's matches</p>
+                                <h4 class="text-lg font-semibold text-blue-900" id="currentRoundDisplay">Round 1</h4>
+                                <p class="text-blue-700" id="roundDescription">Pick your team for this round's matches</p>
                             </div>
                             <div class="text-right">
                                 <div class="text-2xl font-bold text-blue-900" id="userScore">0</div>
@@ -113,10 +118,27 @@
                         </div>
                     </div>
 
-                    <div>
+                    <div class="mb-6">
                         <h4 class="text-lg font-semibold text-gray-800 mb-4">Leaderboard</h4>
                         <div id="leaderboard" class="space-y-2">
                             <!-- Leaderboard will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <!-- Admin Panel (for demo purposes) -->
+                    <div class="bg-yellow-50 rounded-lg p-4 mb-6">
+                        <h4 class="text-lg font-semibold text-yellow-800 mb-3">Demo Controls</h4>
+                        <p class="text-sm text-yellow-700 mb-3">For demonstration purposes - advance rounds or simulate match results</p>
+                        <div class="flex flex-wrap gap-2">
+                            <button id="advanceRoundBtn" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">
+                                Advance Round
+                            </button>
+                            <button id="simulateResultsBtn" class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700">
+                                Simulate Results
+                            </button>
+                            <button id="resetGameBtn" class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700">
+                                Reset Game
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -141,6 +163,12 @@
             setupEventListeners();
             checkExistingSession();
             initializeGame();
+
+            // Hide admin panel by default
+            const adminPanel = document.querySelector('.bg-yellow-50');
+            if (adminPanel) {
+                adminPanel.style.display = 'none';
+            }
 
             // Update game state every minute
             setInterval(() => {
@@ -179,6 +207,12 @@
 
             // Game events
             document.getElementById('submitPick').addEventListener('click', submitTeamPick);
+
+            // Admin controls
+            document.getElementById('advanceRoundBtn').addEventListener('click', advanceRoundManually);
+            document.getElementById('simulateResultsBtn').addEventListener('click', simulateMatchResults);
+            document.getElementById('resetGameBtn').addEventListener('click', resetGameData);
+            document.getElementById('toggleAdminBtn').addEventListener('click', toggleAdminPanel);
         }
 
         // Switch between login and register modes
@@ -322,6 +356,191 @@
             return hash.toString();
         }
 
+        // Get fixtures data
+        function getFixturesData() {
+            return [
+                // Round 1 - September 2025
+                { round: 1, home: 'stormers', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2025-09-26', time: '18:00' },
+                { round: 1, home: 'glasgow', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2025-09-26', time: '20:05' },
+                { round: 1, home: 'ulster', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2025-09-26', time: '20:05' },
+                { round: 1, home: 'bulls', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2025-09-27', time: '13:00' },
+                { round: 1, home: 'zebre', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2025-09-27', time: '15:05' },
+                { round: 1, home: 'scarlets', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2025-09-27', time: '17:30' },
+                { round: 1, home: 'cardiff', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2025-09-27', time: '19:45' },
+                { round: 1, home: 'connacht', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2025-09-27', time: '19:45' },
+
+                // Round 2 - October 2025
+                { round: 2, home: 'stormers', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2025-10-03', time: '18:00' },
+                { round: 2, home: 'dragons', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2025-10-03', time: '20:05' },
+                { round: 2, home: 'edinburgh', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2025-10-03', time: '20:05' },
+                { round: 2, home: 'connacht', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2025-10-04', time: '13:45' },
+                { round: 2, home: 'benetton', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2025-10-04', time: '17:30' },
+                { round: 2, home: 'bulls', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2025-10-04', time: '17:30' },
+                { round: 2, home: 'munster', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2025-10-04', time: '19:45' },
+                { round: 2, home: 'zebre', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2025-10-05', time: '15:00' },
+
+                // Round 3 - October 2025
+                { round: 3, home: 'munster', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2025-10-10', time: '19:45' },
+                { round: 3, home: 'scarlets', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2025-10-10', time: '19:45' },
+                { round: 3, home: 'benetton', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2025-10-11', time: '15:00' },
+                { round: 3, home: 'ospreys', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2025-10-11', time: '15:00' },
+                { round: 3, home: 'glasgow', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2025-10-11', time: '17:30' },
+                { round: 3, home: 'leinster', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2025-10-11', time: '17:30' },
+                { round: 3, home: 'cardiff', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2025-10-11', time: '19:45' },
+                { round: 3, home: 'ulster', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2025-10-11', time: '19:45' },
+
+                // Round 4 - October 2025
+                { round: 4, home: 'connacht', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2025-10-17', time: '19:45' },
+                { round: 4, home: 'dragons', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2025-10-17', time: '19:45' },
+                { round: 4, home: 'edinburgh', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2025-10-17', time: '19:45' },
+                { round: 4, home: 'lions', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2025-10-18', time: '12:45' },
+                { round: 4, home: 'sharks', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2025-10-18', time: '15:00' },
+                { round: 4, home: 'leinster', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2025-10-18', time: '17:15' },
+                { round: 4, home: 'ospreys', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2025-10-18', time: '19:45' },
+                { round: 4, home: 'zebre', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2025-10-18', time: '19:45' },
+
+                // Round 5 - October 2025
+                { round: 5, home: 'glasgow', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2025-10-24', time: '19:45' },
+                { round: 5, home: 'lions', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2025-10-25', time: '12:45' },
+                { round: 5, home: 'sharks', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2025-10-25', time: '15:00' },
+                { round: 5, home: 'benetton', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2025-10-25', time: '17:30' },
+                { round: 5, home: 'dragons', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2025-10-25', time: '17:30' },
+                { round: 5, home: 'leinster', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2025-10-25', time: '17:30' },
+                { round: 5, home: 'cardiff', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2025-10-25', time: '19:45' },
+                { round: 5, home: 'munster', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2025-10-25', time: '19:45' },
+
+                // Round 6 - November 2025
+                { round: 6, home: 'dragons', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2025-11-28', time: '19:45' },
+                { round: 6, home: 'ulster', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2025-11-28', time: '19:45' },
+                { round: 6, home: 'bulls', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2025-11-29', time: '12:00' },
+                { round: 6, home: 'zebre', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2025-11-29', time: '13:00' },
+                { round: 6, home: 'edinburgh', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2025-11-29', time: '17:30' },
+                { round: 6, home: 'munster', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2025-11-29', time: '17:30' },
+                { round: 6, home: 'connacht', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2025-11-29', time: '19:45' },
+                { round: 6, home: 'scarlets', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2025-11-29', time: '19:45' },
+
+                // Round 7 - December 2025
+                { round: 7, home: 'cardiff', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2025-12-19', time: '19:45' },
+                { round: 7, home: 'leinster', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2025-12-19', time: '19:45' },
+                { round: 7, home: 'stormers', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2025-12-20', time: '13:30' },
+                { round: 7, home: 'benetton', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2025-12-20', time: '14:00' },
+                { round: 7, home: 'glasgow', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2025-12-20', time: '15:00' },
+                { round: 7, home: 'sharks', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2025-12-20', time: '16:00' },
+                { round: 7, home: 'ospreys', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2025-12-20', time: '17:30' },
+                { round: 7, home: 'dragons', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2025-12-20', time: '19:45' },
+
+                // Round 8 - December 2025
+                { round: 8, home: 'bulls', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2025-12-26', time: '00:00' },
+                { round: 8, home: 'lions', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2025-12-26', time: '00:00' },
+                { round: 8, home: 'cardiff', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2025-12-26', time: '15:00' },
+                { round: 8, home: 'scarlets', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2025-12-26', time: '17:30' },
+                { round: 8, home: 'zebre', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2025-12-27', time: '14:30' },
+                { round: 8, home: 'edinburgh', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2025-12-27', time: '15:00' },
+                { round: 8, home: 'connacht', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2025-12-27', time: '17:30' },
+                { round: 8, home: 'munster', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2025-12-27', time: '19:45' },
+
+                // Round 9 - January 2026
+                { round: 9, home: 'dragons', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2026-01-01', time: '15:00' },
+                { round: 9, home: 'ospreys', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2026-01-01', time: '17:30' },
+                { round: 9, home: 'ulster', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2026-01-02', time: '19:45' },
+                { round: 9, home: 'sharks', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2026-01-03', time: '13:30' },
+                { round: 9, home: 'stormers', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2026-01-03', time: '16:00' },
+                { round: 9, home: 'benetton', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2026-01-03', time: '17:30' },
+                { round: 9, home: 'leinster', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2026-01-03', time: '17:30' },
+                { round: 9, home: 'glasgow', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2026-01-03', time: '19:45' },
+
+                // Round 10 - January 2026
+                { round: 10, home: 'edinburgh', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2026-01-23', time: '19:45' },
+                { round: 10, home: 'munster', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2026-01-23', time: '19:45' },
+                { round: 10, home: 'ospreys', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2026-01-23', time: '19:45' },
+                { round: 10, home: 'scarlets', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2026-01-24', time: '15:00' },
+                { round: 10, home: 'connacht', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2026-01-24', time: '17:30' },
+                { round: 10, home: 'stormers', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2026-01-24', time: '17:30' },
+                { round: 10, home: 'cardiff', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2026-01-24', time: '19:45' },
+                { round: 10, home: 'zebre', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2026-01-24', time: '19:45' },
+
+                // Round 11 - January 2026
+                { round: 11, home: 'benetton', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2026-01-30', time: '19:45' },
+                { round: 11, home: 'glasgow', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2026-01-30', time: '19:45' },
+                { round: 11, home: 'lions', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2026-01-31', time: '12:30' },
+                { round: 11, home: 'sharks', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2026-01-31', time: '15:00' },
+                { round: 11, home: 'zebre', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2026-01-31', time: '15:00' },
+                { round: 11, home: 'leinster', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2026-01-31', time: '17:30' },
+                { round: 11, home: 'ospreys', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2026-01-31', time: '19:45' },
+                { round: 11, home: 'ulster', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2026-01-31', time: '19:45' },
+
+                // Round 12 - February 2026
+                { round: 12, home: 'cardiff', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2026-02-27', time: '19:45' },
+                { round: 12, home: 'edinburgh', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2026-02-27', time: '19:45' },
+                { round: 12, home: 'lions', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2026-02-28', time: '12:30' },
+                { round: 12, home: 'bulls', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2026-02-28', time: '15:00' },
+                { round: 12, home: 'connacht', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2026-02-28', time: '15:00' },
+                { round: 12, home: 'dragons', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2026-02-28', time: '17:30' },
+                { round: 12, home: 'munster', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2026-02-28', time: '17:30' },
+                { round: 12, home: 'ospreys', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2026-02-28', time: '19:45' },
+
+                // Round 13 - March 2026
+                { round: 13, home: 'bulls', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2026-03-20', time: '17:00' },
+                { round: 13, home: 'scarlets', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2026-03-20', time: '19:45' },
+                { round: 13, home: 'ulster', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2026-03-20', time: '19:45' },
+                { round: 13, home: 'lions', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2026-03-21', time: '12:45' },
+                { round: 13, home: 'benetton', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2026-03-21', time: '15:00' },
+                { round: 13, home: 'sharks', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2026-03-21', time: '15:00' },
+                { round: 13, home: 'glasgow', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2026-03-21', time: '17:30' },
+                { round: 13, home: 'stormers', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2026-03-21', time: '17:30' },
+
+                // Round 14 - March 2026
+                { round: 14, home: 'sharks', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2026-03-27', time: '17:00' },
+                { round: 14, home: 'glasgow', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2026-03-27', time: '19:45' },
+                { round: 14, home: 'bulls', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2026-03-28', time: '12:00' },
+                { round: 14, home: 'connacht', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2026-03-28', time: '14:15' },
+                { round: 14, home: 'lions', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2026-03-28', time: '14:30' },
+                { round: 14, home: 'stormers', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2026-03-28', time: '17:00' },
+                { round: 14, home: 'leinster', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2026-03-28', time: '17:30' },
+                { round: 14, home: 'zebre', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2026-03-28', time: '19:45' },
+
+                // Round 15 - April 2026
+                { round: 15, home: 'dragons', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2026-04-17', time: '19:45' },
+                { round: 15, home: 'edinburgh', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2026-04-17', time: '19:45' },
+                { round: 15, home: 'ulster', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2026-04-17', time: '19:45' },
+                { round: 15, home: 'lions', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2026-04-18', time: '14:45' },
+                { round: 15, home: 'stormers', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2026-04-18', time: '17:15' },
+                { round: 15, home: 'scarlets', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2026-04-18', time: '17:30' },
+                { round: 15, home: 'benetton', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2026-04-18', time: '19:45' },
+                { round: 15, home: 'ospreys', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2026-04-18', time: '19:45' },
+
+                // Round 16 - April 2026
+                { round: 16, home: 'cardiff', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2026-04-24', time: '19:45' },
+                { round: 16, home: 'edinburgh', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2026-04-24', time: '19:45' },
+                { round: 16, home: 'zebre', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2026-04-24', time: '19:45' },
+                { round: 16, home: 'lions', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2026-04-25', time: '15:00' },
+                { round: 16, home: 'munster', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2026-04-25', time: '17:30' },
+                { round: 16, home: 'stormers', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2026-04-25', time: '17:30' },
+                { round: 16, home: 'benetton', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2026-04-25', time: '19:45' },
+                { round: 16, home: 'scarlets', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2026-04-25', time: '19:45' },
+
+                // Round 17 - May 2026
+                { round: 17, home: 'glasgow', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2026-05-08', time: '19:45' },
+                { round: 17, home: 'ulster', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2026-05-08', time: '19:45' },
+                { round: 17, home: 'bulls', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2026-05-09', time: '12:45' },
+                { round: 17, home: 'sharks', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2026-05-09', time: '15:00' },
+                { round: 17, home: 'leinster', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2026-05-09', time: '17:30' },
+                { round: 17, home: 'ospreys', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2026-05-09', time: '17:30' },
+                { round: 17, home: 'connacht', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2026-05-09', time: '19:45' },
+                { round: 17, home: 'dragons', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2026-05-09', time: '19:45' },
+
+                // Round 18 - May 2026
+                { round: 18, home: 'cardiff', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2026-05-15', time: '19:45' },
+                { round: 18, home: 'edinburgh', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2026-05-15', time: '19:45' },
+                { round: 18, home: 'ulster', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2026-05-15', time: '19:45' },
+                { round: 18, home: 'sharks', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2026-05-16', time: '12:45' },
+                { round: 18, home: 'bulls', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2026-05-16', time: '15:00' },
+                { round: 18, home: 'leinster', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2026-05-16', time: '17:15' },
+                { round: 18, home: 'scarlets', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2026-05-16', time: '17:15' },
+                { round: 18, home: 'munster', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2026-05-16', time: '19:45' }
+            ];
+        }
+
         // Game functionality
         function initializeGame() {
             try {
@@ -357,15 +576,15 @@
                 { id: 'benetton', name: 'Benetton', country: 'Italy' }
             ];
 
-            const fixtures = [
-                { round: 1, home: 'stormers', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2025-09-26', time: '18:00' },
-                { round: 1, home: 'glasgow', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2025-09-26', time: '20:05' }
-            ];
+            const fixtures = getFixturesData();
+
+            // Add knockout fixtures to regular season fixtures
+            const allFixtures = [...fixtures, ...generateKnockoutFixtures()];
 
             const gameData = {
                 currentRound: 1,
                 teams: teams,
-                fixtures: fixtures,
+                fixtures: allFixtures,
                 userPicks: {},
                 eliminatedUsers: {},
                 gameState: 'picking',
@@ -390,24 +609,89 @@
         }
 
         function updateCurrentRound() {
-            document.getElementById('currentRound').textContent = gameData.currentRound;
+            const roundName = getRoundName(gameData.currentRound);
+            document.getElementById('currentRoundDisplay').textContent = roundName;
+
+            const description = gameData.seasonPhase === 'regular'
+                ? `Pick your team for this round's matches`
+                : `Pick your team for the ${roundName}`;
+            document.getElementById('roundDescription').textContent = description;
         }
 
         function updateTeamSelection() {
             const teamGrid = document.getElementById('teamGrid');
             teamGrid.innerHTML = '';
 
+            const userPicks = gameData.userPicks[currentUser.id] || {};
+            const eliminatedUsers = gameData.eliminatedUsers || {};
+
             gameData.teams.forEach(team => {
                 const teamCard = document.createElement('div');
                 teamCard.className = 'bg-gray-100 rounded-lg p-3 text-center cursor-pointer hover:bg-gray-200 transition-colors team-card';
                 teamCard.dataset.teamId = team.id;
 
+                // Check if team was already picked by this user
+                const alreadyPicked = Object.values(userPicks).includes(team.id);
+
+                // Check if user is eliminated
+                const userEliminated = eliminatedUsers[currentUser.id];
+
+                // In knockout rounds, teams are only available if they won their previous match
+                let teamAvailable = !alreadyPicked && !userEliminated;
+
+                if (gameData.seasonPhase === 'knockout') {
+                    // For knockout rounds, teams are only available if they won the previous round
+                    const previousRound = gameData.currentRound - 1;
+                    const previousRoundFixtures = gameData.fixtures.filter(f => f.round === previousRound);
+
+                    // Find if this team won in the previous round
+                    let teamWonPrevious = true; // Assume available if no previous round
+                    for (const fixture of previousRoundFixtures) {
+                        if (fixture.home === team.id || fixture.away === team.id) {
+                            if (fixture.completed) {
+                                if (fixture.home === team.id && fixture.homeScore <= fixture.awayScore) {
+                                    teamWonPrevious = false; // Lost
+                                } else if (fixture.away === team.id && fixture.awayScore <= fixture.homeScore) {
+                                    teamWonPrevious = false; // Lost
+                                }
+                            } else {
+                                teamWonPrevious = false; // Match not completed yet
+                            }
+                            break;
+                        }
+                    }
+                    teamAvailable = teamAvailable && teamWonPrevious;
+                }
+
+                let statusText = '';
+                let statusClass = '';
+
+                if (alreadyPicked) {
+                    statusText = 'Already Picked';
+                    statusClass = 'text-red-600';
+                    teamCard.className = 'bg-red-100 rounded-lg p-3 text-center cursor-not-allowed opacity-60';
+                } else if (userEliminated) {
+                    statusText = 'Eliminated';
+                    statusClass = 'text-red-600';
+                    teamCard.className = 'bg-red-100 rounded-lg p-3 text-center cursor-not-allowed opacity-60';
+                } else if (gameData.seasonPhase === 'knockout' && !teamAvailable) {
+                    statusText = 'Eliminated';
+                    statusClass = 'text-red-600';
+                    teamCard.className = 'bg-red-100 rounded-lg p-3 text-center cursor-not-allowed opacity-60';
+                } else {
+                    teamCard.className = 'bg-gray-100 rounded-lg p-3 text-center cursor-pointer hover:bg-gray-200 transition-colors team-card';
+                }
+
                 teamCard.innerHTML = `
                     <div class="font-semibold text-gray-800">${team.name}</div>
                     <div class="text-sm text-gray-600">${team.country}</div>
+                    ${statusText ? `<div class="text-xs ${statusClass} mt-1">${statusText}</div>` : ''}
                 `;
 
-                teamCard.addEventListener('click', () => selectTeam(team.id));
+                if (teamAvailable && !alreadyPicked && !userEliminated) {
+                    teamCard.addEventListener('click', () => selectTeam(team.id));
+                }
+
                 teamGrid.appendChild(teamCard);
             });
         }
@@ -464,17 +748,37 @@
             currentRoundFixtures.forEach(fixture => {
                 const homeTeam = gameData.teams.find(t => t.id === fixture.home);
                 const awayTeam = gameData.teams.find(t => t.id === fixture.away);
+                const dateTimeInfo = formatDateTime(fixture.date, fixture.time);
 
                 const matchDiv = document.createElement('div');
-                matchDiv.className = 'bg-gray-50 rounded-lg p-3';
+                matchDiv.className = `bg-gray-50 rounded-lg p-3 ${fixture.completed ? 'bg-green-50' : ''}`;
+
+                let scoreDisplay = '';
+                if (fixture.completed && fixture.homeScore !== null && fixture.awayScore !== null) {
+                    scoreDisplay = `<span class="text-lg font-bold text-green-600">(${fixture.homeScore} - ${fixture.awayScore})</span>`;
+                }
+
+                let statusText = '';
+                if (fixture.completed) {
+                    statusText = '<span class="text-green-600 text-sm">✓ Completed</span>';
+                } else if (dateTimeInfo.isPast) {
+                    statusText = '<span class="text-red-600 text-sm">Live/Missing Result</span>';
+                } else if (dateTimeInfo.isToday) {
+                    statusText = '<span class="text-blue-600 text-sm">Today</span>';
+                } else if (dateTimeInfo.isTomorrow) {
+                    statusText = '<span class="text-orange-600 text-sm">Tomorrow</span>';
+                }
+
                 matchDiv.innerHTML = `
                     <div class="flex justify-between items-center">
                         <div class="flex-1 text-right">
                             <div class="font-semibold">${homeTeam.name}</div>
-                            <div class="text-sm text-gray-600">${fixture.date} ${fixture.time}</div>
+                            <div class="text-sm text-gray-600">${dateTimeInfo.formatted}</div>
                         </div>
-                        <div class="px-4">
-                            <span class="text-2xl font-bold">vs</span>
+                        <div class="px-4 text-center">
+                            <div class="text-2xl font-bold">vs</div>
+                            ${scoreDisplay}
+                            ${statusText}
                         </div>
                         <div class="flex-1">
                             <div class="font-semibold">${awayTeam.name}</div>
@@ -553,9 +857,253 @@
         }
 
         function updateGameState() {
-            // This would be more complex in the full version
-            // For now, just check if we need to advance rounds
+            // Check if we need to advance rounds based on current date and fixture completion
+            const now = new Date();
+            let shouldAdvanceRound = false;
+
+            if (gameData.seasonPhase === 'regular') {
+                const currentRoundFixtures = gameData.fixtures.filter(f => f.round === gameData.currentRound);
+
+                // Check if all fixtures in current round are completed
+                const allCompleted = currentRoundFixtures.every(fixture => fixture.completed);
+
+                if (allCompleted) {
+                    // Check if we should advance to next round
+                    const nextRoundFixtures = gameData.fixtures.filter(f => f.round === gameData.currentRound + 1);
+
+                    if (nextRoundFixtures.length > 0) {
+                        const nextRoundStartDate = new Date(nextRoundFixtures[0].date + 'T' + nextRoundFixtures[0].time);
+                        if (now >= nextRoundStartDate) {
+                            shouldAdvanceRound = true;
+                        }
+                    } else if (gameData.currentRound >= 18) {
+                        // End of regular season, move to knockout phase
+                        gameData.seasonPhase = 'knockout';
+                        gameData.currentRound = 19; // Quarter finals
+                        shouldAdvanceRound = true;
+                    }
+                }
+            } else if (gameData.seasonPhase === 'knockout') {
+                // Handle knockout round advancement
+                const currentRoundFixtures = gameData.fixtures.filter(f => f.round === gameData.currentRound);
+                const allCompleted = currentRoundFixtures.every(fixture => fixture.completed);
+
+                if (allCompleted && gameData.currentRound < 21) {
+                    gameData.currentRound++;
+                    shouldAdvanceRound = true;
+                }
+            }
+
+            if (shouldAdvanceRound) {
+                advanceToNextRound();
+            }
         }
+
+        function advanceToNextRound() {
+            const oldRound = gameData.currentRound;
+            gameData.currentRound++;
+
+            // Clear user picks for new round
+            if (gameData.userPicks) {
+                Object.keys(gameData.userPicks).forEach(userId => {
+                    if (gameData.userPicks[userId][oldRound]) {
+                        // Check if user survived the previous round
+                        const userSurvived = checkIfUserSurvived(userId, oldRound);
+                        if (userSurvived) {
+                            // User advances, but their pick is cleared for new round
+                            delete gameData.userPicks[userId][gameData.currentRound];
+                        } else {
+                            // User was eliminated, mark them as eliminated
+                            if (!gameData.eliminatedUsers[userId]) {
+                                gameData.eliminatedUsers[userId] = oldRound;
+                            }
+                        }
+                    }
+                });
+            }
+
+            localStorage.setItem('gameData', JSON.stringify(gameData));
+            updateGameDisplay();
+            showNotification(`Round ${oldRound} completed! Welcome to Round ${gameData.currentRound}!`, 'info');
+        }
+
+        function checkIfUserSurvived(userId, round) {
+            const userPick = gameData.userPicks[userId][round];
+            if (!userPick) return false;
+
+            const roundFixtures = gameData.fixtures.filter(f => f.round === round);
+            const userPickedTeam = userPick;
+
+            // Check if user's team won or drew
+            for (const fixture of roundFixtures) {
+                if (fixture.home === userPickedTeam || fixture.away === userPickedTeam) {
+                    if (fixture.completed) {
+                        if (fixture.home === userPickedTeam && fixture.homeScore >= fixture.awayScore) {
+                            return true; // Win or draw
+                        } else if (fixture.away === userPickedTeam && fixture.awayScore >= fixture.homeScore) {
+                            return true; // Win or draw
+                        } else {
+                            return false; // Loss
+                        }
+                    } else {
+                        // Fixture not completed yet, assume user survives for now
+                        return true;
+                    }
+                }
+            }
+
+            return true; // If team not found in fixtures, assume they survive
+        }
+
+        function formatDateTime(dateStr, timeStr) {
+            try {
+                const date = new Date(dateStr + 'T' + timeStr);
+                return {
+                    formatted: date.toLocaleDateString('en-GB', {
+                        weekday: 'short',
+                        day: 'numeric',
+                        month: 'short',
+                        year: 'numeric'
+                    }) + ' ' + date.toLocaleTimeString('en-GB', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    }),
+                    date: date,
+                    isPast: date < new Date(),
+                    isToday: date.toDateString() === new Date().toDateString(),
+                    isTomorrow: new Date(date.getTime() + 24 * 60 * 60 * 1000).toDateString() === new Date().toDateString(),
+                    isThisWeek: date >= new Date() && date < new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+                };
+            } catch (e) {
+                return {
+                    formatted: `${dateStr} ${timeStr}`,
+                    date: null,
+                    isPast: false,
+                    isToday: false,
+                    isTomorrow: false,
+                    isThisWeek: false
+                };
+            }
+        }
+
+        function getRoundName(round) {
+            if (gameData.seasonPhase === 'regular') {
+                return `Round ${round}`;
+            } else {
+                switch (round) {
+                    case 19: return 'Quarter Finals';
+                    case 20: return 'Semi Finals';
+                    case 21: return 'Final';
+                    default: return `Round ${round}`;
+                }
+            }
+        }
+
+        function generateKnockoutFixtures() {
+            // This would be more sophisticated in a real implementation
+            // For now, we'll create placeholder fixtures for knockout rounds
+            const quarterFinals = [
+                { round: 19, home: 'leinster', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2026-05-29', time: '19:45' },
+                { round: 19, home: 'stormers', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2026-05-30', time: '14:00' },
+                { round: 19, home: 'glasgow', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2026-05-30', time: '16:30' },
+                { round: 19, home: 'ulster', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2026-05-31', time: '15:00' }
+            ];
+
+            const semiFinals = [
+                { round: 20, home: 'leinster', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2026-06-05', time: '19:45' },
+                { round: 20, home: 'glasgow', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2026-06-06', time: '16:30' }
+            ];
+
+            const final = [
+                { round: 21, home: 'leinster', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2026-06-12', time: '19:45' }
+            ];
+
+            return [...quarterFinals, ...semiFinals, ...final];
+        }
+
+        function advanceRoundManually() {
+            if (gameData.seasonPhase === 'regular') {
+                const currentRoundFixtures = gameData.fixtures.filter(f => f.round === gameData.currentRound);
+                const allCompleted = currentRoundFixtures.every(fixture => fixture.completed);
+
+                if (!allCompleted) {
+                    showNotification('Cannot advance round until all matches are completed', 'warning');
+                    return;
+                }
+            }
+
+            const oldRound = gameData.currentRound;
+            gameData.currentRound++;
+
+            // Clear user picks for new round
+            if (gameData.userPicks) {
+                Object.keys(gameData.userPicks).forEach(userId => {
+                    if (gameData.userPicks[userId][oldRound]) {
+                        // Check if user survived the previous round
+                        const userSurvived = checkIfUserSurvived(userId, oldRound);
+                        if (userSurvived) {
+                            // User advances, but their pick is cleared for new round
+                            delete gameData.userPicks[userId][gameData.currentRound];
+                        } else {
+                            // User was eliminated, mark them as eliminated
+                            if (!gameData.eliminatedUsers[userId]) {
+                                gameData.eliminatedUsers[userId] = oldRound;
+                            }
+                        }
+                    }
+                });
+            }
+
+            localStorage.setItem('gameData', JSON.stringify(gameData));
+            updateGameDisplay();
+            showNotification(`Manually advanced from Round ${oldRound} to Round ${gameData.currentRound}!`, 'success');
+        }
+
+        function simulateMatchResults() {
+            const currentRoundFixtures = gameData.fixtures.filter(f => f.round === gameData.currentRound && !f.completed);
+
+            if (currentRoundFixtures.length === 0) {
+                showNotification('No uncompleted matches in current round to simulate', 'warning');
+                return;
+            }
+
+            currentRoundFixtures.forEach(fixture => {
+                // Randomly generate scores
+                fixture.homeScore = Math.floor(Math.random() * 40) + 10; // 10-50
+                fixture.awayScore = Math.floor(Math.random() * 40) + 10; // 10-50
+                fixture.completed = true;
+            });
+
+            localStorage.setItem('gameData', JSON.stringify(gameData));
+            updateGameDisplay();
+            showNotification(`Simulated results for ${currentRoundFixtures.length} matches!`, 'success');
+        }
+
+        function resetGameData() {
+            if (confirm('Are you sure you want to reset the entire game? This will delete all user picks and progress.')) {
+                localStorage.removeItem('gameData');
+                initializeGameData();
+                gameData = JSON.parse(localStorage.getItem('gameData'));
+                updateGameDisplay();
+                showNotification('Game has been reset! All data cleared.', 'success');
+            }
+        }
+
+        function toggleAdminPanel() {
+            const adminPanel = document.querySelector('.bg-yellow-50');
+            const toggleBtn = document.getElementById('toggleAdminBtn');
+
+            if (adminPanel.style.display === 'none' || adminPanel.style.display === '') {
+                adminPanel.style.display = 'block';
+                toggleBtn.textContent = 'Hide Admin';
+                toggleBtn.className = 'bg-orange-500 text-white px-3 py-2 rounded-lg hover:bg-orange-600 text-sm';
+            } else {
+                adminPanel.style.display = 'none';
+                toggleBtn.textContent = 'Admin';
+                toggleBtn.className = 'bg-gray-500 text-white px-3 py-2 rounded-lg hover:bg-gray-600 text-sm';
+            }
+        }
+
 
         function showNotification(message, type = 'info') {
             const container = document.getElementById('notificationContainer');
