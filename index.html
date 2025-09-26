@@ -704,8 +704,8 @@
         let gameData = {
             players: [],
             currentRound: 1,
-            roundDeadline: new Date('2025-09-26T17:30:00'),
-            roundEnd: new Date('2025-09-27T21:30:00'),
+            roundDeadline: new Date('2024-09-26T17:30:00'),
+            roundEnd: new Date('2024-09-27T21:30:00'),
             pickingOpen: true,
             matchResults: {},
             chatMessages: [],
@@ -982,11 +982,17 @@
             
             // Find the earliest match in the round using UK time, then convert to absolute instant
             let earliestTime = null;
-            const baseYear = (gameData.roundDeadline ? new Date(gameData.roundDeadline).getFullYear() : new Date().getFullYear());
+            // Use current year instead of 2025 to make the dates valid
+            const baseYear = new Date().getFullYear();
+            
             roundData.matches.forEach(match => {
-                const matchDateLondon = parseMatchLondonDate(match.day, match.time, baseYear);
-                if (!earliestTime || matchDateLondon < earliestTime) {
-                    earliestTime = matchDateLondon;
+                try {
+                    const matchDateLondon = parseMatchLondonDate(match.day, match.time, baseYear);
+                    if (!earliestTime || matchDateLondon < earliestTime) {
+                        earliestTime = matchDateLondon;
+                    }
+                } catch (e) {
+                    console.error('Error parsing match date:', e, match);
                 }
             });
             
@@ -1341,6 +1347,12 @@
             // Auth form
             document.getElementById('authForm').addEventListener('submit', handleAuth);
             
+            // Backup: Also listen for button clicks
+            document.getElementById('authButton').addEventListener('click', function(e) {
+                e.preventDefault();
+                handleAuth(e);
+            });
+            
             // Game mode toggles
             
             
@@ -1554,11 +1566,18 @@
 
 		async function handleAuth(e) {
 			e.preventDefault();
+			
 			const email = document.getElementById('email').value;
 			const password = document.getElementById('password').value;
 			const displayName = document.getElementById('displayName').value;
 			const authButtonEl = document.getElementById('authButton');
 			const authButtonText = authButtonEl.textContent;
+			
+			// Basic validation
+			if (!email || !password) {
+				showNotification('Please fill in all required fields', 'error');
+				return;
+			}
 			
 			try {
 				authButtonEl.disabled = true;
@@ -1576,6 +1595,7 @@
 					}
 				}
 			} catch (err) {
+				console.error('Auth error:', err);
 				let message = 'Authentication failed. Please try again.';
 				const code = (err && err.code) || '';
 				if (typeof code === 'string') {
@@ -3395,25 +3415,19 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/fireba
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
 import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
 
-const firebaseConfig = (window.FIREBASE_CONFIG) || {
-apiKey: "REPLACE_WITH_API_KEY",
-authDomain: "REPLACE_WITH_AUTH_DOMAIN",
-projectId: "REPLACE_WITH_PROJECT_ID",
-storageBucket: "REPLACE_WITH_STORAGE_BUCKET",
-messagingSenderId: "REPLACE_WITH_SENDER_ID",
-appId: "REPLACE_WITH_APP_ID",
-measurementId: "REPLACE_WITH_MEASUREMENT_ID"
-};
+const firebaseConfig = window.FIREBASE_CONFIG;
 
 const configLooksValid = !!firebaseConfig.apiKey && !String(firebaseConfig.apiKey).startsWith("REPLACE_");
 let firebaseEnabled = false;
 
 try {
 if (configLooksValid) {
+console.log('Initializing Firebase with config:', firebaseConfig);
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 firebaseEnabled = true;
+console.log('Firebase initialized successfully');
 
 try { window.syncUrl = null; window.syncGithub = null; } catch (_) {}
 try { window.scheduleSyncPush = function(){}; } catch (_) {}
@@ -3579,6 +3593,13 @@ window.loadGameData = function() {
 if (legacyLoadGameData) { try { legacyLoadGameData(); } catch (_) {} }
 };
 }
-} catch (e) { console.error('Firebase initialization failed', e); }
+} else {
+console.warn('Firebase config invalid or missing');
+}
+} catch (e) { 
+console.error('Firebase initialization failed', e);
+// Fallback to offline mode
+firebaseEnabled = false;
+}
 </script></body>
 </html>
