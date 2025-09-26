@@ -719,7 +719,7 @@
         // Bootstrap default sync config (auto on all devices)
         (function bootstrapSyncDefaults() {
             try {
-                const DEFAULT_SYNC_BASE = 'github:jjsacks/URC/main:sync';
+                const DEFAULT_SYNC_BASE = 'github:UnitedRugbyChamps/URC/main:sync';
                 const DEFAULT_GH_TOKEN = 'REPLACE_WITH_TOKEN';
                 if (!localStorage.getItem('urcSyncBase')) {
                     localStorage.setItem('urcSyncBase', DEFAULT_SYNC_BASE);
@@ -853,7 +853,7 @@
         }
 
         // Derive a default sync URL from the user's email to auto-sync, if a base is configured.
-        const SYNC_BASE = localStorage.getItem('urcSyncBase') || 'github:jjsacks/URC/main:sync';
+        const SYNC_BASE = localStorage.getItem('urcSyncBase') || 'github:UnitedRugbyChamps/URC/main:sync';
         function deriveAutoSyncUrlFromEmail(email) {
             if (!SYNC_BASE || !email) return null;
             if (SYNC_BASE.startsWith('github:')) {
