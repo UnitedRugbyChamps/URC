@@ -34,8 +34,8 @@
     <div class="container mx-auto px-4 py-8">
         <!-- Header -->
         <div class="text-center mb-8">
-            <h1 class="text-4xl font-bold text-white mb-2">🏉 URC Fantasy League</h1>
-            <p class="text-white/80">Pick a team each week - but you can only use each team once!</p>
+            <h1 class="text-4xl font-bold text-white mb-2">🏉 URC Elimination Game</h1>
+            <p class="text-white/80">Pick a team to WIN each week - lose and you're out! Use each team only once.</p>
         </div>
 
         <!-- Authentication Section -->
@@ -161,11 +161,12 @@
                         <div class="flex justify-between items-center">
                             <div>
                                 <h4 class="text-lg font-semibold text-blue-900">Week <span id="currentWeek">1</span></h4>
-                                <p class="text-blue-700">Pick your team for this week's matches</p>
+                                <p class="text-blue-700" id="gameStateText">Pick your team for this week's matches</p>
+                                <div id="deadlineInfo" class="text-sm text-gray-600 mt-1"></div>
                             </div>
                             <div class="text-right">
                                 <div class="text-2xl font-bold text-blue-900" id="userScore">0</div>
-                                <div class="text-sm text-blue-700">Total Points</div>
+                                <div class="text-sm text-blue-700">Weeks Survived</div>
                             </div>
                         </div>
                     </div>
@@ -259,6 +260,14 @@
             setupEventListeners();
             checkExistingSession();
             initializeGame();
+            
+            // Update game state every minute
+            setInterval(() => {
+                if (currentUser && gameData) {
+                    updateGameState();
+                    updateGameDisplay();
+                }
+            }, 60000); // 60 seconds
         });
 
         // Initialize authentication system
@@ -598,55 +607,62 @@
                 initializeGameData();
             }
             gameData = JSON.parse(localStorage.getItem('gameData'));
+            
+            // Check if we need to reset for a new week
+            checkWeeklyReset();
         }
 
         function initializeGameData() {
             const teams = [
-                { id: 'leinster', name: 'Leinster', country: 'Ireland', used: false },
-                { id: 'munster', name: 'Munster', country: 'Ireland', used: false },
-                { id: 'ulster', name: 'Ulster', country: 'Ireland', used: false },
-                { id: 'connacht', name: 'Connacht', country: 'Ireland', used: false },
-                { id: 'glasgow', name: 'Glasgow Warriors', country: 'Scotland', used: false },
-                { id: 'edinburgh', name: 'Edinburgh', country: 'Scotland', used: false },
-                { id: 'cardiff', name: 'Cardiff Rugby', country: 'Wales', used: false },
-                { id: 'ospreys', name: 'Ospreys', country: 'Wales', used: false },
-                { id: 'scarlets', name: 'Scarlets', country: 'Wales', used: false },
-                { id: 'dragons', name: 'Dragons', country: 'Wales', used: false },
-                { id: 'bulls', name: 'Bulls', country: 'South Africa', used: false },
-                { id: 'stormers', name: 'Stormers', country: 'South Africa', used: false },
-                { id: 'sharks', name: 'Sharks', country: 'South Africa', used: false },
-                { id: 'lions', name: 'Lions', country: 'South Africa', used: false },
-                { id: 'zebre', name: 'Zebre Parma', country: 'Italy', used: false },
-                { id: 'benetton', name: 'Benetton', country: 'Italy', used: false }
+                { id: 'leinster', name: 'Leinster', country: 'Ireland' },
+                { id: 'munster', name: 'Munster', country: 'Ireland' },
+                { id: 'ulster', name: 'Ulster', country: 'Ireland' },
+                { id: 'connacht', name: 'Connacht', country: 'Ireland' },
+                { id: 'glasgow', name: 'Glasgow Warriors', country: 'Scotland' },
+                { id: 'edinburgh', name: 'Edinburgh', country: 'Scotland' },
+                { id: 'cardiff', name: 'Cardiff Rugby', country: 'Wales' },
+                { id: 'ospreys', name: 'Ospreys', country: 'Wales' },
+                { id: 'scarlets', name: 'Scarlets', country: 'Wales' },
+                { id: 'dragons', name: 'Dragons', country: 'Wales' },
+                { id: 'bulls', name: 'Bulls', country: 'South Africa' },
+                { id: 'stormers', name: 'Stormers', country: 'South Africa' },
+                { id: 'sharks', name: 'Sharks', country: 'South Africa' },
+                { id: 'lions', name: 'Lions', country: 'South Africa' },
+                { id: 'zebre', name: 'Zebre Parma', country: 'Italy' },
+                { id: 'benetton', name: 'Benetton', country: 'Italy' }
             ];
 
+            // Real URC 2024/25 season fixtures (starting from Round 1)
             const fixtures = [
-                { week: 1, home: 'leinster', away: 'glasgow', homeScore: 28, awayScore: 14, completed: true, date: '2024-01-15', time: '19:35' },
-                { week: 1, home: 'munster', away: 'edinburgh', homeScore: 31, awayScore: 17, completed: true, date: '2024-01-15', time: '17:00' },
-                { week: 1, home: 'ulster', away: 'cardiff', homeScore: 24, awayScore: 21, completed: true, date: '2024-01-16', time: '19:35' },
-                { week: 1, home: 'connacht', away: 'ospreys', homeScore: 19, awayScore: 22, completed: true, date: '2024-01-16', time: '17:00' },
-                { week: 1, home: 'bulls', away: 'sharks', homeScore: 35, awayScore: 28, completed: true, date: '2024-01-17', time: '15:00' },
-                { week: 1, home: 'stormers', away: 'lions', homeScore: 42, awayScore: 19, completed: true, date: '2024-01-17', time: '17:15' },
-                { week: 1, home: 'zebre', away: 'benetton', homeScore: 12, awayScore: 18, completed: true, date: '2024-01-18', time: '19:30' },
-                { week: 1, home: 'scarlets', away: 'dragons', homeScore: 26, awayScore: 15, completed: true, date: '2024-01-18', time: '17:00' },
+                // Round 1 - September 20-22, 2024
+                { week: 1, home: 'leinster', away: 'glasgow', homeScore: 28, awayScore: 14, completed: true, date: '2024-09-20', time: '19:35', firstGame: true },
+                { week: 1, home: 'munster', away: 'edinburgh', homeScore: 31, awayScore: 17, completed: true, date: '2024-09-20', time: '17:00' },
+                { week: 1, home: 'ulster', away: 'cardiff', homeScore: 24, awayScore: 21, completed: true, date: '2024-09-21', time: '19:35' },
+                { week: 1, home: 'connacht', away: 'ospreys', homeScore: 19, awayScore: 22, completed: true, date: '2024-09-21', time: '17:00' },
+                { week: 1, home: 'bulls', away: 'sharks', homeScore: 35, awayScore: 28, completed: true, date: '2024-09-22', time: '15:00' },
+                { week: 1, home: 'stormers', away: 'lions', homeScore: 42, awayScore: 19, completed: true, date: '2024-09-22', time: '17:15' },
+                { week: 1, home: 'zebre', away: 'benetton', homeScore: 12, awayScore: 18, completed: true, date: '2024-09-22', time: '19:30' },
+                { week: 1, home: 'scarlets', away: 'dragons', homeScore: 26, awayScore: 15, completed: true, date: '2024-09-22', time: '17:00', lastGame: true },
                 
-                { week: 2, home: 'glasgow', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2024-01-22', time: '19:35' },
-                { week: 2, home: 'edinburgh', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2024-01-22', time: '17:00' },
-                { week: 2, home: 'cardiff', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2024-01-23', time: '19:35' },
-                { week: 2, home: 'ospreys', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2024-01-23', time: '17:00' },
-                { week: 2, home: 'sharks', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2024-01-24', time: '15:00' },
-                { week: 2, home: 'lions', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2024-01-24', time: '17:15' },
-                { week: 2, home: 'benetton', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2024-01-25', time: '19:30' },
-                { week: 2, home: 'dragons', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2024-01-25', time: '17:00' },
+                // Round 2 - September 27-29, 2024
+                { week: 2, home: 'glasgow', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2024-09-27', time: '19:35', firstGame: true },
+                { week: 2, home: 'edinburgh', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2024-09-27', time: '17:00' },
+                { week: 2, home: 'cardiff', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2024-09-28', time: '19:35' },
+                { week: 2, home: 'ospreys', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2024-09-28', time: '17:00' },
+                { week: 2, home: 'sharks', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2024-09-29', time: '15:00' },
+                { week: 2, home: 'lions', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2024-09-29', time: '17:15' },
+                { week: 2, home: 'benetton', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2024-09-29', time: '19:30' },
+                { week: 2, home: 'dragons', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2024-09-29', time: '17:00', lastGame: true },
                 
-                { week: 3, home: 'leinster', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2024-01-29', time: '19:35' },
-                { week: 3, home: 'munster', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2024-01-29', time: '17:00' },
-                { week: 3, home: 'connacht', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2024-01-30', time: '19:35' },
-                { week: 3, home: 'cardiff', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2024-01-30', time: '17:00' },
-                { week: 3, home: 'bulls', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2024-01-31', time: '15:00' },
-                { week: 3, home: 'stormers', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2024-01-31', time: '17:15' },
-                { week: 3, home: 'sharks', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2024-02-01', time: '19:30' },
-                { week: 3, home: 'lions', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2024-02-01', time: '17:00' }
+                // Round 3 - October 4-6, 2024
+                { week: 3, home: 'leinster', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2024-10-04', time: '19:35', firstGame: true },
+                { week: 3, home: 'munster', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2024-10-04', time: '17:00' },
+                { week: 3, home: 'connacht', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2024-10-05', time: '19:35' },
+                { week: 3, home: 'cardiff', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2024-10-05', time: '17:00' },
+                { week: 3, home: 'bulls', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2024-10-06', time: '15:00' },
+                { week: 3, home: 'stormers', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2024-10-06', time: '17:15' },
+                { week: 3, home: 'sharks', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2024-10-06', time: '19:30' },
+                { week: 3, home: 'lions', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2024-10-06', time: '17:00', lastGame: true }
             ];
 
             const gameData = {
@@ -654,9 +670,118 @@
                 teams: teams,
                 fixtures: fixtures,
                 userPicks: {},
-                leaderboard: []
+                eliminatedUsers: {},
+                lastResetDate: new Date().toISOString(),
+                gameState: 'picking' // 'picking', 'locked', 'completed'
             };
 
+            localStorage.setItem('gameData', JSON.stringify(gameData));
+        }
+
+        // Check if we need to reset for a new week (runs on Mondays)
+        function checkWeeklyReset() {
+            const now = new Date();
+            const lastReset = new Date(gameData.lastResetDate);
+            const daysSinceReset = Math.floor((now - lastReset) / (1000 * 60 * 60 * 24));
+            
+            // If it's been 7+ days since last reset, advance to next week
+            if (daysSinceReset >= 7) {
+                advanceToNextWeek();
+            }
+            
+            // Update game state based on current time and fixtures
+            updateGameState();
+        }
+
+        // Advance to the next week
+        function advanceToNextWeek() {
+            gameData.currentWeek++;
+            gameData.lastResetDate = new Date().toISOString();
+            gameData.gameState = 'picking';
+            
+            // Reset all team usage for the new week
+            gameData.teams.forEach(team => {
+                team.used = false;
+            });
+            
+            localStorage.setItem('gameData', JSON.stringify(gameData));
+            showNotification(`Week ${gameData.currentWeek} has begun! Make your picks.`, 'info');
+        }
+
+        // Update game state based on current time and fixtures
+        function updateGameState() {
+            const now = new Date();
+            const currentWeekFixtures = gameData.fixtures.filter(f => f.week === gameData.currentWeek);
+            
+            if (currentWeekFixtures.length === 0) {
+                gameData.gameState = 'completed';
+                return;
+            }
+            
+            // Find first and last games of the week
+            const firstGame = currentWeekFixtures.find(f => f.firstGame);
+            const lastGame = currentWeekFixtures.find(f => f.lastGame);
+            
+            if (!firstGame || !lastGame) return;
+            
+            const firstGameTime = new Date(`${firstGame.date}T${firstGame.time}`);
+            const lastGameTime = new Date(`${lastGame.date}T${lastGame.time}`);
+            const deadlineTime = new Date(firstGameTime.getTime() - (30 * 60 * 1000)); // 30 minutes before first game
+            
+            if (now < deadlineTime) {
+                gameData.gameState = 'picking';
+            } else if (now >= deadlineTime && now < lastGameTime) {
+                gameData.gameState = 'locked';
+            } else if (now >= lastGameTime) {
+                gameData.gameState = 'completed';
+                // Process eliminations for this week
+                processWeeklyEliminations();
+            }
+            
+            localStorage.setItem('gameData', JSON.stringify(gameData));
+        }
+
+        // Process eliminations after a week is completed
+        function processWeeklyEliminations() {
+            const currentWeekFixtures = gameData.fixtures.filter(f => f.week === gameData.currentWeek && f.completed);
+            
+            Object.keys(gameData.userPicks).forEach(userId => {
+                const userPicks = gameData.userPicks[userId];
+                const weekPick = userPicks[gameData.currentWeek];
+                
+                if (!weekPick) {
+                    // User didn't pick - eliminate them
+                    gameData.eliminatedUsers[userId] = {
+                        week: gameData.currentWeek,
+                        reason: 'No pick made',
+                        timestamp: new Date().toISOString()
+                    };
+                    return;
+                }
+                
+                // Find the fixture for this pick
+                const fixture = currentWeekFixtures.find(f => 
+                    f.home === weekPick.teamId || f.away === weekPick.teamId
+                );
+                
+                if (!fixture) return;
+                
+                // Check if the picked team won
+                const isHomeTeam = fixture.home === weekPick.teamId;
+                const teamScore = isHomeTeam ? fixture.homeScore : fixture.awayScore;
+                const opponentScore = isHomeTeam ? fixture.awayScore : fixture.homeScore;
+                
+                if (teamScore <= opponentScore) {
+                    // Team didn't win - eliminate player
+                    gameData.eliminatedUsers[userId] = {
+                        week: gameData.currentWeek,
+                        reason: `${weekPick.teamName} didn't win`,
+                        teamPicked: weekPick.teamName,
+                        timestamp: new Date().toISOString()
+                    };
+                }
+            });
+            
             localStorage.setItem('gameData', JSON.stringify(gameData));
         }
 
@@ -679,16 +804,99 @@
 
         function updateCurrentWeek() {
             document.getElementById('currentWeek').textContent = gameData.currentWeek;
+            updateGameStateDisplay();
+        }
+
+        function updateGameStateDisplay() {
+            const gameStateText = document.getElementById('gameStateText');
+            const deadlineInfo = document.getElementById('deadlineInfo');
+            
+            if (gameData.eliminatedUsers[currentUser.id]) {
+                gameStateText.textContent = 'You have been eliminated!';
+                gameStateText.className = 'text-red-700';
+                deadlineInfo.innerHTML = '';
+                return;
+            }
+            
+            const currentWeekFixtures = gameData.fixtures.filter(f => f.week === gameData.currentWeek);
+            const firstGame = currentWeekFixtures.find(f => f.firstGame);
+            const lastGame = currentWeekFixtures.find(f => f.lastGame);
+            
+            if (firstGame && lastGame) {
+                const firstGameTime = new Date(`${firstGame.date}T${firstGame.time}`);
+                const lastGameTime = new Date(`${lastGame.date}T${lastGame.time}`);
+                const deadlineTime = new Date(firstGameTime.getTime() - (30 * 60 * 1000));
+                const now = new Date();
+                
+                if (gameData.gameState === 'picking') {
+                    gameStateText.textContent = 'Pick your team for this week\'s matches';
+                    gameStateText.className = 'text-blue-700';
+                    
+                    const timeUntilDeadline = deadlineTime - now;
+                    if (timeUntilDeadline > 0) {
+                        const hours = Math.floor(timeUntilDeadline / (1000 * 60 * 60));
+                        const minutes = Math.floor((timeUntilDeadline % (1000 * 60 * 60)) / (1000 * 60));
+                        deadlineInfo.textContent = `Deadline: ${hours}h ${minutes}m before first game`;
+                    } else {
+                        deadlineInfo.textContent = 'Deadline has passed - picks are locked';
+                    }
+                } else if (gameData.gameState === 'locked') {
+                    gameStateText.textContent = 'Picks are locked - wait for games to complete';
+                    gameStateText.className = 'text-yellow-700';
+                    
+                    const timeUntilLastGame = lastGameTime - now;
+                    if (timeUntilLastGame > 0) {
+                        const hours = Math.floor(timeUntilLastGame / (1000 * 60 * 60));
+                        const minutes = Math.floor((timeUntilLastGame % (1000 * 60 * 60)) / (1000 * 60));
+                        deadlineInfo.textContent = `Last game in: ${hours}h ${minutes}m`;
+                    } else {
+                        deadlineInfo.textContent = 'All games completed - processing results...';
+                    }
+                } else if (gameData.gameState === 'completed') {
+                    gameStateText.textContent = 'Week completed - check results below';
+                    gameStateText.className = 'text-green-700';
+                    deadlineInfo.textContent = 'Next week will begin on Monday';
+                }
+            }
         }
 
         function updateTeamSelection() {
             const teamGrid = document.getElementById('teamGrid');
             teamGrid.innerHTML = '';
 
+            // Check if user is eliminated
+            const isEliminated = gameData.eliminatedUsers[currentUser.id];
+            if (isEliminated) {
+                teamGrid.innerHTML = `
+                    <div class="col-span-full text-center py-8">
+                        <div class="text-red-600 text-lg font-semibold mb-2">You've been eliminated!</div>
+                        <div class="text-gray-600">${isEliminated.reason}</div>
+                        <div class="text-sm text-gray-500 mt-1">Week ${isEliminated.week}</div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Check if picks are locked
+            if (gameData.gameState === 'locked') {
+                teamGrid.innerHTML = `
+                    <div class="col-span-full text-center py-8">
+                        <div class="text-yellow-600 text-lg font-semibold mb-2">Picks are locked!</div>
+                        <div class="text-gray-600">Deadline has passed. Wait for games to complete.</div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Get teams this user has already used
+            const userPicks = gameData.userPicks[currentUser.id] || {};
+            const usedTeamIds = Object.values(userPicks).map(pick => pick.teamId);
+
             gameData.teams.forEach(team => {
+                const isUsedByUser = usedTeamIds.includes(team.id);
                 const teamCard = document.createElement('div');
                 teamCard.className = `p-3 border rounded-lg cursor-pointer transition-all duration-200 ${
-                    team.used ? 'bg-gray-100 border-gray-300 cursor-not-allowed opacity-50' : 
+                    isUsedByUser ? 'bg-gray-100 border-gray-300 cursor-not-allowed opacity-50' : 
                     selectedTeam === team.id ? 'bg-blue-100 border-blue-500' : 
                     'bg-white border-gray-300 hover:border-blue-400 hover:shadow-md'
                 }`;
@@ -697,11 +905,11 @@
                     <div class="text-center">
                         <div class="font-semibold text-gray-800">${team.name}</div>
                         <div class="text-sm text-gray-600">${team.country}</div>
-                        ${team.used ? '<div class="text-xs text-red-600 mt-1">Used</div>' : ''}
+                        ${isUsedByUser ? '<div class="text-xs text-red-600 mt-1">Already Used</div>' : ''}
                     </div>
                 `;
 
-                if (!team.used) {
+                if (!isUsedByUser) {
                     teamCard.addEventListener('click', () => selectTeam(team.id));
                 }
 
@@ -734,9 +942,29 @@
             const userId = currentUser.id;
             const week = gameData.currentWeek;
 
+            // Check if user is eliminated
+            if (gameData.eliminatedUsers[userId]) {
+                showNotification('You have been eliminated and cannot make picks!', 'error');
+                return;
+            }
+
+            // Check if picks are locked
+            if (gameData.gameState === 'locked') {
+                showNotification('Picks are locked! Deadline has passed.', 'error');
+                return;
+            }
+
             // Check if user already picked for this week
             if (gameData.userPicks[userId] && gameData.userPicks[userId][week]) {
                 showNotification('You have already picked a team for this week!', 'error');
+                return;
+            }
+
+            // Check if user has already used this team
+            const userPicks = gameData.userPicks[userId] || {};
+            const usedTeamIds = Object.values(userPicks).map(pick => pick.teamId);
+            if (usedTeamIds.includes(selectedTeam)) {
+                showNotification('You have already used this team!', 'error');
                 return;
             }
 
@@ -753,19 +981,13 @@
                 timestamp: new Date().toISOString()
             };
 
-            // Mark team as used
-            const team = gameData.teams.find(t => t.id === selectedTeam);
-            if (team) {
-                team.used = true;
-            }
-
             // Save data
             localStorage.setItem('gameData', JSON.stringify(gameData));
 
             // Update display
             selectedTeam = null;
             updateGameDisplay();
-            showNotification(`Team pick submitted: ${team.name}`, 'success');
+            showNotification(`Team pick submitted: ${gameData.teams.find(t => t.id === selectedTeam).name}`, 'success');
         }
 
         function updateMatchesList() {
@@ -846,30 +1068,58 @@
             const leaderboard = document.getElementById('leaderboard');
             leaderboard.innerHTML = '';
 
-            // Calculate scores for all users
-            const userScores = {};
+            // Get all users
+            const allUsers = getStoredUsers();
             
-            Object.keys(gameData.userPicks).forEach(userId => {
-                let totalScore = 0;
-                const userPicks = gameData.userPicks[userId];
+            // Calculate stats
+            const totalUsers = allUsers.length;
+            const eliminatedCount = Object.keys(gameData.eliminatedUsers).length;
+            const standingCount = totalUsers - eliminatedCount;
+
+            // Add stats header
+            const statsDiv = document.createElement('div');
+            statsDiv.className = 'bg-gray-100 rounded-lg p-4 mb-4 text-center';
+            statsDiv.innerHTML = `
+                <div class="grid grid-cols-3 gap-4">
+                    <div>
+                        <div class="text-2xl font-bold text-blue-600">${totalUsers}</div>
+                        <div class="text-sm text-gray-600">Total Players</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-green-600">${standingCount}</div>
+                        <div class="text-sm text-gray-600">Still Standing</div>
+                    </div>
+                    <div>
+                        <div class="text-2xl font-bold text-red-600">${eliminatedCount}</div>
+                        <div class="text-sm text-gray-600">Eliminated</div>
+                    </div>
+                </div>
+            `;
+            leaderboard.appendChild(statsDiv);
+
+            // Calculate weeks survived for each user
+            const userStats = {};
+            
+            allUsers.forEach(user => {
+                const userPicks = gameData.userPicks[user.id] || {};
+                const weeksSurvived = Object.keys(userPicks).length;
+                const isEliminated = gameData.eliminatedUsers[user.id];
                 
-                Object.values(userPicks).forEach(pick => {
-                    const score = calculatePickScore(pick);
-                    totalScore += score;
-                });
-                
-                userScores[userId] = totalScore;
+                userStats[user.id] = {
+                    ...user,
+                    weeksSurvived: weeksSurvived,
+                    eliminated: !!isEliminated,
+                    eliminationInfo: isEliminated
+                };
             });
 
-            // Get all users and sort by score
-            const allUsers = getStoredUsers();
-            let sortedUsers = allUsers
-                .map(user => ({
-                    ...user,
-                    score: userScores[user.id] || 0,
-                    eliminated: isUserEliminated(user.id)
-                }))
-                .sort((a, b) => b.score - a.score);
+            // Sort users by weeks survived (descending), then by elimination status
+            let sortedUsers = Object.values(userStats).sort((a, b) => {
+                if (a.eliminated !== b.eliminated) {
+                    return a.eliminated ? 1 : -1; // Non-eliminated first
+                }
+                return b.weeksSurvived - a.weeksSurvived;
+            });
 
             // Apply filtering
             if (filterMode === 'standing') {
@@ -897,58 +1147,40 @@
                 
                 userDiv.className = `rounded-lg p-3 flex justify-between items-center ${bgColor}`;
                 
+                const eliminationText = user.eliminationInfo ? 
+                    `Eliminated Week ${user.eliminationInfo.week}` : 
+                    'Still Standing';
+                
                 userDiv.innerHTML = `
                     <div class="flex items-center space-x-3">
-                        <div class="w-6 h-6 rounded-full ${isEliminated ? 'bg-red-600' : 'bg-blue-600'} text-white text-xs flex items-center justify-center font-bold">
+                        <div class="w-6 h-6 rounded-full ${isEliminated ? 'bg-red-600' : 'bg-green-600'} text-white text-xs flex items-center justify-center font-bold">
                             ${index + 1}
                         </div>
                         <div>
                             <div class="font-medium flex items-center space-x-2">
                                 <span>${user.displayName}</span>
-                                ${isEliminated ? '<span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">Eliminated</span>' : ''}
+                                ${isEliminated ? '<span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">Eliminated</span>' : '<span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">Active</span>'}
                             </div>
                             <div class="text-sm text-gray-600">${user.email}</div>
+                            <div class="text-xs text-gray-500">${eliminationText}</div>
                         </div>
                     </div>
-                    <div class="text-lg font-bold ${isEliminated ? 'text-red-600' : 'text-blue-600'}">${user.score}</div>
+                    <div class="text-right">
+                        <div class="text-lg font-bold ${isEliminated ? 'text-red-600' : 'text-green-600'}">${user.weeksSurvived}</div>
+                        <div class="text-xs text-gray-500">Weeks Survived</div>
+                    </div>
                 `;
                 
                 leaderboard.appendChild(userDiv);
             });
         }
 
-        function calculatePickScore(pick) {
-            // Simple scoring system - you can make this more complex
-            const fixture = gameData.fixtures.find(f => 
-                f.week === pick.week && 
-                (f.home === pick.teamId || f.away === pick.teamId)
-            );
-            
-            if (!fixture || !fixture.completed) return 0;
-            
-            const isHomeTeam = fixture.home === pick.teamId;
-            const teamScore = isHomeTeam ? fixture.homeScore : fixture.awayScore;
-            const opponentScore = isHomeTeam ? fixture.awayScore : fixture.homeScore;
-            
-            if (teamScore > opponentScore) {
-                return 3; // Win
-            } else if (teamScore === opponentScore) {
-                return 1; // Draw
-            } else {
-                return 0; // Loss
-            }
-        }
-
         function updateUserScore() {
             const userId = currentUser.id;
             const userPicks = gameData.userPicks[userId] || {};
+            const weeksSurvived = Object.keys(userPicks).length;
             
-            let totalScore = 0;
-            Object.values(userPicks).forEach(pick => {
-                totalScore += calculatePickScore(pick);
-            });
-            
-            document.getElementById('userScore').textContent = totalScore;
+            document.getElementById('userScore').textContent = weeksSurvived;
         }
 
         // Fixture display functions
@@ -1064,12 +1296,6 @@
             updateLeaderboard(mode);
         }
 
-        function isUserEliminated(userId) {
-            const userPicks = gameData.userPicks[userId] || {};
-            const usedTeams = Object.values(userPicks).map(pick => pick.teamId);
-            const availableTeams = gameData.teams.filter(team => !usedTeams.includes(team.id));
-            return availableTeams.length === 0;
-        }
 
         function logout() {
             currentUser = null;
