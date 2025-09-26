@@ -57,96 +57,192 @@
             <p class="text-white/80">Pick a team each week - but you can only use each team once!</p>
         </div>
 
-        <!-- Login/Register Form -->
-        <div id="authSection" class="max-w-md mx-auto bg-white rounded-xl card-shadow p-6 mb-8">
-            <div class="flex mb-4">
-                <button type="button" id="loginTab" class="flex-1 py-2 px-4 bg-blue-600 text-white rounded-l-lg font-medium">Login</button>
-                <button type="button" id="registerTab" class="flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-r-lg font-medium">Register</button>
-            </div>
-            
-            <form id="authForm" novalidate>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-medium mb-2">Email</label>
-                    <input type="email" id="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                </div>
-                
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-medium mb-2">Password</label>
-                    <input type="password" id="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required minlength="6">
-                    <p id="passwordHelp" class="text-xs text-gray-500 mt-1 hidden">Password must be at least 6 characters long</p>
-                </div>
-                
-
-                
-                <div id="nameField" class="mb-4 hidden">
-                    <label class="block text-gray-700 text-sm font-medium mb-2">Display Name</label>
-                    <input type="text" id="displayName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                
-                <!-- Profile Picture Selection -->
-                <div id="profilePicField" class="mb-4 hidden">
-                    <label class="block text-gray-700 text-sm font-medium mb-2">Profile Picture (Optional)</label>
-                    
-                    <!-- Upload Custom Picture -->
-                    <div class="mb-4 p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 transition-colors">
-                        <div class="text-center">
-                            <div class="mb-2">
-                                <svg class="mx-auto h-8 w-8 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                            </div>
-                            <div class="text-sm text-gray-500">Profile pictures are disabled</div>
-                            <p class="text-xs text-gray-500 mt-1">JPG, PNG, GIF up to 2MB</p>
-                        </div>
-                        <div id="customPicPreview" class="hidden mt-3 text-center">
-                            <img id="customPicImage" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-blue-500" alt="Custom profile picture">
-                            <button type="button" id="removeCustomPic" class="mt-2 text-xs text-red-600 hover:text-red-800">Remove</button>
+        <!-- Modern Authentication Section -->
+        <div id="authSection" class="max-w-md mx-auto">
+            <!-- Auth Card -->
+            <div class="bg-white/95 backdrop-blur-sm rounded-2xl shadow-2xl overflow-hidden">
+                <!-- Header with gradient background -->
+                <div class="bg-gradient-to-r from-blue-600 to-blue-700 p-6 text-center">
+                    <div class="flex justify-center mb-3">
+                        <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-lg">
+                            <svg class="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
                         </div>
                     </div>
+                    <h2 class="text-2xl font-bold text-white" id="authTitle">Welcome Back</h2>
+                    <p class="text-blue-100 mt-1" id="authSubtitle">Sign in to continue to your account</p>
                 </div>
-                
-                <!-- Favorite Team Selection -->
-                <div id="favoriteTeamField" class="mb-4 hidden">
-                    <label class="block text-gray-700 text-sm font-medium mb-2">Favorite URC Team (Optional)</label>
-                    <select id="favoriteTeam" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">Select your favorite team</option>
-                        <option value="Benetton Rugby">Benetton Rugby</option>
-                        <option value="Bulls">Bulls</option>
-                        <option value="Cardiff Rugby">Cardiff Rugby</option>
-                        <option value="Connacht">Connacht</option>
-                        <option value="Dragons">Dragons</option>
-                        <option value="Edinburgh">Edinburgh</option>
-                        <option value="Glasgow Warriors">Glasgow Warriors</option>
-                        <option value="Leinster">Leinster</option>
-                        <option value="Lions">Lions</option>
-                        <option value="Munster">Munster</option>
-                        <option value="Ospreys">Ospreys</option>
-                        <option value="Scarlets">Scarlets</option>
-                        <option value="Sharks">Sharks</option>
-                        <option value="Stormers">Stormers</option>
-                        <option value="Ulster">Ulster</option>
-                        <option value="Zebre">Zebre</option>
-                    </select>
+
+                <!-- Tab Navigation -->
+                <div class="flex bg-gray-50 border-b">
+                    <button type="button" id="loginTab" class="flex-1 py-4 px-4 text-center font-semibold text-blue-600 border-b-2 border-blue-600 transition-all">
+                        Sign In
+                    </button>
+                    <button type="button" id="registerTab" class="flex-1 py-4 px-4 text-center font-semibold text-gray-500 hover:text-gray-700 transition-all">
+                        Create Account
+                    </button>
                 </div>
-                
-                <button type="submit" id="authButton" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 font-medium">Login</button>
-                
-                <div id="forgotPasswordLink" class="text-center mt-3">
-                    <button type="button" id="forgotPasswordBtn" class="text-sm text-blue-600 hover:text-blue-800 underline">Forgot Password?</button>
-                </div>
-            </form>
-            
-            <!-- Password Reset Form -->
-            <div id="passwordResetForm" class="hidden mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <h4 class="font-medium text-gray-800 mb-3">🔐 Password Reset</h4>
-                <p class="text-sm text-gray-600 mb-3">Enter your email and display name to reset your password:</p>
-                <div class="space-y-3">
-                    <input type="email" id="resetEmail" placeholder="Your email address" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <input type="text" id="resetDisplayName" placeholder="Your display name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <input type="password" id="newPassword" placeholder="New password (min 6 characters)" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" minlength="6">
-                    <div class="flex space-x-2">
-                        <button type="button" id="resetPasswordBtn" class="flex-1 bg-yellow-600 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 font-medium">Reset Password</button>
-                        <button type="button" id="cancelResetBtn" class="flex-1 bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 font-medium">Cancel</button>
+
+                <!-- Form Container -->
+                <div class="p-6">
+                    <!-- Error Alert -->
+                    <div id="authError" class="hidden mb-4 p-3 bg-red-50 border border-red-200 rounded-lg flex items-start">
+                        <svg class="w-5 h-5 text-red-600 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="text-sm text-red-700" id="authErrorMessage"></span>
+                    </div>
+
+                    <!-- Success Alert -->
+                    <div id="authSuccess" class="hidden mb-4 p-3 bg-green-50 border border-green-200 rounded-lg flex items-start">
+                        <svg class="w-5 h-5 text-green-600 mr-2 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                        </svg>
+                        <span class="text-sm text-green-700" id="authSuccessMessage"></span>
+                    </div>
+
+                    <!-- Auth Form -->
+                    <form id="authForm" class="space-y-4" novalidate>
+                        <!-- Email Field -->
+                        <div>
+                            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">
+                                Email Address
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
+                                    </svg>
+                                </div>
+                                <input type="email" id="email" name="email" required
+                                    class="pl-10 w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    placeholder="your@email.com">
+                            </div>
+                            <span class="text-xs text-red-600 mt-1 hidden" id="emailError"></span>
+                        </div>
+
+                        <!-- Password Field -->
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700 mb-1">
+                                Password
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                    </svg>
+                                </div>
+                                <input type="password" id="password" name="password" required minlength="6"
+                                    class="pl-10 pr-10 w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    placeholder="••••••••">
+                                <button type="button" id="togglePassword" class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                                    <svg class="h-5 w-5 text-gray-400 hover:text-gray-600" id="eyeIcon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                            <span class="text-xs text-red-600 mt-1 hidden" id="passwordError"></span>
+                        </div>
+
+                        <!-- Confirm Password Field (Register only) -->
+                        <div id="confirmPasswordField" class="hidden">
+                            <label for="confirmPassword" class="block text-sm font-medium text-gray-700 mb-1">
+                                Confirm Password
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                                    </svg>
+                                </div>
+                                <input type="password" id="confirmPassword" name="confirmPassword" minlength="6"
+                                    class="pl-10 w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    placeholder="••••••••">
+                            </div>
+                            <span class="text-xs text-red-600 mt-1 hidden" id="confirmPasswordError"></span>
+                        </div>
+
+                        <!-- Display Name Field (Register only) -->
+                        <div id="nameField" class="hidden">
+                            <label for="displayName" class="block text-sm font-medium text-gray-700 mb-1">
+                                Display Name
+                            </label>
+                            <div class="relative">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                    <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                                    </svg>
+                                </div>
+                                <input type="text" id="displayName" name="displayName" required
+                                    class="pl-10 w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                    placeholder="John Doe">
+                            </div>
+                            <span class="text-xs text-red-600 mt-1 hidden" id="nameError"></span>
+                        </div>
+
+                        <!-- Remember Me & Forgot Password (Login only) -->
+                        <div id="loginOptions" class="flex items-center justify-between">
+                            <div class="flex items-center">
+                                <input id="rememberMe" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                                <label for="rememberMe" class="ml-2 block text-sm text-gray-700">
+                                    Remember me
+                                </label>
+                            </div>
+                            <button type="button" id="forgotPasswordBtn" class="text-sm text-blue-600 hover:text-blue-800 font-medium">
+                                Forgot password?
+                            </button>
+                        </div>
+
+                        <!-- Terms Checkbox (Register only) -->
+                        <div id="termsField" class="hidden">
+                            <div class="flex items-start">
+                                <input id="agreeTerms" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded mt-0.5">
+                                <label for="agreeTerms" class="ml-2 block text-sm text-gray-700">
+                                    I agree to the <a href="#" class="text-blue-600 hover:text-blue-800">Terms and Conditions</a>
+                                </label>
+                            </div>
+                            <span class="text-xs text-red-600 mt-1 hidden" id="termsError"></span>
+                        </div>
+
+                        <!-- Submit Button -->
+                        <button type="submit" id="authButton" 
+                            class="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none">
+                            <span id="authButtonText">Sign In</span>
+                            <svg id="authButtonSpinner" class="hidden animate-spin h-5 w-5 mx-auto text-white" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                        </button>
+                    </form>
+
+                    <!-- Password Reset Form -->
+                    <div id="passwordResetForm" class="hidden">
+                        <div class="mb-4">
+                            <h3 class="text-lg font-semibold text-gray-900">Reset Your Password</h3>
+                            <p class="text-sm text-gray-600 mt-1">Enter your email address and we'll send you a link to reset your password.</p>
+                        </div>
+                        <form id="resetForm" class="space-y-4">
+                            <div>
+                                <label for="resetEmail" class="block text-sm font-medium text-gray-700 mb-1">
+                                    Email Address
+                                </label>
+                                <input type="email" id="resetEmail" required
+                                    class="w-full px-3 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                    placeholder="your@email.com">
+                            </div>
+                            <div class="flex space-x-3">
+                                <button type="submit" id="sendResetBtn"
+                                    class="flex-1 bg-blue-600 text-white py-2.5 px-4 rounded-lg font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all">
+                                    Send Reset Link
+                                </button>
+                                <button type="button" id="cancelResetBtn"
+                                    class="flex-1 bg-gray-200 text-gray-700 py-2.5 px-4 rounded-lg font-medium hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all">
+                                    Cancel
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -1335,21 +1431,123 @@
                     }
                 });
             }
-            // Auth tabs
-            document.getElementById('loginTab').addEventListener('click', () => {
-                console.log('Login tab clicked');
-                switchTab('login');
-            });
-            document.getElementById('registerTab').addEventListener('click', () => {
-                console.log('Register tab clicked');
-                switchTab('register');
-            });
-
-            // Auth form
-            document.getElementById('authForm').addEventListener('submit', (e) => {
-                console.log('Auth form submitted');
-                handleAuth(e);
-            });
+            // Modern Auth Event Listeners
+            const loginTab = document.getElementById('loginTab');
+            const registerTab = document.getElementById('registerTab');
+            const authForm = document.getElementById('authForm');
+            const forgotPasswordBtn = document.getElementById('forgotPasswordBtn');
+            const togglePasswordBtn = document.getElementById('togglePassword');
+            const cancelResetBtn = document.getElementById('cancelResetBtn');
+            const sendResetBtn = document.getElementById('sendResetBtn');
+            const resetForm = document.getElementById('resetForm');
+            
+            // Tab switching
+            if (loginTab) {
+                loginTab.addEventListener('click', () => switchTab('login'));
+            }
+            if (registerTab) {
+                registerTab.addEventListener('click', () => switchTab('register'));
+            }
+            
+            // Auth form submission
+            if (authForm) {
+                authForm.addEventListener('submit', handleAuth);
+            }
+            
+            // Password visibility toggle
+            if (togglePasswordBtn) {
+                togglePasswordBtn.addEventListener('click', () => {
+                    const passwordInput = document.getElementById('password');
+                    const eyeIcon = document.getElementById('eyeIcon');
+                    if (passwordInput.type === 'password') {
+                        passwordInput.type = 'text';
+                        eyeIcon.innerHTML = `
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"></path>
+                        `;
+                    } else {
+                        passwordInput.type = 'password';
+                        eyeIcon.innerHTML = `
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        `;
+                    }
+                });
+            }
+            
+            // Forgot password
+            if (forgotPasswordBtn) {
+                forgotPasswordBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    document.getElementById('authForm').classList.add('hidden');
+                    document.getElementById('passwordResetForm').classList.remove('hidden');
+                });
+            }
+            
+            // Cancel password reset
+            if (cancelResetBtn) {
+                cancelResetBtn.addEventListener('click', () => {
+                    document.getElementById('passwordResetForm').classList.add('hidden');
+                    document.getElementById('authForm').classList.remove('hidden');
+                    document.getElementById('resetForm').reset();
+                    hideAuthAlerts();
+                });
+            }
+            
+            // Send password reset
+            if (resetForm) {
+                resetForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const resetEmail = document.getElementById('resetEmail').value.trim();
+                    const sendBtn = document.getElementById('sendResetBtn');
+                    
+                    if (!resetEmail) {
+                        showAuthError('Please enter your email address');
+                        return;
+                    }
+                    
+                    if (!validateEmail(resetEmail)) {
+                        showAuthError('Please enter a valid email address');
+                        return;
+                    }
+                    
+                    sendBtn.disabled = true;
+                    sendBtn.textContent = 'Sending...';
+                    
+                    try {
+                        if (window.resetPassword) {
+                            await window.resetPassword();
+                        } else {
+                            // Fallback for local storage
+                            showAuthError('Password reset is not available in offline mode');
+                        }
+                    } catch (error) {
+                        console.error('Reset error:', error);
+                        let message = 'Failed to send reset email. Please try again.';
+                        if (error.code === 'auth/user-not-found') {
+                            message = 'No account found with this email address.';
+                        } else if (error.code === 'auth/too-many-requests') {
+                            message = 'Too many requests. Please try again later.';
+                        }
+                        showAuthError(message);
+                    } finally {
+                        sendBtn.disabled = false;
+                        sendBtn.textContent = 'Send Reset Link';
+                    }
+                });
+            }
+            
+            // Real-time validation
+            const emailInput = document.getElementById('email');
+            if (emailInput) {
+                emailInput.addEventListener('blur', () => {
+                    if (emailInput.value && !validateEmail(emailInput.value)) {
+                        showFieldError('email', 'Please enter a valid email address');
+                    } else {
+                        document.getElementById('emailError').classList.add('hidden');
+                        emailInput.classList.remove('border-red-500');
+                    }
+                });
+            }
             
             // Game mode toggles
             
@@ -1434,10 +1632,6 @@
             const closeProfile = document.getElementById('closeProfileModal');
             if (closeProfile) closeProfile.addEventListener('click', closeProfileModal);
             
-            // Password reset
-            document.getElementById('forgotPasswordBtn').addEventListener('click', showPasswordReset);
-            document.getElementById('resetPasswordBtn').addEventListener('click', resetPassword);
-            document.getElementById('cancelResetBtn').addEventListener('click', hidePasswordReset);
             
 			// Email verification (guard if element missing)
 			try {
@@ -1556,85 +1750,269 @@
             };
         }
 
+        // Modern Authentication System
+        let currentAuthMode = 'login';
+        
         function switchTab(tab) {
+            currentAuthMode = tab;
             const loginTab = document.getElementById('loginTab');
             const registerTab = document.getElementById('registerTab');
-            const nameField = document.getElementById('nameField');
-            const profilePicField = document.getElementById('profilePicField');
-            const favoriteTeamField = document.getElementById('favoriteTeamField');
-            const passwordHelp = document.getElementById('passwordHelp');
-            const authButton = document.getElementById('authButton');
-            const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+            const authTitle = document.getElementById('authTitle');
+            const authSubtitle = document.getElementById('authSubtitle');
+            const authButtonText = document.getElementById('authButtonText');
             const passwordResetForm = document.getElementById('passwordResetForm');
+            const authForm = document.getElementById('authForm');
             
+            // Form fields
+            const nameField = document.getElementById('nameField');
+            const confirmPasswordField = document.getElementById('confirmPasswordField');
+            const loginOptions = document.getElementById('loginOptions');
+            const termsField = document.getElementById('termsField');
+            
+            // Reset form and hide alerts
+            document.getElementById('authForm').reset();
+            hideAuthAlerts();
+            clearValidationErrors();
             resetVerificationState();
             
-            // Hide password reset form when switching tabs
+            // Hide password reset form
             passwordResetForm.classList.add('hidden');
+            authForm.classList.remove('hidden');
             
             if (tab === 'login') {
-                loginTab.className = 'flex-1 py-2 px-4 bg-blue-600 text-white rounded-l-lg font-medium';
-                registerTab.className = 'flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-r-lg font-medium';
+                // Update tabs
+                loginTab.className = 'flex-1 py-4 px-4 text-center font-semibold text-blue-600 border-b-2 border-blue-600 transition-all';
+                registerTab.className = 'flex-1 py-4 px-4 text-center font-semibold text-gray-500 hover:text-gray-700 transition-all';
+                
+                // Update header
+                authTitle.textContent = 'Welcome Back';
+                authSubtitle.textContent = 'Sign in to continue to your account';
+                
+                // Show/hide fields
                 nameField.classList.add('hidden');
-                profilePicField.classList.add('hidden');
-                favoriteTeamField.classList.add('hidden');
-                passwordHelp.classList.add('hidden');
-                forgotPasswordLink.classList.remove('hidden');
-                authButton.textContent = 'Login';
+                confirmPasswordField.classList.add('hidden');
+                loginOptions.classList.remove('hidden');
+                termsField.classList.add('hidden');
+                
+                // Update button
+                authButtonText.textContent = 'Sign In';
+                
+                // Load remembered email if exists
+                const rememberedEmail = localStorage.getItem('rememberedEmail');
+                if (rememberedEmail) {
+                    document.getElementById('email').value = rememberedEmail;
+                    document.getElementById('rememberMe').checked = true;
+                }
             } else {
-                loginTab.className = 'flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-l-lg font-medium';
-                registerTab.className = 'flex-1 py-2 px-4 bg-blue-600 text-white rounded-r-lg font-medium';
+                // Update tabs
+                loginTab.className = 'flex-1 py-4 px-4 text-center font-semibold text-gray-500 hover:text-gray-700 transition-all';
+                registerTab.className = 'flex-1 py-4 px-4 text-center font-semibold text-blue-600 border-b-2 border-blue-600 transition-all';
+                
+                // Update header
+                authTitle.textContent = 'Create Account';
+                authSubtitle.textContent = 'Join us and start playing today';
+                
+                // Show/hide fields
                 nameField.classList.remove('hidden');
-                profilePicField.classList.remove('hidden');
-                favoriteTeamField.classList.remove('hidden');
-                passwordHelp.classList.remove('hidden');
-                forgotPasswordLink.classList.add('hidden');
-                authButton.textContent = 'Register';
+                confirmPasswordField.classList.remove('hidden');
+                loginOptions.classList.add('hidden');
+                termsField.classList.remove('hidden');
+                
+                // Update button
+                authButtonText.textContent = 'Create Account';
             }
         }
+        
+        function showAuthError(message) {
+            const errorDiv = document.getElementById('authError');
+            const errorMessage = document.getElementById('authErrorMessage');
+            errorMessage.textContent = message;
+            errorDiv.classList.remove('hidden');
+            setTimeout(() => errorDiv.classList.add('hidden'), 5000);
+        }
+        
+        function showAuthSuccess(message) {
+            const successDiv = document.getElementById('authSuccess');
+            const successMessage = document.getElementById('authSuccessMessage');
+            successMessage.textContent = message;
+            successDiv.classList.remove('hidden');
+            setTimeout(() => successDiv.classList.add('hidden'), 3000);
+        }
+        
+        function hideAuthAlerts() {
+            const errorDiv = document.getElementById('authError');
+            const successDiv = document.getElementById('authSuccess');
+            if (errorDiv) errorDiv.classList.add('hidden');
+            if (successDiv) successDiv.classList.add('hidden');
+        }
+        
+        function clearValidationErrors() {
+            document.querySelectorAll('.text-red-600').forEach(el => {
+                if (el.id && el.id.includes('Error')) el.classList.add('hidden');
+            });
+            document.querySelectorAll('input').forEach(input => {
+                input.classList.remove('border-red-500');
+            });
+        }
+        
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+        
+        function showFieldError(fieldId, message) {
+            const errorEl = document.getElementById(fieldId + 'Error');
+            const inputEl = document.getElementById(fieldId);
+            if (errorEl) {
+                errorEl.textContent = message;
+                errorEl.classList.remove('hidden');
+            }
+            if (inputEl) {
+                inputEl.classList.add('border-red-500');
+            }
+        }
+        
+        // Expose auth functions to window for Firebase integration
+        window.showAuthError = showAuthError;
+        window.showAuthSuccess = showAuthSuccess;
+        window.hideAuthAlerts = hideAuthAlerts;
+        window.switchTab = switchTab;
 
-		async function handleAuth(e) {
-			e.preventDefault();
-			const email = document.getElementById('email').value;
-			const password = document.getElementById('password').value;
-			const displayName = document.getElementById('displayName').value;
-			const authButtonEl = document.getElementById('authButton');
-			const authButtonText = authButtonEl.textContent;
-
-			console.log('Auth attempt:', { email, authButtonText, hasWindowLoginUser: !!window.loginUser });
-
-			try {
-				authButtonEl.disabled = true;
-				if (authButtonText === 'Login') {
-					if (window.loginUser) {
-						await window.loginUser(email, password);
-					} else {
-						await loginUser(email, password);
-					}
-				} else if (authButtonText === 'Register') {
-					if (window.registerUser) {
-						await window.registerUser(email, password, displayName);
-					} else {
-						await registerUser(email, password, displayName);
-					}
-				}
-			} catch (err) {
-				let message = 'Authentication failed. Please try again.';
-				const code = (err && err.code) || '';
-				if (typeof code === 'string') {
-					if (code.includes('auth/invalid-email')) message = 'Invalid email address.';
-					else if (code.includes('auth/user-not-found')) message = 'No account found with that email.';
-					else if (code.includes('auth/wrong-password')) message = 'Incorrect password. Please try again.';
-					else if (code.includes('auth/email-already-in-use')) message = 'Email already registered. Please login instead.';
-					else if (code.includes('auth/weak-password')) message = 'Password must be at least 6 characters.';
-					else if (code.includes('auth/too-many-requests')) message = 'Too many attempts. Try again later.';
-					else if (err.message) message = err.message;
-				}
-				if (typeof window.showNotification === 'function') window.showNotification(message, 'error');
-			} finally {
-				authButtonEl.disabled = false;
-			}
-		}
+        async function handleAuth(e) {
+            e.preventDefault();
+            
+            // Clear previous errors
+            hideAuthAlerts();
+            clearValidationErrors();
+            
+            // Get form values
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const displayName = document.getElementById('displayName')?.value?.trim();
+            const confirmPassword = document.getElementById('confirmPassword')?.value;
+            
+            // Get UI elements
+            const authButton = document.getElementById('authButton');
+            const authButtonText = document.getElementById('authButtonText');
+            const authButtonSpinner = document.getElementById('authButtonSpinner');
+            
+            // Validation
+            let hasErrors = false;
+            
+            if (!email) {
+                showFieldError('email', 'Email is required');
+                hasErrors = true;
+            } else if (!validateEmail(email)) {
+                showFieldError('email', 'Please enter a valid email address');
+                hasErrors = true;
+            }
+            
+            if (!password) {
+                showFieldError('password', 'Password is required');
+                hasErrors = true;
+            } else if (password.length < 6) {
+                showFieldError('password', 'Password must be at least 6 characters');
+                hasErrors = true;
+            }
+            
+            if (currentAuthMode === 'register') {
+                if (!displayName) {
+                    showFieldError('name', 'Display name is required');
+                    hasErrors = true;
+                }
+                
+                if (!confirmPassword) {
+                    showFieldError('confirmPassword', 'Please confirm your password');
+                    hasErrors = true;
+                } else if (password !== confirmPassword) {
+                    showFieldError('confirmPassword', 'Passwords do not match');
+                    hasErrors = true;
+                }
+                
+                const agreeTerms = document.getElementById('agreeTerms');
+                if (agreeTerms && !agreeTerms.checked) {
+                    showFieldError('terms', 'You must agree to the terms and conditions');
+                    hasErrors = true;
+                }
+            }
+            
+            if (hasErrors) return;
+            
+            // Show loading state
+            authButton.disabled = true;
+            authButtonText.classList.add('hidden');
+            authButtonSpinner.classList.remove('hidden');
+            
+            try {
+                if (currentAuthMode === 'login') {
+                    // Try Firebase first, then fallback to local
+                    if (window.loginUser) {
+                        await window.loginUser(email, password);
+                    } else {
+                        await loginUser(email, password);
+                    }
+                    
+                    // Save to localStorage if remember me is checked
+                    const rememberMe = document.getElementById('rememberMe');
+                    if (rememberMe && rememberMe.checked) {
+                        localStorage.setItem('rememberedEmail', email);
+                    } else {
+                        localStorage.removeItem('rememberedEmail');
+                    }
+                } else {
+                    // Register new user
+                    if (window.registerUser) {
+                        await window.registerUser(email, password, displayName);
+                        showAuthSuccess('Account created successfully! You can now sign in.');
+                        setTimeout(() => switchTab('login'), 2000);
+                    } else {
+                        await registerUser(email, password, displayName);
+                    }
+                }
+            } catch (error) {
+                console.error('Auth error:', error);
+                
+                // Handle Firebase errors
+                let message = 'Authentication failed. Please try again.';
+                if (error.code) {
+                    switch(error.code) {
+                        case 'auth/invalid-email':
+                            message = 'Invalid email address format.';
+                            break;
+                        case 'auth/user-disabled':
+                            message = 'This account has been disabled.';
+                            break;
+                        case 'auth/user-not-found':
+                            message = 'No account found with this email address.';
+                            break;
+                        case 'auth/wrong-password':
+                            message = 'Incorrect password. Please try again.';
+                            break;
+                        case 'auth/email-already-in-use':
+                            message = 'An account with this email already exists.';
+                            break;
+                        case 'auth/weak-password':
+                            message = 'Password should be at least 6 characters.';
+                            break;
+                        case 'auth/network-request-failed':
+                            message = 'Network error. Please check your connection.';
+                            break;
+                        case 'auth/too-many-requests':
+                            message = 'Too many failed attempts. Please try again later.';
+                            break;
+                        default:
+                            message = error.message || message;
+                    }
+                }
+                
+                showAuthError(message);
+            } finally {
+                // Reset button state
+                authButton.disabled = false;
+                authButtonText.classList.remove('hidden');
+                authButtonSpinner.classList.add('hidden');
+            }
+        }
 
         // Enhanced profanity filter function
         function containsProfanity(text) {
@@ -1659,18 +2037,18 @@
             email = normalizeEmail(email);
             const existingPlayer = gameData.players.find(p => normalizeEmail(p.email) === email);
             if (existingPlayer) {
-                showNotification('Email already registered! Please login instead.', 'error');
-                return;
+                showAuthError('Email already registered! Please login instead.');
+                throw new Error('Email already in use');
             }
             
             if (password.length < 6) {
-                showNotification('Password must be at least 6 characters long', 'error');
-                return;
+                showAuthError('Password must be at least 6 characters long');
+                throw new Error('Weak password');
             }
             
             if (containsProfanity(displayName)) {
-                showNotification('Display name contains inappropriate language. Please choose a different name.', 'error');
-                return;
+                showAuthError('Display name contains inappropriate language. Please choose a different name.');
+                throw new Error('Invalid display name');
             }
             
             const newPlayer = {
@@ -1703,7 +2081,7 @@
             const autoUrlReg = deriveAutoSyncUrlFromEmail(email);
             if (autoUrlReg && autoUrlReg !== 'github') setSyncUrl(autoUrlReg);
             
-            showNotification('Registration successful! Logging you in...', 'success');
+            showAuthSuccess('Registration successful! Logging you in...');
             try {
                 // Auto-login offline user
                 currentUser = newPlayer;
@@ -1788,23 +2166,19 @@
         }
 
         async function loginUser(email, password) {
-            console.log('loginUser called with:', { email, password });
+            console.log('loginUser called with:', { email });
             email = normalizeEmail(email);
             if (syncUrl) {
                 await syncPullAndMaybeUpdate();
             }
             let player = gameData.players.find(p => normalizeEmail(p.email) === email);
-            console.log('Found player:', player);
+            
             if (!player) {
-                console.log('Player not found');
-                showNotification('Email not found. Please register first.', 'error');
-                return;
+                throw { code: 'auth/user-not-found' };
             }
 
             if (player.password !== password) {
-                console.log('Password mismatch');
-                showNotification('Incorrect password. Please try again.', 'error');
-                return;
+                throw { code: 'auth/wrong-password' };
             }
             
             currentUser = player;
@@ -1838,7 +2212,7 @@
                 document.getElementById('adminScores').classList.add('hidden');
             }
             
-            showNotification(`Welcome back, ${player.displayName}!`, 'success');
+            showAuthSuccess(`Welcome back, ${player.displayName}!`);
             updateUI();
             try { generateTeamButtons(); } catch (e) {}
             setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 0);
@@ -3343,19 +3717,17 @@
             showNotification('Final updated successfully!', 'success');
         }
 
-        // Password reset functions
+        // Password reset functions (updated for new UI)
         function showPasswordReset() {
+            document.getElementById('authForm').classList.add('hidden');
             document.getElementById('passwordResetForm').classList.remove('hidden');
-            document.getElementById('forgotPasswordBtn').style.display = 'none';
         }
 
         function hidePasswordReset() {
             document.getElementById('passwordResetForm').classList.add('hidden');
-            document.getElementById('forgotPasswordBtn').style.display = 'block';
+            document.getElementById('authForm').classList.remove('hidden');
             // Clear form fields
             document.getElementById('resetEmail').value = '';
-            document.getElementById('resetDisplayName').value = '';
-            document.getElementById('newPassword').value = '';
         }
 
         function resetPassword() {
@@ -3565,7 +3937,11 @@ pickItPicks: {},
 pickItStats: { totalPicks: 0, correctPicks: 0, percentage: 0, weeklyMovement: 0, previousRank: null }
 };
 await setDoc(playerRef, newPlayer, { merge: true });
-if (typeof window.showNotification === 'function') window.showNotification('Registration successful! You can now login and start playing.', 'success');
+if (typeof window.showAuthSuccess === 'function') {
+    window.showAuthSuccess('Registration successful! You can now login and start playing.');
+} else if (typeof window.showNotification === 'function') {
+    window.showNotification('Registration successful! You can now login and start playing.', 'success');
+}
 if (typeof window.switchTab === 'function') window.switchTab('login');
 const emailEl = document.getElementById('email'); if (emailEl) emailEl.value = '';
 const pwdEl = document.getElementById('password'); if (pwdEl) pwdEl.value = '';
