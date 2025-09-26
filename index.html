@@ -161,9 +161,9 @@
                         <h4 class="font-semibold text-blue-900 mb-2">How to Play:</h4>
                         <ul class="text-sm text-blue-800 space-y-1">
                             <li>• Pick one team per round from the available teams</li>
-                            <li>• If your team wins or draws, you advance to the next round</li>
-                            <li>• If your team loses, you're eliminated from the game</li>
-                            <li>• Each team can only be used once per player</li>
+                            <li>• If your team wins, you advance to the next round</li>
+                            <li>• If your team loses or draws, you're eliminated from the game</li>
+                            <li>• After Round 16, teams will reset again</li>
                             <li>• Last player(s) remaining win the championship!</li>
                         </ul>
                     </div>
@@ -895,17 +895,17 @@
                 const userPickedTeam = userPick;
                 const roundFixtures = gameData.fixtures.filter(f => f.round === round);
 
-                // Check if user's team won or drew
+                // Check if user's team won (only wins advance, draws = elimination)
                 let userSurvived = false;
                 for (const fixture of roundFixtures) {
                     if (fixture.home === userPickedTeam || fixture.away === userPickedTeam) {
                         if (fixture.completed) {
-                            if (fixture.home === userPickedTeam && fixture.homeScore >= fixture.awayScore) {
-                                userSurvived = true; // Win or draw
-                            } else if (fixture.away === userPickedTeam && fixture.awayScore >= fixture.homeScore) {
-                                userSurvived = true; // Win or draw
+                            if (fixture.home === userPickedTeam && fixture.homeScore > fixture.awayScore) {
+                                userSurvived = true; // Win
+                            } else if (fixture.away === userPickedTeam && fixture.awayScore > fixture.homeScore) {
+                                userSurvived = true; // Win
                             } else {
-                                userSurvived = false; // Loss
+                                userSurvived = false; // Loss or draw
                             }
                         }
                         break;
@@ -957,8 +957,10 @@
                 // Check if user is eliminated
                 const userEliminated = eliminatedUsers[currentUser.id];
 
-                // In knockout rounds, teams are only available if they won their previous match
-                let teamAvailable = !alreadyPicked && !userEliminated;
+                // Check if team was already picked by this user in previous rounds
+                // Teams reset after round 16, so allow reuse after that
+                const teamUsedBefore = Object.values(userPicks).includes(team.id) && gameData.currentRound <= 16;
+                let teamAvailable = !alreadyPicked && !userEliminated && !teamUsedBefore;
 
                 if (gameData.seasonPhase === 'knockout') {
                     // For knockout rounds, teams are only available if they won the previous round
@@ -1040,6 +1042,13 @@
             // Allow re-selecting already picked team (to change pick), but not eliminated teams or users
             if (userEliminated) {
                 showNotification('You have been eliminated and cannot make picks', 'warning');
+                return;
+            }
+
+            // Check if team was already picked in previous rounds (teams reset after round 16)
+            const teamUsedBefore = Object.values(userPicks).includes(teamId) && gameData.currentRound <= 16;
+            if (teamUsedBefore && !alreadyPicked) {
+                showNotification('This team was already used in a previous round', 'warning');
                 return;
             }
 
@@ -1396,16 +1405,16 @@
             const roundFixtures = gameData.fixtures.filter(f => f.round === round);
             const userPickedTeam = userPick;
 
-            // Check if user's team won or drew
+            // Check if user's team won (only wins advance, draws = elimination)
             for (const fixture of roundFixtures) {
                 if (fixture.home === userPickedTeam || fixture.away === userPickedTeam) {
                     if (fixture.completed) {
-                        if (fixture.home === userPickedTeam && fixture.homeScore >= fixture.awayScore) {
-                            return true; // Win or draw
-                        } else if (fixture.away === userPickedTeam && fixture.awayScore >= fixture.homeScore) {
-                            return true; // Win or draw
+                        if (fixture.home === userPickedTeam && fixture.homeScore > fixture.awayScore) {
+                            return true; // Win
+                        } else if (fixture.away === userPickedTeam && fixture.awayScore > fixture.homeScore) {
+                            return true; // Win
                         } else {
-                            return false; // Loss
+                            return false; // Loss or draw
                         }
                     } else {
                         // Fixture not completed yet, assume user survives for now
