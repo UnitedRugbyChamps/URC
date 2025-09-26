@@ -71,6 +71,26 @@
                     </div>
                 </div>
 
+                <!-- Admin Panel (for demo purposes) -->
+                <div class="bg-yellow-50 rounded-lg p-4 mb-6">
+                    <h4 class="text-lg font-semibold text-yellow-800 mb-3">Demo Controls</h4>
+                    <p class="text-sm text-yellow-700 mb-3">For demonstration purposes - advance rounds or simulate match results</p>
+                    <div class="flex flex-wrap gap-2">
+                        <button id="advanceRoundBtn" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">
+                            Advance Round
+                        </button>
+                        <button id="simulateResultsBtn" class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700">
+                            Simulate Results
+                        </button>
+                        <button id="resetGameBtn" class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700">
+                            Reset Game
+                        </button>
+                        <button id="finalizeAllBtn" class="bg-purple-600 text-white px-3 py-1 rounded text-sm hover:bg-purple-700">
+                            Finalize All Pending
+                        </button>
+                    </div>
+                </div>
+
                 <div class="bg-white rounded-xl card-shadow p-6 mb-6">
                     <h3 class="text-xl font-semibold text-gray-800 mb-4">Your Fantasy League</h3>
 
@@ -149,25 +169,6 @@
                         </div>
                     </div>
 
-                    <!-- Admin Panel (for demo purposes) -->
-                    <div class="bg-yellow-50 rounded-lg p-4 mb-6">
-                        <h4 class="text-lg font-semibold text-yellow-800 mb-3">Demo Controls</h4>
-                        <p class="text-sm text-yellow-700 mb-3">For demonstration purposes - advance rounds or simulate match results</p>
-                        <div class="flex flex-wrap gap-2">
-                            <button id="advanceRoundBtn" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">
-                                Advance Round
-                            </button>
-                            <button id="simulateResultsBtn" class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700">
-                                Simulate Results
-                            </button>
-                            <button id="resetGameBtn" class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700">
-                                Reset Game
-                            </button>
-                            <button id="finalizeAllBtn" class="bg-purple-600 text-white px-3 py-1 rounded text-sm hover:bg-purple-700">
-                                Finalize All Pending
-                            </button>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
@@ -906,8 +907,8 @@
                 teamCard.className = 'bg-gray-100 rounded-lg p-3 text-center cursor-pointer hover:bg-gray-200 transition-colors team-card';
                 teamCard.dataset.teamId = team.id;
 
-                // Check if team was already picked by this user in any round
-                const alreadyPicked = Object.values(userPicks).includes(team.id);
+                // Check if team was already picked by this user in current round
+                const alreadyPicked = userPicks[gameData.currentRound] === team.id;
 
                 // Check if user is eliminated
                 const userEliminated = eliminatedUsers[currentUser.id];
