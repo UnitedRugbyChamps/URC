@@ -57,95 +57,53 @@
             <p class="text-white/80">Pick a team each week - but you can only use each team once!</p>
         </div>
 
-        <!-- Login/Register Form -->
+        <!-- Auth: Redesigned Login/Register -->
         <div id="authSection" class="max-w-md mx-auto bg-white rounded-xl card-shadow p-6 mb-8">
-            <div class="flex mb-4">
-                <button type="button" id="loginTab" class="flex-1 py-2 px-4 bg-blue-600 text-white rounded-l-lg font-medium">Login</button>
-                <button type="button" id="registerTab" class="flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-r-lg font-medium">Register</button>
+            <div class="flex mb-4" role="tablist">
+                <button type="button" id="authTabLogin" class="flex-1 py-2 px-4 bg-blue-600 text-white rounded-l-lg font-medium" aria-selected="true">Login</button>
+                <button type="button" id="authTabRegister" class="flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-r-lg font-medium" aria-selected="false">Register</button>
             </div>
-            
-            <form id="authForm" novalidate>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-medium mb-2">Email</label>
-                    <input type="email" id="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                </div>
-                
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-medium mb-2">Password</label>
-                    <input type="password" id="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required minlength="6">
-                    <p id="passwordHelp" class="text-xs text-gray-500 mt-1 hidden">Password must be at least 6 characters long</p>
-                </div>
-                
 
-                
-                <div id="nameField" class="mb-4 hidden">
-                    <label class="block text-gray-700 text-sm font-medium mb-2">Display Name</label>
-                    <input type="text" id="displayName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <!-- Login Panel -->
+            <form id="loginForm" class="space-y-4" novalidate>
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="loginEmail">Email</label>
+                    <input type="email" id="loginEmail" autocomplete="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                 </div>
-                
-                <!-- Profile Picture Selection -->
-                <div id="profilePicField" class="mb-4 hidden">
-                    <label class="block text-gray-700 text-sm font-medium mb-2">Profile Picture (Optional)</label>
-                    
-                    <!-- Upload Custom Picture -->
-                    <div class="mb-4 p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 transition-colors">
-                        <div class="text-center">
-                            <div class="mb-2">
-                                <svg class="mx-auto h-8 w-8 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                            </div>
-                            <div class="text-sm text-gray-500">Profile pictures are disabled</div>
-                            <p class="text-xs text-gray-500 mt-1">JPG, PNG, GIF up to 2MB</p>
-                        </div>
-                        <div id="customPicPreview" class="hidden mt-3 text-center">
-                            <img id="customPicImage" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-blue-500" alt="Custom profile picture">
-                            <button type="button" id="removeCustomPic" class="mt-2 text-xs text-red-600 hover:text-red-800">Remove</button>
-                        </div>
-                    </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" autocomplete="current-password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required minlength="6">
                 </div>
-                
-                <!-- Favorite Team Selection -->
-                <div id="favoriteTeamField" class="mb-4 hidden">
-                    <label class="block text-gray-700 text-sm font-medium mb-2">Favorite URC Team (Optional)</label>
-                    <select id="favoriteTeam" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">Select your favorite team</option>
-                        <option value="Benetton Rugby">Benetton Rugby</option>
-                        <option value="Bulls">Bulls</option>
-                        <option value="Cardiff Rugby">Cardiff Rugby</option>
-                        <option value="Connacht">Connacht</option>
-                        <option value="Dragons">Dragons</option>
-                        <option value="Edinburgh">Edinburgh</option>
-                        <option value="Glasgow Warriors">Glasgow Warriors</option>
-                        <option value="Leinster">Leinster</option>
-                        <option value="Lions">Lions</option>
-                        <option value="Munster">Munster</option>
-                        <option value="Ospreys">Ospreys</option>
-                        <option value="Scarlets">Scarlets</option>
-                        <option value="Sharks">Sharks</option>
-                        <option value="Stormers">Stormers</option>
-                        <option value="Ulster">Ulster</option>
-                        <option value="Zebre">Zebre</option>
-                    </select>
-                </div>
-                
-                <button type="submit" id="authButton" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 font-medium">Login</button>
-                
-                <div id="forgotPasswordLink" class="text-center mt-3">
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 font-medium">Login</button>
+                <div class="text-center">
                     <button type="button" id="forgotPasswordBtn" class="text-sm text-blue-600 hover:text-blue-800 underline">Forgot Password?</button>
                 </div>
             </form>
-            
-            <!-- Password Reset Form -->
+
+            <!-- Register Panel -->
+            <form id="registerForm" class="space-y-4 hidden" novalidate>
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="registerEmail">Email</label>
+                    <input type="email" id="registerEmail" autocomplete="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="registerDisplayName">Display Name</label>
+                    <input type="text" id="registerDisplayName" autocomplete="nickname" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="registerPassword">Password</label>
+                    <input type="password" id="registerPassword" autocomplete="new-password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required minlength="6">
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 font-medium">Create account</button>
+            </form>
+
+            <!-- Password Reset Inline -->
             <div id="passwordResetForm" class="hidden mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <h4 class="font-medium text-gray-800 mb-3">🔐 Password Reset</h4>
-                <p class="text-sm text-gray-600 mb-3">Enter your email and display name to reset your password:</p>
+                <h4 class="font-medium text-gray-800 mb-3">Password reset</h4>
                 <div class="space-y-3">
                     <input type="email" id="resetEmail" placeholder="Your email address" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <input type="text" id="resetDisplayName" placeholder="Your display name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <input type="password" id="newPassword" placeholder="New password (min 6 characters)" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" minlength="6">
                     <div class="flex space-x-2">
-                        <button type="button" id="resetPasswordBtn" class="flex-1 bg-yellow-600 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 font-medium">Reset Password</button>
+                        <button type="button" id="resetPasswordBtn" class="flex-1 bg-yellow-600 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 font-medium">Send reset email</button>
                         <button type="button" id="cancelResetBtn" class="flex-1 bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 font-medium">Cancel</button>
                     </div>
                 </div>
@@ -1335,21 +1293,17 @@
                     }
                 });
             }
-            // Auth tabs
-            document.getElementById('loginTab').addEventListener('click', () => {
-                console.log('Login tab clicked');
-                switchTab('login');
-            });
-            document.getElementById('registerTab').addEventListener('click', () => {
-                console.log('Register tab clicked');
-                switchTab('register');
-            });
+            // Auth tabs (new)
+            const tabLogin = document.getElementById('authTabLogin');
+            const tabRegister = document.getElementById('authTabRegister');
+            if (tabLogin) tabLogin.addEventListener('click', () => switchTab('login'));
+            if (tabRegister) tabRegister.addEventListener('click', () => switchTab('register'));
 
-            // Auth form
-            document.getElementById('authForm').addEventListener('submit', (e) => {
-                console.log('Auth form submitted');
-                handleAuth(e);
-            });
+            // Auth forms (new)
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) loginForm.addEventListener('submit', (e) => { e.preventDefault(); handleLoginSubmit(); });
+            const registerForm = document.getElementById('registerForm');
+            if (registerForm) registerForm.addEventListener('submit', (e) => { e.preventDefault(); handleRegisterSubmit(); });
             
             // Game mode toggles
             
@@ -1416,9 +1370,12 @@
             // Chat functionality
             
             
-            // Logout
+            // Logout: try Firebase signOut; always perform local UI reset
             const logoutBtn = document.getElementById('logoutBtn');
-            if (logoutBtn) logoutBtn.addEventListener('click', logout);
+            if (logoutBtn) logoutBtn.addEventListener('click', async () => {
+                try { if (typeof window.logout === 'function') await window.logout(); } catch (_) {}
+                localLogoutUI();
+            });
             
             // Settings
             const settingsBtn = document.getElementById('settingsBtn');
@@ -1434,10 +1391,13 @@
             const closeProfile = document.getElementById('closeProfileModal');
             if (closeProfile) closeProfile.addEventListener('click', closeProfileModal);
             
-            // Password reset
-            document.getElementById('forgotPasswordBtn').addEventListener('click', showPasswordReset);
-            document.getElementById('resetPasswordBtn').addEventListener('click', resetPassword);
-            document.getElementById('cancelResetBtn').addEventListener('click', hidePasswordReset);
+            // Password reset (Firebase-backed)
+            const forgotBtn = document.getElementById('forgotPasswordBtn');
+            if (forgotBtn) forgotBtn.addEventListener('click', showPasswordReset);
+            const doResetBtn = document.getElementById('resetPasswordBtn');
+            if (doResetBtn) doResetBtn.addEventListener('click', () => { if (typeof window.resetPassword === 'function') window.resetPassword(); });
+            const cancelResetBtn = document.getElementById('cancelResetBtn');
+            if (cancelResetBtn) cancelResetBtn.addEventListener('click', hidePasswordReset);
             
 			// Email verification (guard if element missing)
 			try {
@@ -1557,82 +1517,91 @@
         }
 
         function switchTab(tab) {
-            const loginTab = document.getElementById('loginTab');
-            const registerTab = document.getElementById('registerTab');
-            const nameField = document.getElementById('nameField');
-            const profilePicField = document.getElementById('profilePicField');
-            const favoriteTeamField = document.getElementById('favoriteTeamField');
-            const passwordHelp = document.getElementById('passwordHelp');
-            const authButton = document.getElementById('authButton');
-            const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+            const loginTab = document.getElementById('authTabLogin');
+            const registerTab = document.getElementById('authTabRegister');
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
             const passwordResetForm = document.getElementById('passwordResetForm');
-            
-            resetVerificationState();
-            
-            // Hide password reset form when switching tabs
-            passwordResetForm.classList.add('hidden');
-            
+            if (!loginTab || !registerTab || !loginForm || !registerForm) return;
+
+            // Hide password reset when switching
+            if (passwordResetForm) passwordResetForm.classList.add('hidden');
+            const forgotBtn = document.getElementById('forgotPasswordBtn');
+            if (forgotBtn) forgotBtn.style.display = 'inline';
+
             if (tab === 'login') {
                 loginTab.className = 'flex-1 py-2 px-4 bg-blue-600 text-white rounded-l-lg font-medium';
+                loginTab.setAttribute('aria-selected', 'true');
                 registerTab.className = 'flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-r-lg font-medium';
-                nameField.classList.add('hidden');
-                profilePicField.classList.add('hidden');
-                favoriteTeamField.classList.add('hidden');
-                passwordHelp.classList.add('hidden');
-                forgotPasswordLink.classList.remove('hidden');
-                authButton.textContent = 'Login';
+                registerTab.setAttribute('aria-selected', 'false');
+                loginForm.classList.remove('hidden');
+                registerForm.classList.add('hidden');
+                try { document.getElementById('loginEmail').focus(); } catch (_) {}
             } else {
                 loginTab.className = 'flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-l-lg font-medium';
+                loginTab.setAttribute('aria-selected', 'false');
                 registerTab.className = 'flex-1 py-2 px-4 bg-blue-600 text-white rounded-r-lg font-medium';
-                nameField.classList.remove('hidden');
-                profilePicField.classList.remove('hidden');
-                favoriteTeamField.classList.remove('hidden');
-                passwordHelp.classList.remove('hidden');
-                forgotPasswordLink.classList.add('hidden');
-                authButton.textContent = 'Register';
+                registerTab.setAttribute('aria-selected', 'true');
+                loginForm.classList.add('hidden');
+                registerForm.classList.remove('hidden');
+                try { document.getElementById('registerEmail').focus(); } catch (_) {}
             }
         }
 
-		async function handleAuth(e) {
-			e.preventDefault();
-			const email = document.getElementById('email').value;
-			const password = document.getElementById('password').value;
-			const displayName = document.getElementById('displayName').value;
-			const authButtonEl = document.getElementById('authButton');
-			const authButtonText = authButtonEl.textContent;
-
-			console.log('Auth attempt:', { email, authButtonText, hasWindowLoginUser: !!window.loginUser });
-
+		async function handleLoginSubmit() {
+			const form = document.getElementById('loginForm');
+			if (!form) return;
+			const email = (document.getElementById('loginEmail')?.value || '').trim();
+			const password = (document.getElementById('loginPassword')?.value || '');
+			const submitBtn = form.querySelector('button[type="submit"]');
 			try {
-				authButtonEl.disabled = true;
-				if (authButtonText === 'Login') {
-					if (window.loginUser) {
-						await window.loginUser(email, password);
-					} else {
-						await loginUser(email, password);
-					}
-				} else if (authButtonText === 'Register') {
-					if (window.registerUser) {
-						await window.registerUser(email, password, displayName);
-					} else {
-						await registerUser(email, password, displayName);
-					}
+				if (submitBtn) submitBtn.disabled = true;
+				if (window.loginUser) {
+					await window.loginUser(email, password);
+				} else {
+					if (typeof window.showNotification === 'function') window.showNotification('Authentication not configured. Please set Firebase config.', 'error');
 				}
 			} catch (err) {
-				let message = 'Authentication failed. Please try again.';
+				let message = 'Login failed. Please try again.';
 				const code = (err && err.code) || '';
 				if (typeof code === 'string') {
 					if (code.includes('auth/invalid-email')) message = 'Invalid email address.';
 					else if (code.includes('auth/user-not-found')) message = 'No account found with that email.';
-					else if (code.includes('auth/wrong-password')) message = 'Incorrect password. Please try again.';
-					else if (code.includes('auth/email-already-in-use')) message = 'Email already registered. Please login instead.';
-					else if (code.includes('auth/weak-password')) message = 'Password must be at least 6 characters.';
-					else if (code.includes('auth/too-many-requests')) message = 'Too many attempts. Try again later.';
+					else if (code.includes('auth/wrong-password')) message = 'Incorrect password.';
 					else if (err.message) message = err.message;
 				}
 				if (typeof window.showNotification === 'function') window.showNotification(message, 'error');
 			} finally {
-				authButtonEl.disabled = false;
+				if (submitBtn) submitBtn.disabled = false;
+			}
+		}
+
+		async function handleRegisterSubmit() {
+			const form = document.getElementById('registerForm');
+			if (!form) return;
+			const email = (document.getElementById('registerEmail')?.value || '').trim();
+			const password = (document.getElementById('registerPassword')?.value || '');
+			const displayName = (document.getElementById('registerDisplayName')?.value || '').trim();
+			const submitBtn = form.querySelector('button[type="submit"]');
+			try {
+				if (submitBtn) submitBtn.disabled = true;
+				if (window.registerUser) {
+					await window.registerUser(email, password, displayName);
+				} else {
+					if (typeof window.showNotification === 'function') window.showNotification('Registration not configured. Please set Firebase config.', 'error');
+				}
+			} catch (err) {
+				let message = 'Registration failed. Please try again.';
+				const code = (err && err.code) || '';
+				if (typeof code === 'string') {
+					if (code.includes('auth/email-already-in-use')) message = 'Email already registered.';
+					else if (code.includes('auth/weak-password')) message = 'Password must be at least 6 characters.';
+					else if (code.includes('auth/invalid-email')) message = 'Invalid email address.';
+					else if (err.message) message = err.message;
+				}
+				if (typeof window.showNotification === 'function') window.showNotification(message, 'error');
+			} finally {
+				if (submitBtn) submitBtn.disabled = false;
 			}
 		}
 
@@ -1655,65 +1624,7 @@
             });
         }
 
-        function registerUser(email, password, displayName) {
-            email = normalizeEmail(email);
-            const existingPlayer = gameData.players.find(p => normalizeEmail(p.email) === email);
-            if (existingPlayer) {
-                showNotification('Email already registered! Please login instead.', 'error');
-                return;
-            }
-            
-            if (password.length < 6) {
-                showNotification('Password must be at least 6 characters long', 'error');
-                return;
-            }
-            
-            if (containsProfanity(displayName)) {
-                showNotification('Display name contains inappropriate language. Please choose a different name.', 'error');
-                return;
-            }
-            
-            const newPlayer = {
-                id: getStablePlayerIdForEmail(email),
-                email: email,
-                password: password,
-                displayName: displayName || email.split('@')[0],
-                profilePic: registrationData.profilePic,
-                isCustomPic: registrationData.isCustomPic || false,
-                favoriteTeam: document.getElementById('favoriteTeam').value,
-                isEliminated: false,
-                usedTeams: [],
-                currentPick: null,
-                roundJoined: gameData.currentRound,
-                joinDate: new Date().toISOString(),
-                // Pick it! game data
-                pickItPicks: {}, // roundNum: {matchId: teamPicked}
-                pickItStats: {
-                    totalPicks: 0,
-                    correctPicks: 0,
-                    percentage: 0,
-                    weeklyMovement: 0,
-                    previousRank: null
-                }
-            };
-            
-            gameData.players.push(newPlayer);
-            saveGameData();
-            // Auto-configure sync URL after sign-up
-            const autoUrlReg = deriveAutoSyncUrlFromEmail(email);
-            if (autoUrlReg && autoUrlReg !== 'github') setSyncUrl(autoUrlReg);
-            
-            showNotification('Registration successful! Logging you in...', 'success');
-            try {
-                // Auto-login offline user
-                currentUser = newPlayer;
-                localStorage.setItem('currentUserEmail', email);
-                document.getElementById('authSection').classList.add('hidden');
-                document.getElementById('mainApp').classList.remove('hidden');
-                document.getElementById('userName').textContent = newPlayer.displayName;
-                updateUI();
-            } catch (_) {}
-        }
+        // Offline registerUser removed in favor of Firebase implementation
 
 
 
@@ -1787,73 +1698,19 @@
             window.tempCustomPic = null;
         }
 
-        async function loginUser(email, password) {
-            console.log('loginUser called with:', { email, password });
-            email = normalizeEmail(email);
-            if (syncUrl) {
-                await syncPullAndMaybeUpdate();
-            }
-            let player = gameData.players.find(p => normalizeEmail(p.email) === email);
-            console.log('Found player:', player);
-            if (!player) {
-                console.log('Player not found');
-                showNotification('Email not found. Please register first.', 'error');
-                return;
-            }
-
-            if (player.password !== password) {
-                console.log('Password mismatch');
-                showNotification('Incorrect password. Please try again.', 'error');
-                return;
-            }
-            
-            currentUser = player;
-            localStorage.setItem('currentUserEmail', email);
-            // Auto-configure sync using email
-            (async () => {
-                const auto = deriveAutoSyncUrlFromEmail(email);
-                if (auto === 'github') {
-                    await syncPullAndMaybeUpdate();
-                } else if (auto) {
-                    setSyncUrl(auto);
-                    await syncPullAndMaybeUpdate();
-                }
-            })();
-            document.getElementById('authSection').classList.add('hidden');
-            document.getElementById('mainApp').classList.remove('hidden');
-            document.getElementById('userName').textContent = player.displayName;
-            // Hide LMS UI until user explicitly opens it
-            document.getElementById('roundStatus').classList.add('hidden');
-            document.getElementById('lmsInterface').classList.add('hidden');
-            const statsPanel = document.getElementById('lmsStats');
-            if (statsPanel) statsPanel.classList.add('hidden');
-            try { generateTeamButtons(); } catch (e) {}
-            
-            const userProfilePicElement = document.getElementById('userProfilePic');
-            userProfilePicElement.innerHTML = `<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMFCSXJWsbmkra95ltt9Z9LJiRuMOsIBluqwF-g4&usqp=CAE&s" class="w-8 h-8 rounded-full object-cover border border-gray-300" alt="Profile" onerror="this.src=''; this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="w-8 h-8 rounded-full bg-gray-300 border border-gray-400" style="display: none;"></div>`;
-            
-            if (email === 'sacksjordan@gmail.com') {
-                document.getElementById('adminScores').classList.remove('hidden');
-            } else {
-                document.getElementById('adminScores').classList.add('hidden');
-            }
-            
-            showNotification(`Welcome back, ${player.displayName}!`, 'success');
-            updateUI();
-            try { generateTeamButtons(); } catch (e) {}
-            setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 0);
-        }
+        // Offline login removed; handled by Firebase module's window.loginUser
 
 
 
-        function logout() {
+        function localLogoutUI() {
             currentUser = null;
-            localStorage.removeItem('currentUserEmail');
-            document.getElementById('authSection').classList.remove('hidden');
-            document.getElementById('mainApp').classList.add('hidden');
-            document.getElementById('email').value = '';
-            document.getElementById('password').value = '';
-            document.getElementById('displayName').value = '';
+            try { localStorage.removeItem('currentUserEmail'); } catch (_) {}
+            const authSection = document.getElementById('authSection');
+            const mainApp = document.getElementById('mainApp');
+            if (authSection) authSection.classList.remove('hidden');
+            if (mainApp) mainApp.classList.add('hidden');
+            const lf = document.getElementById('loginForm'); if (lf) lf.reset();
+            const rf = document.getElementById('registerForm'); if (rf) rf.reset();
         }
 
         function selectTeam(teamName) {
@@ -3345,52 +3202,22 @@
 
         // Password reset functions
         function showPasswordReset() {
-            document.getElementById('passwordResetForm').classList.remove('hidden');
-            document.getElementById('forgotPasswordBtn').style.display = 'none';
+            const el = document.getElementById('passwordResetForm');
+            if (el) el.classList.remove('hidden');
+            const forgot = document.getElementById('forgotPasswordBtn');
+            if (forgot) forgot.style.display = 'none';
         }
 
         function hidePasswordReset() {
-            document.getElementById('passwordResetForm').classList.add('hidden');
-            document.getElementById('forgotPasswordBtn').style.display = 'block';
-            // Clear form fields
-            document.getElementById('resetEmail').value = '';
-            document.getElementById('resetDisplayName').value = '';
-            document.getElementById('newPassword').value = '';
+            const el = document.getElementById('passwordResetForm');
+            if (el) el.classList.add('hidden');
+            const forgot = document.getElementById('forgotPasswordBtn');
+            if (forgot) forgot.style.display = 'block';
+            const resetEmail = document.getElementById('resetEmail');
+            if (resetEmail) resetEmail.value = '';
         }
 
-        function resetPassword() {
-            const email = document.getElementById('resetEmail').value.trim();
-            const displayName = document.getElementById('resetDisplayName').value.trim();
-            const newPassword = document.getElementById('newPassword').value;
-            
-            if (!email || !displayName || !newPassword) {
-                showNotification('Please fill in all fields', 'error');
-                return;
-            }
-            
-            if (newPassword.length < 6) {
-                showNotification('New password must be at least 6 characters long', 'error');
-                return;
-            }
-            
-            // Find player by email and display name for security
-            const player = gameData.players.find(p => 
-                p.email.toLowerCase() === email.toLowerCase() && 
-                p.displayName.toLowerCase() === displayName.toLowerCase()
-            );
-            
-            if (!player) {
-                showNotification('No account found with that email and display name combination', 'error');
-                return;
-            }
-            
-            // Update password
-            player.password = newPassword;
-            saveGameData();
-            
-            hidePasswordReset();
-            showNotification('Password reset successfully! You can now login with your new password.', 'success');
-        }
+        // Inline reset wired to Firebase module (window.resetPassword)
 
         function showNotification(message, type = 'info') {
             const notification = document.createElement('div');
