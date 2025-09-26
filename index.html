@@ -85,6 +85,13 @@
                         </ul>
                     </div>
 
+                    <div class="mb-6">
+                        <h4 class="text-lg font-semibold text-gray-800 mb-4">Leaderboard</h4>
+                        <div id="leaderboard" class="space-y-2">
+                            <!-- Leaderboard will be populated by JavaScript -->
+                        </div>
+                    </div>
+
                     <!-- View Toggle -->
                     <div class="flex mb-6 bg-gray-100 rounded-lg p-1">
                         <button type="button" id="currentRoundTab" class="flex-1 py-2 px-4 bg-blue-600 text-white rounded-md font-medium">Current Round</button>
@@ -139,13 +146,6 @@
                             <div id="allFixturesList" class="space-y-3">
                                 <!-- All fixtures will be populated by JavaScript -->
                             </div>
-                        </div>
-                    </div>
-
-                    <div class="mb-6">
-                        <h4 class="text-lg font-semibold text-gray-800 mb-4">Leaderboard</h4>
-                        <div id="leaderboard" class="space-y-2">
-                            <!-- Leaderboard will be populated by JavaScript -->
                         </div>
                     </div>
 
@@ -906,7 +906,7 @@
                 teamCard.className = 'bg-gray-100 rounded-lg p-3 text-center cursor-pointer hover:bg-gray-200 transition-colors team-card';
                 teamCard.dataset.teamId = team.id;
 
-                // Check if team was already picked by this user
+                // Check if team was already picked by this user in any round
                 const alreadyPicked = Object.values(userPicks).includes(team.id);
 
                 // Check if user is eliminated
@@ -958,13 +958,22 @@
                     teamCard.className = 'bg-gray-100 rounded-lg p-3 text-center cursor-pointer hover:bg-gray-200 transition-colors team-card';
                 }
 
+                // Check if this team is currently selected (for visual feedback)
+                const isSelected = selectedTeam === team.id;
+
                 teamCard.innerHTML = `
                     <div class="font-semibold text-gray-800">${team.name}</div>
                     <div class="text-sm text-gray-600">${team.country}</div>
                     ${statusText ? `<div class="text-xs ${statusClass} mt-1">${statusText}</div>` : ''}
                 `;
 
-                if (teamAvailable && !alreadyPicked && !userEliminated) {
+                // Add green background if team is selected and available
+                if (isSelected && teamAvailable && !alreadyPicked && !userEliminated) {
+                    teamCard.className = 'bg-green-200 border-2 border-green-500 rounded-lg p-3 text-center cursor-pointer hover:bg-green-300 transition-colors team-card';
+                }
+
+                // Only add click event if team is available
+                if (teamAvailable) {
                     teamCard.addEventListener('click', () => selectTeam(team.id));
                 }
 
@@ -973,14 +982,54 @@
         }
 
         function selectTeam(teamId) {
-            // Remove previous selection
+            // Check if team is available (not already picked, user not eliminated, etc.)
+            const userPicks = gameData.userPicks[currentUser.id] || {};
+            const eliminatedUsers = gameData.eliminatedUsers || {};
+            const alreadyPicked = Object.values(userPicks).includes(teamId);
+            const userEliminated = eliminatedUsers[currentUser.id];
+
+            if (alreadyPicked || userEliminated) {
+                showNotification('This team is not available for selection', 'warning');
+                return;
+            }
+
+            // In knockout rounds, check if team won previous round
+            if (gameData.seasonPhase === 'knockout') {
+                const previousRound = gameData.currentRound - 1;
+                const previousRoundFixtures = gameData.fixtures.filter(f => f.round === previousRound);
+                let teamWonPrevious = true;
+
+                for (const fixture of previousRoundFixtures) {
+                    if (fixture.home === teamId || fixture.away === teamId) {
+                        if (fixture.completed) {
+                            if (fixture.home === teamId && fixture.homeScore <= fixture.awayScore) {
+                                teamWonPrevious = false;
+                            } else if (fixture.away === teamId && fixture.awayScore <= fixture.homeScore) {
+                                teamWonPrevious = false;
+                            }
+                        } else {
+                            teamWonPrevious = false;
+                        }
+                        break;
+                    }
+                }
+
+                if (!teamWonPrevious) {
+                    showNotification('This team did not advance from the previous round', 'warning');
+                    return;
+                }
+            }
+
+            // Remove previous selection (remove green styling from all cards)
             document.querySelectorAll('.team-card').forEach(card => {
-                card.classList.remove('bg-blue-200', 'border-blue-500');
+                card.classList.remove('bg-green-200', 'border-green-500', 'bg-blue-200', 'border-blue-500');
+                card.classList.add('bg-gray-100');
             });
 
-            // Add selection to current team
+            // Add green selection to current team
             const selectedCard = document.querySelector(`[data-team-id="${teamId}"]`);
-            selectedCard.classList.add('bg-blue-200', 'border-blue-500');
+            selectedCard.classList.remove('bg-gray-100');
+            selectedCard.classList.add('bg-green-200', 'border-2', 'border-green-500');
 
             selectedTeam = teamId;
             document.getElementById('submitPick').disabled = false;
@@ -1003,6 +1052,14 @@
                 localStorage.setItem('gameData', JSON.stringify(gameData));
 
                 showNotification(`Pick submitted: ${gameData.teams.find(t => t.id === selectedTeam).name}`, 'success');
+
+                // Keep the green styling after successful submission
+                const selectedCard = document.querySelector(`[data-team-id="${selectedTeam}"]`);
+                if (selectedCard) {
+                    selectedCard.className = 'bg-green-300 border-2 border-green-600 rounded-lg p-3 text-center cursor-pointer hover:bg-green-400 transition-colors team-card';
+                }
+
+                // Update display (but don't clear the selection since we want to keep it green)
                 updateGameDisplay();
             } catch (error) {
                 console.error('Error submitting pick:', error);
@@ -1082,39 +1139,107 @@
                     }
                 }
 
+                const eliminatedRound = gameData.eliminatedUsers?.[user.id] || null;
+                const stillIn = !eliminatedRound && roundsSurvived >= gameData.currentRound;
+
                 return {
                     user: user,
                     roundsSurvived: roundsSurvived,
-                    stillIn: roundsSurvived >= gameData.currentRound
+                    stillIn: stillIn,
+                    eliminatedRound: eliminatedRound
                 };
             });
 
-            userScores.sort((a, b) => b.roundsSurvived - a.roundsSurvived);
+            // Separate into still playing and eliminated
+            const stillPlaying = userScores.filter(entry => entry.stillIn);
+            const eliminated = userScores.filter(entry => !entry.stillIn);
 
-            userScores.forEach((entry, index) => {
-                const playerDiv = document.createElement('div');
-                playerDiv.className = `flex justify-between items-center p-3 rounded-lg ${entry.stillIn ? 'bg-green-50' : 'bg-red-50'}`;
+            // Sort still playing alphabetically by display name
+            stillPlaying.sort((a, b) => a.user.displayName.localeCompare(b.user.displayName));
 
-                playerDiv.innerHTML = `
-                    <div class="flex items-center">
-                        <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold mr-3">
-                            ${index + 1}
-                        </div>
-                        <div>
-                            <div class="font-semibold">${entry.user.displayName}</div>
-                            <div class="text-sm ${entry.stillIn ? 'text-green-600' : 'text-red-600'}">
-                                ${entry.stillIn ? 'Still in the game' : 'Eliminated'}
+            // Sort eliminated by elimination round (ascending), then alphabetically by display name
+            eliminated.sort((a, b) => {
+                if (a.eliminatedRound !== b.eliminatedRound) {
+                    return (a.eliminatedRound || 999) - (b.eliminatedRound || 999);
+                }
+                return a.user.displayName.localeCompare(b.user.displayName);
+            });
+
+            // Add "Still Standing" section
+            if (stillPlaying.length > 0) {
+                const standingHeader = document.createElement('div');
+                standingHeader.className = 'mb-4';
+                standingHeader.innerHTML = `
+                    <h5 class="text-lg font-semibold text-green-700 mb-2">Still Standing</h5>
+                    <div class="text-sm text-gray-600 mb-3">${stillPlaying.length} player${stillPlaying.length !== 1 ? 's' : ''} remaining</div>
+                `;
+                leaderboard.appendChild(standingHeader);
+
+                stillPlaying.forEach((entry, index) => {
+                    const playerDiv = document.createElement('div');
+                    playerDiv.className = 'flex justify-between items-center p-3 rounded-lg bg-green-50 mb-2';
+
+                    playerDiv.innerHTML = `
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-green-600 text-white rounded-full flex items-center justify-center font-bold mr-3">
+                                ${index + 1}
+                            </div>
+                            <div>
+                                <div class="font-semibold">${entry.user.displayName}</div>
+                                <div class="text-sm text-green-600">Still in the game</div>
                             </div>
                         </div>
-                    </div>
-                    <div class="text-right">
-                        <div class="font-bold text-lg">${entry.roundsSurvived}</div>
-                        <div class="text-sm text-gray-600">rounds survived</div>
-                    </div>
-                `;
+                        <div class="text-right">
+                            <div class="font-bold text-lg">${entry.roundsSurvived}</div>
+                            <div class="text-sm text-gray-600">rounds survived</div>
+                        </div>
+                    `;
 
-                leaderboard.appendChild(playerDiv);
-            });
+                    leaderboard.appendChild(playerDiv);
+                });
+            }
+
+            // Add "Eliminated" section
+            if (eliminated.length > 0) {
+                const eliminatedHeader = document.createElement('div');
+                eliminatedHeader.className = 'mb-4 mt-6';
+                eliminatedHeader.innerHTML = `
+                    <h5 class="text-lg font-semibold text-red-700 mb-2">Eliminated</h5>
+                    <div class="text-sm text-gray-600 mb-3">${eliminated.length} player${eliminated.length !== 1 ? 's' : ''} eliminated</div>
+                `;
+                leaderboard.appendChild(eliminatedHeader);
+
+                eliminated.forEach((entry, index) => {
+                    const playerDiv = document.createElement('div');
+                    playerDiv.className = 'flex justify-between items-center p-3 rounded-lg bg-red-50 mb-2';
+
+                    playerDiv.innerHTML = `
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 bg-red-600 text-white rounded-full flex items-center justify-center font-bold mr-3">
+                                ${index + 1}
+                            </div>
+                            <div>
+                                <div class="font-semibold">${entry.user.displayName}</div>
+                                <div class="text-sm text-red-600">Eliminated in Round ${entry.eliminatedRound || 'Unknown'}</div>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="font-bold text-lg">${entry.roundsSurvived}</div>
+                            <div class="text-sm text-gray-600">rounds survived</div>
+                        </div>
+                    `;
+
+                    leaderboard.appendChild(playerDiv);
+                });
+            }
+
+            // If no players, show message
+            if (stillPlaying.length === 0 && eliminated.length === 0) {
+                const noPlayersDiv = document.createElement('div');
+                noPlayersDiv.className = 'text-center text-gray-500 py-8';
+                noPlayersDiv.textContent = 'No players yet. Register and start playing!';
+                leaderboard.appendChild(noPlayersDiv);
+            }
         }
 
         function updateUserScore() {
