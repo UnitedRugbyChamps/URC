@@ -3310,5 +3310,195 @@
       pick.classList.toggle('blur');
     });
   }
+</script><script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, onSnapshot, collection } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-firestore.js";
+
+const firebaseConfig = (window.FIREBASE_CONFIG) || {
+apiKey: "REPLACE_WITH_API_KEY",
+authDomain: "REPLACE_WITH_AUTH_DOMAIN",
+projectId: "REPLACE_WITH_PROJECT_ID",
+storageBucket: "REPLACE_WITH_STORAGE_BUCKET",
+messagingSenderId: "REPLACE_WITH_SENDER_ID",
+appId: "REPLACE_WITH_APP_ID",
+measurementId: "REPLACE_WITH_MEASUREMENT_ID"
+};
+
+const configLooksValid = !!firebaseConfig.apiKey && !String(firebaseConfig.apiKey).startsWith("REPLACE_");
+let firebaseEnabled = false;
+
+try {
+if (configLooksValid) {
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+firebaseEnabled = true;
+
+try { window.syncUrl = null; window.syncGithub = null; } catch (_) {}
+try { window.scheduleSyncPush = function(){}; } catch (_) {}
+try { window.setSyncUrl = function(){}; } catch (_) {}
+
+const playersCol = collection(db, 'players');
+const configDocRef = doc(db, 'config', 'game');
+onSnapshot(playersCol, (snap) => {
+const players = [];
+snap.forEach(docSnap => {
+const data = docSnap.data();
+players.push({ id: docSnap.id, ...data });
+});
+
+onSnapshot(configDocRef, (snap) => {
+const data = snap.data();
+if (!data) return;
+try {
+window.gameData.currentRound = data.currentRound ?? window.gameData.currentRound;
+if (data.roundDeadline) window.gameData.roundDeadline = new Date(data.roundDeadline);
+if (data.roundEnd) window.gameData.roundEnd = new Date(data.roundEnd);
+if (typeof data.pickingOpen === 'boolean') window.gameData.pickingOpen = data.pickingOpen;
+if (data.matchResults && typeof data.matchResults === 'object') window.gameData.matchResults = data.matchResults;
+if (Array.isArray(data.chatMessages)) window.gameData.chatMessages = data.chatMessages;
+window.gameData.updatedAt = Date.now();
+try { window.localStorage.setItem('urcGameData', JSON.stringify(window.gameData)); } catch (_) {}
+if (typeof window.updateGameStatus === 'function') window.updateGameStatus();
+if (typeof window.updateUI === 'function') window.updateUI();
+} catch (_) {}
+});
+if (!Array.isArray(window.gameData?.players)) window.gameData.players = [];
+window.gameData.players = players;
+try { window.gameData.updatedAt = Date.now(); window.localStorage.setItem('urcGameData', JSON.stringify(window.gameData)); } catch (_) {}
+try { if (typeof window.updateUI === 'function') window.updateUI(); } catch (_) {}
+try { if (typeof window.refreshHeaderUserBadge === 'function') window.refreshHeaderUserBadge(); } catch (_) {}
+});
+
+onAuthStateChanged(auth, async (user) => {
+if (user) {
+const uid = user.uid;
+const email = (user.email || '').toLowerCase();
+const playerRef = doc(db, 'players', uid);
+let playerSnap = await getDoc(playerRef);
+if (!playerSnap.exists()) {
+const newPlayer = {
+id: uid,
+email,
+displayName: user.displayName || email.split('@')[0],
+profilePic: null,
+isCustomPic: false,
+favoriteTeam: '',
+isEliminated: false,
+usedTeams: [],
+currentPick: null,
+roundJoined: window.gameData?.currentRound || 1,
+joinDate: new Date().toISOString(),
+pickItPicks: {},
+pickItStats: { totalPicks: 0, correctPicks: 0, percentage: 0, weeklyMovement: 0, previousRank: null }
+};
+await setDoc(playerRef, newPlayer, { merge: true });
+playerSnap = await getDoc(playerRef);
+}
+const data = playerSnap.data() || {};
+window.currentUser = { id: uid, email, ...data };
+try { window.localStorage.setItem('currentUserEmail', email); } catch (_) {}
+const authSection = document.getElementById('authSection');
+const mainApp = document.getElementById('mainApp');
+if (authSection) authSection.classList.add('hidden');
+if (mainApp) mainApp.classList.remove('hidden');
+const nameEl = document.getElementById('userName');
+if (nameEl) nameEl.textContent = window.currentUser.displayName;
+try { if (typeof window.updateUI === 'function') window.updateUI(); } catch (_) {}
+} else {
+window.currentUser = null;
+try { window.localStorage.removeItem('currentUserEmail'); } catch (_) {}
+const authSection = document.getElementById('authSection');
+const mainApp = document.getElementById('mainApp');
+if (authSection) authSection.classList.remove('hidden');
+if (mainApp) mainApp.classList.add('hidden');
+}
+});
+
+window.registerUser = async function(email, password, displayName) {
+email = (email || '').trim().toLowerCase();
+const cred = await createUserWithEmailAndPassword(auth, email, password);
+if (displayName) { try { await updateProfile(cred.user, { displayName }); } catch (_) {} }
+const uid = cred.user.uid;
+const playerRef = doc(db, 'players', uid);
+const newPlayer = {
+id: uid,
+email,
+displayName: displayName || email.split('@')[0],
+profilePic: (window.registrationData && window.registrationData.profilePic) || null,
+isCustomPic: (window.registrationData && !!window.registrationData.isCustomPic) || false,
+favoriteTeam: (document.getElementById('favoriteTeam')?.value) || '',
+isEliminated: false,
+usedTeams: [],
+currentPick: null,
+roundJoined: window.gameData?.currentRound || 1,
+joinDate: new Date().toISOString(),
+pickItPicks: {},
+pickItStats: { totalPicks: 0, correctPicks: 0, percentage: 0, weeklyMovement: 0, previousRank: null }
+};
+await setDoc(playerRef, newPlayer, { merge: true });
+if (typeof window.showNotification === 'function') window.showNotification('Registration successful! You can now login and start playing.', 'success');
+if (typeof window.switchTab === 'function') window.switchTab('login');
+const emailEl = document.getElementById('email'); if (emailEl) emailEl.value = '';
+const pwdEl = document.getElementById('password'); if (pwdEl) pwdEl.value = '';
+const nameEl = document.getElementById('displayName'); if (nameEl) nameEl.value = '';
+};
+
+window.loginUser = async function(email, password) {
+email = (email || '').trim().toLowerCase();
+await signInWithEmailAndPassword(auth, email, password);
+};
+
+window.logout = async function() {
+await signOut(auth);
+};
+
+window.resetPassword = async function() {
+const email = (document.getElementById('resetEmail')?.value || '').trim().toLowerCase();
+if (!email) { if (typeof window.showNotification === 'function') window.showNotification('Please enter your email', 'error'); return; }
+await sendPasswordResetEmail(auth, email);
+if (typeof window.hidePasswordReset === 'function') window.hidePasswordReset();
+if (typeof window.showNotification === 'function') window.showNotification('Password reset email sent. Check your inbox.', 'success');
+};
+
+const legacySaveGameData = window.saveGameData;
+window.saveGameData = async function() {
+try {
+if (!window.currentUser || !auth.currentUser) return legacySaveGameData && legacySaveGameData();
+const uid = auth.currentUser.uid;
+const playerRef = doc(db, 'players', uid);
+const allowedKeys = ['email','displayName','profilePic','isCustomPic','favoriteTeam','isEliminated','usedTeams','currentPick','roundJoined','joinDate','pickItPicks','pickItStats'];
+const payload = {};
+for (const key of allowedKeys) { if (Object.prototype.hasOwnProperty.call(window.currentUser, key)) { payload[key] = window.currentUser[key]; } }
+payload.updatedAt = Date.now();
+await setDoc(playerRef, payload, { merge: true });
+// Best-effort: if admin user, also persist global game fields
+try {
+if ((window.currentUser.email || '').toLowerCase() === 'sacksjordan@gmail.com') {
+const globalPayload = {
+currentRound: window.gameData.currentRound,
+roundDeadline: window.gameData.roundDeadline ? new Date(window.gameData.roundDeadline).toISOString() : null,
+roundEnd: window.gameData.roundEnd ? new Date(window.gameData.roundEnd).toISOString() : null,
+pickingOpen: !!window.gameData.pickingOpen,
+matchResults: window.gameData.matchResults || {},
+chatMessages: window.gameData.chatMessages || []
+};
+await setDoc(configDocRef, globalPayload, { merge: true });
+}
+} catch (_) {}
+} catch (e) {
+console.error('saveGameData firebase error', e);
+} finally {
+try { window.gameData.updatedAt = Date.now(); window.localStorage.setItem('urcGameData', JSON.stringify(window.gameData)); } catch (_) {}
+}
+};
+
+const legacyLoadGameData = window.loadGameData;
+window.loadGameData = function() {
+if (legacyLoadGameData) { try { legacyLoadGameData(); } catch (_) {} }
+};
+}
+} catch (e) { console.error('Firebase initialization failed', e); }
 </script></body>
 </html>
