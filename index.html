@@ -986,22 +986,26 @@
 
                 let statusText = '';
                 let statusClass = '';
+                let cardClass = '';
 
                 if (alreadyPicked) {
-                    statusText = 'Already Picked';
-                    statusClass = 'text-red-600';
-                    teamCard.className = 'bg-red-100 rounded-lg p-3 text-center cursor-not-allowed opacity-60';
+                    statusText = 'Your Pick';
+                    statusClass = 'text-green-600';
+                    cardClass = 'bg-green-100 border-2 border-green-500 rounded-lg p-3 text-center cursor-pointer hover:bg-green-200 transition-colors team-card';
                 } else if (userEliminated) {
                     statusText = 'Eliminated';
                     statusClass = 'text-red-600';
-                    teamCard.className = 'bg-red-100 rounded-lg p-3 text-center cursor-not-allowed opacity-60';
+                    cardClass = 'bg-red-100 rounded-lg p-3 text-center cursor-not-allowed opacity-60';
                 } else if (gameData.seasonPhase === 'knockout' && !teamAvailable) {
                     statusText = 'Eliminated';
                     statusClass = 'text-red-600';
-                    teamCard.className = 'bg-red-100 rounded-lg p-3 text-center cursor-not-allowed opacity-60';
+                    cardClass = 'bg-red-100 rounded-lg p-3 text-center cursor-not-allowed opacity-60';
                 } else {
-                    teamCard.className = 'bg-gray-100 rounded-lg p-3 text-center cursor-pointer hover:bg-gray-200 transition-colors team-card';
+                    cardClass = 'bg-gray-100 rounded-lg p-3 text-center cursor-pointer hover:bg-gray-200 transition-colors team-card';
                 }
+
+                // Apply the card class
+                teamCard.className = cardClass;
 
                 // Check if this team is currently selected (for visual feedback)
                 const isSelected = selectedTeam === team.id;
@@ -1027,19 +1031,20 @@
         }
 
         function selectTeam(teamId) {
-            // Check if team is available (not already picked, user not eliminated, etc.)
+            // Check if team is available (user not eliminated, etc.)
             const userPicks = gameData.userPicks[currentUser.id] || {};
             const eliminatedUsers = gameData.eliminatedUsers || {};
             const alreadyPicked = userPicks[gameData.currentRound] === teamId;
             const userEliminated = eliminatedUsers[currentUser.id];
 
-            if (alreadyPicked || userEliminated) {
-                showNotification('This team is not available for selection', 'warning');
+            // Allow re-selecting already picked team (to change pick), but not eliminated teams or users
+            if (userEliminated) {
+                showNotification('You have been eliminated and cannot make picks', 'warning');
                 return;
             }
 
-            // In knockout rounds, check if team won previous round
-            if (gameData.seasonPhase === 'knockout') {
+            // In knockout rounds, check if team won previous round (but allow if already picked)
+            if (gameData.seasonPhase === 'knockout' && !alreadyPicked) {
                 const previousRound = gameData.currentRound - 1;
                 const previousRoundFixtures = gameData.fixtures.filter(f => f.round === previousRound);
                 let teamWonPrevious = true;
@@ -1088,6 +1093,10 @@
             }
 
             try {
+                // Check if this is a new pick or changing existing pick
+                const userPicks = gameData.userPicks[currentUser.id] || {};
+                const previousPick = userPicks[gameData.currentRound];
+
                 // Store user's pick
                 if (!gameData.userPicks[currentUser.id]) {
                     gameData.userPicks[currentUser.id] = {};
@@ -1096,7 +1105,14 @@
                 gameData.userPicks[currentUser.id][gameData.currentRound] = selectedTeam;
                 localStorage.setItem('gameData', JSON.stringify(gameData));
 
-                showNotification(`Pick submitted: ${gameData.teams.find(t => t.id === selectedTeam).name}`, 'success');
+                const teamName = gameData.teams.find(t => t.id === selectedTeam).name;
+
+                if (previousPick && previousPick !== selectedTeam) {
+                    const previousTeamName = gameData.teams.find(t => t.id === previousPick).name;
+                    showNotification(`Pick changed from ${previousTeamName} to ${teamName}`, 'success');
+                } else {
+                    showNotification(`Pick submitted: ${teamName}`, 'success');
+                }
 
                 // Keep the green styling after successful submission
                 const selectedCard = document.querySelector(`[data-team-id="${selectedTeam}"]`);
