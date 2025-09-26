@@ -632,112 +632,296 @@
                 { id: 'benetton', name: 'Benetton', country: 'Italy' }
             ];
 
-            // Real URC 2024/25 season fixtures (starting from Round 1)
+            // URC 2025/26 season fixtures (Rounds 1-18)
             const fixtures = [
-                // Round 1 - September 20-22, 2024
-                { week: 1, home: 'leinster', away: 'glasgow', homeScore: 28, awayScore: 14, completed: true, date: '2024-09-20', time: '19:35', firstGame: true },
-                { week: 1, home: 'munster', away: 'edinburgh', homeScore: 31, awayScore: 17, completed: true, date: '2024-09-20', time: '17:00' },
-                { week: 1, home: 'ulster', away: 'cardiff', homeScore: 24, awayScore: 21, completed: true, date: '2024-09-21', time: '19:35' },
-                { week: 1, home: 'connacht', away: 'ospreys', homeScore: 19, awayScore: 22, completed: true, date: '2024-09-21', time: '17:00' },
-                { week: 1, home: 'bulls', away: 'sharks', homeScore: 35, awayScore: 28, completed: true, date: '2024-09-22', time: '15:00' },
-                { week: 1, home: 'stormers', away: 'lions', homeScore: 42, awayScore: 19, completed: true, date: '2024-09-22', time: '17:15' },
-                { week: 1, home: 'zebre', away: 'benetton', homeScore: 12, awayScore: 18, completed: true, date: '2024-09-22', time: '19:30' },
-                { week: 1, home: 'scarlets', away: 'dragons', homeScore: 26, awayScore: 15, completed: true, date: '2024-09-22', time: '17:00', lastGame: true },
-                
-                // Round 2 - September 27-29, 2024
-                { week: 2, home: 'glasgow', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2024-09-27', time: '19:35', firstGame: true },
-                { week: 2, home: 'edinburgh', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2024-09-27', time: '17:00' },
-                { week: 2, home: 'cardiff', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2024-09-28', time: '19:35' },
-                { week: 2, home: 'ospreys', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2024-09-28', time: '17:00' },
-                { week: 2, home: 'sharks', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2024-09-29', time: '15:00' },
-                { week: 2, home: 'lions', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2024-09-29', time: '17:15' },
-                { week: 2, home: 'benetton', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2024-09-29', time: '19:30' },
-                { week: 2, home: 'dragons', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2024-09-29', time: '17:00', lastGame: true },
-                
-                // Round 3 - October 4-6, 2024
-                { week: 3, home: 'leinster', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2024-10-04', time: '19:35', firstGame: true },
-                { week: 3, home: 'munster', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2024-10-04', time: '17:00' },
-                { week: 3, home: 'connacht', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2024-10-05', time: '19:35' },
-                { week: 3, home: 'cardiff', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2024-10-05', time: '17:00' },
-                { week: 3, home: 'bulls', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2024-10-06', time: '15:00' },
-                { week: 3, home: 'stormers', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2024-10-06', time: '17:15' },
-                { week: 3, home: 'sharks', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2024-10-06', time: '19:30' },
-                { week: 3, home: 'lions', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2024-10-06', time: '17:00', lastGame: true }
+                // Round 1 - September 26-27, 2025
+                { round: 1, home: 'stormers', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2025-09-26', time: '18:00', firstGame: true },
+                { round: 1, home: 'glasgow', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2025-09-26', time: '20:05' },
+                { round: 1, home: 'ulster', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2025-09-26', time: '20:05' },
+                { round: 1, home: 'bulls', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2025-09-27', time: '13:00' },
+                { round: 1, home: 'zebre', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2025-09-27', time: '15:05' },
+                { round: 1, home: 'scarlets', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2025-09-27', time: '17:30' },
+                { round: 1, home: 'cardiff', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2025-09-27', time: '19:45' },
+                { round: 1, home: 'connacht', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2025-09-27', time: '19:45', lastGame: true },
+
+                // Round 2 - October 3-5, 2025
+                { round: 2, home: 'stormers', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2025-10-03', time: '18:00', firstGame: true },
+                { round: 2, home: 'dragons', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2025-10-03', time: '20:05' },
+                { round: 2, home: 'edinburgh', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2025-10-03', time: '20:05' },
+                { round: 2, home: 'connacht', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2025-10-04', time: '13:45' },
+                { round: 2, home: 'benetton', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2025-10-04', time: '17:30' },
+                { round: 2, home: 'bulls', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2025-10-04', time: '17:30' },
+                { round: 2, home: 'munster', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2025-10-04', time: '19:45' },
+                { round: 2, home: 'zebre', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2025-10-05', time: '15:00', lastGame: true },
+
+                // Round 3 - October 10-11, 2025
+                { round: 3, home: 'munster', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2025-10-10', time: '19:45', firstGame: true },
+                { round: 3, home: 'scarlets', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2025-10-10', time: '19:45' },
+                { round: 3, home: 'benetton', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2025-10-11', time: '15:00' },
+                { round: 3, home: 'ospreys', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2025-10-11', time: '15:00' },
+                { round: 3, home: 'glasgow', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2025-10-11', time: '17:30' },
+                { round: 3, home: 'leinster', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2025-10-11', time: '17:30' },
+                { round: 3, home: 'cardiff', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2025-10-11', time: '19:45' },
+                { round: 3, home: 'ulster', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2025-10-11', time: '19:45', lastGame: true },
+
+                // Round 4 - October 17-18, 2025
+                { round: 4, home: 'connacht', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2025-10-17', time: '19:45', firstGame: true },
+                { round: 4, home: 'dragons', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2025-10-17', time: '19:45' },
+                { round: 4, home: 'edinburgh', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2025-10-17', time: '19:45' },
+                { round: 4, home: 'lions', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2025-10-18', time: '12:45' },
+                { round: 4, home: 'sharks', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2025-10-18', time: '15:00' },
+                { round: 4, home: 'leinster', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2025-10-18', time: '17:15' },
+                { round: 4, home: 'ospreys', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2025-10-18', time: '19:45' },
+                { round: 4, home: 'zebre', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2025-10-18', time: '19:45', lastGame: true },
+
+                // Round 5 - October 24-25, 2025
+                { round: 5, home: 'glasgow', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2025-10-24', time: '19:45', firstGame: true },
+                { round: 5, home: 'lions', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2025-10-25', time: '12:45' },
+                { round: 5, home: 'sharks', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2025-10-25', time: '15:00' },
+                { round: 5, home: 'benetton', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2025-10-25', time: '17:30' },
+                { round: 5, home: 'dragons', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2025-10-25', time: '17:30' },
+                { round: 5, home: 'leinster', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2025-10-25', time: '17:30' },
+                { round: 5, home: 'cardiff', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2025-10-25', time: '19:45' },
+                { round: 5, home: 'munster', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2025-10-25', time: '19:45', lastGame: true },
+
+                // Round 6 - November 28-29, 2025
+                { round: 6, home: 'dragons', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2025-11-28', time: '19:45', firstGame: true },
+                { round: 6, home: 'ulster', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2025-11-28', time: '19:45' },
+                { round: 6, home: 'bulls', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2025-11-29', time: '12:00' },
+                { round: 6, home: 'zebre', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2025-11-29', time: '13:00' },
+                { round: 6, home: 'edinburgh', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2025-11-29', time: '17:30' },
+                { round: 6, home: 'munster', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2025-11-29', time: '17:30' },
+                { round: 6, home: 'connacht', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2025-11-29', time: '19:45' },
+                { round: 6, home: 'scarlets', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2025-11-29', time: '19:45', lastGame: true },
+
+                // Round 7 - December 19-20, 2025
+                { round: 7, home: 'cardiff', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2025-12-19', time: '19:45', firstGame: true },
+                { round: 7, home: 'leinster', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2025-12-19', time: '19:45' },
+                { round: 7, home: 'stormers', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2025-12-20', time: '13:30' },
+                { round: 7, home: 'benetton', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2025-12-20', time: '14:00' },
+                { round: 7, home: 'glasgow', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2025-12-20', time: '15:00' },
+                { round: 7, home: 'sharks', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2025-12-20', time: '16:00' },
+                { round: 7, home: 'ospreys', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2025-12-20', time: '17:30' },
+                { round: 7, home: 'dragons', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2025-12-20', time: '19:45', lastGame: true },
+
+                // Round 8 - December 26-27, 2025
+                { round: 8, home: 'bulls', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2025-12-26', time: '00:00', firstGame: true },
+                { round: 8, home: 'lions', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2025-12-26', time: '00:00' },
+                { round: 8, home: 'cardiff', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2025-12-26', time: '15:00' },
+                { round: 8, home: 'scarlets', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2025-12-26', time: '17:30' },
+                { round: 8, home: 'zebre', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2025-12-27', time: '14:30' },
+                { round: 8, home: 'edinburgh', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2025-12-27', time: '15:00' },
+                { round: 8, home: 'connacht', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2025-12-27', time: '17:30' },
+                { round: 8, home: 'munster', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2025-12-27', time: '19:45', lastGame: true },
+
+                // Round 9 - January 1-3, 2026
+                { round: 9, home: 'dragons', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2026-01-01', time: '15:00', firstGame: true },
+                { round: 9, home: 'ospreys', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2026-01-01', time: '17:30' },
+                { round: 9, home: 'ulster', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2026-01-02', time: '19:45' },
+                { round: 9, home: 'sharks', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2026-01-03', time: '13:30' },
+                { round: 9, home: 'stormers', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2026-01-03', time: '16:00' },
+                { round: 9, home: 'benetton', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2026-01-03', time: '17:30' },
+                { round: 9, home: 'leinster', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2026-01-03', time: '17:30' },
+                { round: 9, home: 'glasgow', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2026-01-03', time: '19:45', lastGame: true },
+
+                // Round 10 - January 23-24, 2026
+                { round: 10, home: 'edinburgh', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2026-01-23', time: '19:45', firstGame: true },
+                { round: 10, home: 'munster', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2026-01-23', time: '19:45' },
+                { round: 10, home: 'ospreys', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2026-01-23', time: '19:45' },
+                { round: 10, home: 'scarlets', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2026-01-24', time: '15:00' },
+                { round: 10, home: 'connacht', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2026-01-24', time: '17:30' },
+                { round: 10, home: 'stormers', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2026-01-24', time: '17:30' },
+                { round: 10, home: 'cardiff', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2026-01-24', time: '19:45' },
+                { round: 10, home: 'zebre', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2026-01-24', time: '19:45', lastGame: true },
+
+                // Round 11 - January 30-31, 2026
+                { round: 11, home: 'benetton', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2026-01-30', time: '19:45', firstGame: true },
+                { round: 11, home: 'glasgow', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2026-01-30', time: '19:45' },
+                { round: 11, home: 'lions', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2026-01-31', time: '12:30' },
+                { round: 11, home: 'sharks', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2026-01-31', time: '15:00' },
+                { round: 11, home: 'zebre', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2026-01-31', time: '15:00' },
+                { round: 11, home: 'leinster', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2026-01-31', time: '17:30' },
+                { round: 11, home: 'ospreys', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2026-01-31', time: '19:45' },
+                { round: 11, home: 'ulster', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2026-01-31', time: '19:45', lastGame: true },
+
+                // Round 12 - February 27-28, 2026
+                { round: 12, home: 'cardiff', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2026-02-27', time: '19:45', firstGame: true },
+                { round: 12, home: 'edinburgh', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2026-02-27', time: '19:45' },
+                { round: 12, home: 'lions', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2026-02-28', time: '12:30' },
+                { round: 12, home: 'bulls', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2026-02-28', time: '15:00' },
+                { round: 12, home: 'connacht', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2026-02-28', time: '15:00' },
+                { round: 12, home: 'dragons', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2026-02-28', time: '17:30' },
+                { round: 12, home: 'munster', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2026-02-28', time: '17:30' },
+                { round: 12, home: 'ospreys', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2026-02-28', time: '19:45', lastGame: true },
+
+                // Round 13 - March 20-21, 2026
+                { round: 13, home: 'bulls', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2026-03-20', time: '17:00', firstGame: true },
+                { round: 13, home: 'scarlets', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2026-03-20', time: '19:45' },
+                { round: 13, home: 'ulster', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2026-03-20', time: '19:45' },
+                { round: 13, home: 'lions', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2026-03-21', time: '12:45' },
+                { round: 13, home: 'benetton', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2026-03-21', time: '15:00' },
+                { round: 13, home: 'sharks', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2026-03-21', time: '15:00' },
+                { round: 13, home: 'glasgow', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2026-03-21', time: '17:30' },
+                { round: 13, home: 'stormers', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2026-03-21', time: '17:30', lastGame: true },
+
+                // Round 14 - March 27-28, 2026
+                { round: 14, home: 'sharks', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2026-03-27', time: '17:00', firstGame: true },
+                { round: 14, home: 'glasgow', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2026-03-27', time: '19:45' },
+                { round: 14, home: 'bulls', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2026-03-28', time: '12:00' },
+                { round: 14, home: 'connacht', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2026-03-28', time: '14:15' },
+                { round: 14, home: 'lions', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2026-03-28', time: '14:30' },
+                { round: 14, home: 'stormers', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2026-03-28', time: '17:00' },
+                { round: 14, home: 'leinster', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2026-03-28', time: '17:30' },
+                { round: 14, home: 'zebre', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2026-03-28', time: '19:45', lastGame: true },
+
+                // Round 15 - April 17-18, 2026
+                { round: 15, home: 'dragons', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2026-04-17', time: '19:45', firstGame: true },
+                { round: 15, home: 'edinburgh', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2026-04-17', time: '19:45' },
+                { round: 15, home: 'ulster', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2026-04-17', time: '19:45' },
+                { round: 15, home: 'lions', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2026-04-18', time: '14:45' },
+                { round: 15, home: 'stormers', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2026-04-18', time: '17:15' },
+                { round: 15, home: 'scarlets', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2026-04-18', time: '17:30' },
+                { round: 15, home: 'benetton', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2026-04-18', time: '19:45' },
+                { round: 15, home: 'ospreys', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2026-04-18', time: '19:45', lastGame: true },
+
+                // Round 16 - April 24-25, 2026
+                { round: 16, home: 'cardiff', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2026-04-24', time: '19:45', firstGame: true },
+                { round: 16, home: 'edinburgh', away: 'sharks', homeScore: null, awayScore: null, completed: false, date: '2026-04-24', time: '19:45' },
+                { round: 16, home: 'zebre', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2026-04-24', time: '19:45' },
+                { round: 16, home: 'lions', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2026-04-25', time: '15:00' },
+                { round: 16, home: 'munster', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2026-04-25', time: '17:30' },
+                { round: 16, home: 'stormers', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2026-04-25', time: '17:30' },
+                { round: 16, home: 'benetton', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2026-04-25', time: '19:45' },
+                { round: 16, home: 'scarlets', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2026-04-25', time: '19:45', lastGame: true },
+
+                // Round 17 - May 8-9, 2026
+                { round: 17, home: 'glasgow', away: 'cardiff', homeScore: null, awayScore: null, completed: false, date: '2026-05-08', time: '19:45', firstGame: true },
+                { round: 17, home: 'ulster', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2026-05-08', time: '19:45' },
+                { round: 17, home: 'bulls', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2026-05-09', time: '12:45' },
+                { round: 17, home: 'sharks', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2026-05-09', time: '15:00' },
+                { round: 17, home: 'leinster', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2026-05-09', time: '17:30' },
+                { round: 17, home: 'ospreys', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2026-05-09', time: '17:30' },
+                { round: 17, home: 'connacht', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2026-05-09', time: '19:45' },
+                { round: 17, home: 'dragons', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2026-05-09', time: '19:45', lastGame: true },
+
+                // Round 18 - May 15-16, 2026
+                { round: 18, home: 'cardiff', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2026-05-15', time: '19:45', firstGame: true },
+                { round: 18, home: 'edinburgh', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2026-05-15', time: '19:45' },
+                { round: 18, home: 'ulster', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2026-05-15', time: '19:45' },
+                { round: 18, home: 'sharks', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2026-05-16', time: '12:45' },
+                { round: 18, home: 'bulls', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2026-05-16', time: '15:00' },
+                { round: 18, home: 'leinster', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2026-05-16', time: '17:15' },
+                { round: 18, home: 'scarlets', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2026-05-16', time: '17:15' },
+                { round: 18, home: 'munster', away: 'lions', homeScore: null, awayScore: null, completed: false, date: '2026-05-16', time: '19:45', lastGame: true }
             ];
 
+            // Initialize knockout rounds (Rounds 19-21)
+            const knockoutRounds = {
+                19: { name: 'Quarter Finals', date: '2026-05-29', teams: [], fixtures: [] },
+                20: { name: 'Semi Finals', date: null, teams: [], fixtures: [] },
+                21: { name: 'Final', date: null, teams: [], fixtures: [] }
+            };
+
             const gameData = {
-                currentWeek: 2,
+                currentRound: 1,
                 teams: teams,
                 fixtures: fixtures,
+                knockoutRounds: knockoutRounds,
                 userPicks: {},
                 eliminatedUsers: {},
                 lastResetDate: new Date().toISOString(),
-                gameState: 'picking' // 'picking', 'locked', 'completed'
+                gameState: 'picking', // 'picking', 'locked', 'completed'
+                seasonPhase: 'regular' // 'regular', 'knockout', 'completed'
             };
 
             localStorage.setItem('gameData', JSON.stringify(gameData));
         }
 
-        // Check if we need to reset for a new week (runs on Mondays)
-        function checkWeeklyReset() {
+        // Check if we need to reset for a new round
+        function checkRoundReset() {
             const now = new Date();
             const lastReset = new Date(gameData.lastResetDate);
             const daysSinceReset = Math.floor((now - lastReset) / (1000 * 60 * 60 * 24));
-            
-            // If it's been 7+ days since last reset, advance to next week
+
+            // If it's been 7+ days since last reset, advance to next round
             if (daysSinceReset >= 7) {
-                advanceToNextWeek();
+                advanceToNextRound();
             }
-            
+
             // Update game state based on current time and fixtures
             updateGameState();
         }
 
-        // Advance to the next week
-        function advanceToNextWeek() {
-            gameData.currentWeek++;
+        // Advance to the next round
+        function advanceToNextRound() {
+            gameData.currentRound++;
             gameData.lastResetDate = new Date().toISOString();
             gameData.gameState = 'picking';
-            
-            // Reset all team usage for the new week
-            gameData.teams.forEach(team => {
-                team.used = false;
-            });
-            
+
+            // Reset all team usage for the new round (only for regular season rounds)
+            if (gameData.currentRound <= 18) {
+                gameData.teams.forEach(team => {
+                    team.used = false;
+                });
+            }
+
             localStorage.setItem('gameData', JSON.stringify(gameData));
-            showNotification(`Week ${gameData.currentWeek} has begun! Make your picks.`, 'info');
+            showNotification(`Round ${gameData.currentRound} has begun! Make your picks.`, 'info');
         }
 
         // Update game state based on current time and fixtures
         function updateGameState() {
             const now = new Date();
-            const currentWeekFixtures = gameData.fixtures.filter(f => f.week === gameData.currentWeek);
-            
-            if (currentWeekFixtures.length === 0) {
-                gameData.gameState = 'completed';
-                return;
+
+            // Determine if we're in regular season or knockout phase
+            if (gameData.currentRound <= 18) {
+                // Regular season
+                const currentRoundFixtures = gameData.fixtures.filter(f => f.round === gameData.currentRound);
+
+                if (currentRoundFixtures.length === 0) {
+                    gameData.gameState = 'completed';
+                    return;
+                }
+
+                // Find first and last games of the round
+                const firstGame = currentRoundFixtures.find(f => f.firstGame);
+                const lastGame = currentRoundFixtures.find(f => f.lastGame);
+
+                if (!firstGame || !lastGame) return;
+
+                const firstGameTime = new Date(`${firstGame.date}T${firstGame.time}`);
+                const lastGameTime = new Date(`${lastGame.date}T${lastGame.time}`);
+                const deadlineTime = new Date(firstGameTime.getTime() - (30 * 60 * 1000)); // 30 minutes before first game
+
+                if (now < deadlineTime) {
+                    gameData.gameState = 'picking';
+                } else if (now >= deadlineTime && now < lastGameTime) {
+                    gameData.gameState = 'locked';
+                } else if (now >= lastGameTime) {
+                    gameData.gameState = 'completed';
+                    // Process eliminations for this round
+                    processRoundEliminations();
+                }
+            } else {
+                // Knockout phase
+                const knockoutRound = gameData.knockoutRounds[gameData.currentRound];
+                if (!knockoutRound || !knockoutRound.date) {
+                    gameData.gameState = 'completed';
+                    return;
+                }
+
+                const knockoutDate = new Date(`${knockoutRound.date}T00:00:00`);
+                const now = new Date();
+
+                if (now < knockoutDate) {
+                    gameData.gameState = 'picking';
+                } else {
+                    gameData.gameState = 'completed';
+                    // Process eliminations for knockout round
+                    processKnockoutEliminations();
+                }
             }
-            
-            // Find first and last games of the week
-            const firstGame = currentWeekFixtures.find(f => f.firstGame);
-            const lastGame = currentWeekFixtures.find(f => f.lastGame);
-            
-            if (!firstGame || !lastGame) return;
-            
-            const firstGameTime = new Date(`${firstGame.date}T${firstGame.time}`);
-            const lastGameTime = new Date(`${lastGame.date}T${lastGame.time}`);
-            const deadlineTime = new Date(firstGameTime.getTime() - (30 * 60 * 1000)); // 30 minutes before first game
-            
-            if (now < deadlineTime) {
-                gameData.gameState = 'picking';
-            } else if (now >= deadlineTime && now < lastGameTime) {
-                gameData.gameState = 'locked';
-            } else if (now >= lastGameTime) {
-                gameData.gameState = 'completed';
-                // Process eliminations for this week
-                processWeeklyEliminations();
-            }
-            
+
             localStorage.setItem('gameData', JSON.stringify(gameData));
         }
 
