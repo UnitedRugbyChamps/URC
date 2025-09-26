@@ -1030,7 +1030,7 @@
             // Check if team is available (not already picked, user not eliminated, etc.)
             const userPicks = gameData.userPicks[currentUser.id] || {};
             const eliminatedUsers = gameData.eliminatedUsers || {};
-            const alreadyPicked = Object.values(userPicks).includes(teamId);
+            const alreadyPicked = userPicks[gameData.currentRound] === teamId;
             const userEliminated = eliminatedUsers[currentUser.id];
 
             if (alreadyPicked || userEliminated) {
