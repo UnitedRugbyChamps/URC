@@ -3351,14 +3351,26 @@ try { window.setSyncUrl = function(){}; } catch (_) {}
 
 const playersCol = collection(db, 'players');
 const configDocRef = doc(db, 'config', 'game');
-onSnapshot(playersCol, (snap) => {
+let unsubPlayers = null;
+let unsubConfig = null;
+
+function attachFirestoreListeners() {
+if (!unsubPlayers) {
+unsubPlayers = onSnapshot(playersCol, (snap) => {
 const players = [];
 snap.forEach(docSnap => {
 const data = docSnap.data();
 players.push({ id: docSnap.id, ...data });
 });
-
-onSnapshot(configDocRef, (snap) => {
+if (!Array.isArray(window.gameData?.players)) window.gameData.players = [];
+window.gameData.players = players;
+try { window.gameData.updatedAt = Date.now(); window.localStorage.setItem('urcGameData', JSON.stringify(window.gameData)); } catch (_) {}
+try { if (typeof window.updateUI === 'function') window.updateUI(); } catch (_) {}
+try { if (typeof window.refreshHeaderUserBadge === 'function') window.refreshHeaderUserBadge(); } catch (_) {}
+});
+}
+if (!unsubConfig) {
+unsubConfig = onSnapshot(configDocRef, (snap) => {
 const data = snap.data();
 if (!data) return;
 try {
@@ -3374,12 +3386,13 @@ if (typeof window.updateGameStatus === 'function') window.updateGameStatus();
 if (typeof window.updateUI === 'function') window.updateUI();
 } catch (_) {}
 });
-if (!Array.isArray(window.gameData?.players)) window.gameData.players = [];
-window.gameData.players = players;
-try { window.gameData.updatedAt = Date.now(); window.localStorage.setItem('urcGameData', JSON.stringify(window.gameData)); } catch (_) {}
-try { if (typeof window.updateUI === 'function') window.updateUI(); } catch (_) {}
-try { if (typeof window.refreshHeaderUserBadge === 'function') window.refreshHeaderUserBadge(); } catch (_) {}
-});
+}
+}
+
+function detachFirestoreListeners() {
+try { if (unsubPlayers) { unsubPlayers(); unsubPlayers = null; } } catch (_) {}
+try { if (unsubConfig) { unsubConfig(); unsubConfig = null; } } catch (_) {}
+}
 
 onAuthStateChanged(auth, async (user) => {
 if (user) {
@@ -3416,6 +3429,7 @@ if (mainApp) mainApp.classList.remove('hidden');
 const nameEl = document.getElementById('userName');
 if (nameEl) nameEl.textContent = window.currentUser.displayName;
 try { if (typeof window.updateUI === 'function') window.updateUI(); } catch (_) {}
+attachFirestoreListeners();
 } else {
 window.currentUser = null;
 try { window.localStorage.removeItem('currentUserEmail'); } catch (_) {}
@@ -3423,6 +3437,8 @@ const authSection = document.getElementById('authSection');
 const mainApp = document.getElementById('mainApp');
 if (authSection) authSection.classList.remove('hidden');
 if (mainApp) mainApp.classList.add('hidden');
+detachFirestoreListeners();
+try { if (Array.isArray(window.gameData?.players)) window.gameData.players = []; } catch (_) {}
 }
 });
 
