@@ -1340,6 +1340,9 @@
             
             // Auth form
             document.getElementById('authForm').addEventListener('submit', handleAuth);
+            // Also handle direct button clicks to be extra robust
+            const authBtn = document.getElementById('authButton');
+            if (authBtn) authBtn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); handleAuth(e); });
             
             // Game mode toggles
             
@@ -1568,6 +1571,11 @@
 					} else {
 						await loginUser(email, password);
 					}
+                // Proactively reveal main app after successful login
+                const authSectionDiv = document.getElementById('authSection');
+                const mainAppDiv = document.getElementById('mainApp');
+                if (authSectionDiv) authSectionDiv.classList.add('hidden');
+                if (mainAppDiv) mainAppDiv.classList.remove('hidden');
 				} else if (authButtonText === 'Register') {
 					if (window.registerUser) {
 						await window.registerUser(email, password, displayName);
@@ -1587,6 +1595,18 @@
 					else if (code.includes('auth/too-many-requests')) message = 'Too many attempts. Try again later.';
 					else if (err.message) message = err.message;
 				}
+				// Fallback to offline login if network issue
+				try {
+					const isNetworkIssue = String(code).includes('network-request-failed') || String(err && err.message || '').toLowerCase().includes('network');
+					if (authButtonText === 'Login' && isNetworkIssue) {
+						await loginUser(email, password);
+						const authSectionDiv = document.getElementById('authSection');
+						const mainAppDiv = document.getElementById('mainApp');
+						if (authSectionDiv) authSectionDiv.classList.add('hidden');
+						if (mainAppDiv) mainAppDiv.classList.remove('hidden');
+						message = '';
+					}
+				} catch (_) {}
 				if (typeof window.showNotification === 'function') window.showNotification(message, 'error');
 			} finally {
 				authButtonEl.disabled = false;
@@ -3528,6 +3548,11 @@ const nameEl = document.getElementById('displayName'); if (nameEl) nameEl.value 
 window.loginUser = async function(email, password) {
 email = (email || '').trim().toLowerCase();
 await signInWithEmailAndPassword(auth, email, password);
+// Reveal main app immediately; auth state listener will finish populating
+const authSection = document.getElementById('authSection');
+const mainApp = document.getElementById('mainApp');
+if (authSection) authSection.classList.add('hidden');
+if (mainApp) mainApp.classList.remove('hidden');
 };
 
 window.logout = async function() {
