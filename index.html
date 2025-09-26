@@ -85,6 +85,12 @@
                         </ul>
                     </div>
 
+                    <!-- View Toggle -->
+                    <div class="flex mb-6 bg-gray-100 rounded-lg p-1">
+                        <button type="button" id="currentRoundTab" class="flex-1 py-2 px-4 bg-blue-600 text-white rounded-md font-medium">Current Round</button>
+                        <button type="button" id="allFixturesTab" class="flex-1 py-2 px-4 text-gray-600 rounded-md font-medium hover:bg-gray-200">All Fixtures</button>
+                    </div>
+
                     <div class="bg-blue-50 rounded-lg p-4 mb-6">
                         <div class="flex justify-between items-center">
                             <div>
@@ -111,10 +117,28 @@
                         </div>
                     </div>
 
-                    <div class="mb-6">
-                        <h4 class="text-lg font-semibold text-gray-800 mb-4">This Round's Matches</h4>
-                        <div id="matchesList" class="space-y-3">
-                            <!-- Matches will be populated by JavaScript -->
+                    <!-- Current Round View -->
+                    <div id="currentRoundView">
+                        <div class="mb-6">
+                            <h4 class="text-lg font-semibold text-gray-800 mb-4">This Round's Matches</h4>
+                            <div id="matchesList" class="space-y-3">
+                                <!-- Matches will be populated by JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- All Fixtures View -->
+                    <div id="allFixturesView" class="hidden">
+                        <div class="mb-6">
+                            <div class="flex items-center justify-between mb-4">
+                                <h4 class="text-lg font-semibold text-gray-800">All Fixtures</h4>
+                                <select id="roundSelector" class="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    <!-- Rounds will be populated by JavaScript -->
+                                </select>
+                            </div>
+                            <div id="allFixturesList" class="space-y-3">
+                                <!-- All fixtures will be populated by JavaScript -->
+                            </div>
                         </div>
                     </div>
 
@@ -139,6 +163,9 @@
                             <button id="resetGameBtn" class="bg-red-600 text-white px-3 py-1 rounded text-sm hover:bg-red-700">
                                 Reset Game
                             </button>
+                            <button id="finalizeAllBtn" class="bg-purple-600 text-white px-3 py-1 rounded text-sm hover:bg-purple-700">
+                                Finalize All Pending
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -158,11 +185,14 @@
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
-            console.log('Initializing simple app...');
+            console.log('Initializing URC Fantasy League app...');
             initializeAuth();
             setupEventListeners();
             checkExistingSession();
             initializeGame();
+
+            // Start with current round view
+            switchView('currentRound');
 
             // Hide admin panel by default
             const adminPanel = document.querySelector('.bg-yellow-50');
@@ -208,11 +238,17 @@
             // Game events
             document.getElementById('submitPick').addEventListener('click', submitTeamPick);
 
+            // View toggle
+            document.getElementById('currentRoundTab').addEventListener('click', () => switchView('currentRound'));
+            document.getElementById('allFixturesTab').addEventListener('click', () => switchView('allFixtures'));
+            document.getElementById('roundSelector').addEventListener('change', updateAllFixturesView);
+
             // Admin controls
             document.getElementById('advanceRoundBtn').addEventListener('click', advanceRoundManually);
             document.getElementById('simulateResultsBtn').addEventListener('click', simulateMatchResults);
             document.getElementById('resetGameBtn').addEventListener('click', resetGameData);
             document.getElementById('toggleAdminBtn').addEventListener('click', toggleAdminPanel);
+            document.getElementById('finalizeAllBtn').addEventListener('click', finalizeAllPendingMatches);
         }
 
         // Switch between login and register modes
@@ -598,6 +634,246 @@
             if (!currentUser) return;
             gameData = JSON.parse(localStorage.getItem('gameData'));
             updateGameDisplay();
+        }
+
+        // Switch between current round and all fixtures views
+        function switchView(view) {
+            const currentRoundTab = document.getElementById('currentRoundTab');
+            const allFixturesTab = document.getElementById('allFixturesTab');
+            const currentRoundView = document.getElementById('currentRoundView');
+            const allFixturesView = document.getElementById('allFixturesView');
+
+            if (view === 'currentRound') {
+                currentRoundTab.className = 'flex-1 py-2 px-4 bg-blue-600 text-white rounded-md font-medium';
+                allFixturesTab.className = 'flex-1 py-2 px-4 text-gray-600 rounded-md font-medium hover:bg-gray-200';
+                currentRoundView.classList.remove('hidden');
+                allFixturesView.classList.add('hidden');
+                updateMatchesList();
+            } else {
+                currentRoundTab.className = 'flex-1 py-2 px-4 text-gray-600 rounded-md font-medium hover:bg-gray-200';
+                allFixturesTab.className = 'flex-1 py-2 px-4 bg-blue-600 text-white rounded-md font-medium';
+                currentRoundView.classList.add('hidden');
+                allFixturesView.classList.remove('hidden');
+                populateRoundSelector();
+                updateAllFixturesView();
+            }
+        }
+
+        // Populate round selector dropdown
+        function populateRoundSelector() {
+            const roundSelector = document.getElementById('roundSelector');
+            roundSelector.innerHTML = '';
+
+            // Get all unique rounds from fixtures
+            const rounds = [...new Set(gameData.fixtures.map(f => f.round))].sort((a, b) => a - b);
+
+            rounds.forEach(round => {
+                const option = document.createElement('option');
+                option.value = round;
+                option.textContent = getRoundName(round);
+                if (round === gameData.currentRound) {
+                    option.selected = true;
+                }
+                roundSelector.appendChild(option);
+            });
+        }
+
+        // Update all fixtures view for selected round
+        function updateAllFixturesView() {
+            const roundSelector = document.getElementById('roundSelector');
+            const selectedRound = parseInt(roundSelector.value);
+
+            const allFixturesList = document.getElementById('allFixturesList');
+            allFixturesList.innerHTML = '';
+
+            const roundFixtures = gameData.fixtures.filter(f => f.round === selectedRound);
+
+            if (roundFixtures.length === 0) {
+                allFixturesList.innerHTML = '<p class="text-gray-600">No fixtures found for this round.</p>';
+                return;
+            }
+
+            roundFixtures.forEach(fixture => {
+                const homeTeam = gameData.teams.find(t => t.id === fixture.home);
+                const awayTeam = gameData.teams.find(t => t.id === fixture.away);
+                const dateTimeInfo = formatDateTime(fixture.date, fixture.time);
+
+                const fixtureDiv = document.createElement('div');
+                fixtureDiv.className = `bg-gray-50 rounded-lg p-4 ${fixture.completed ? 'bg-green-50' : ''}`;
+
+                let scoreDisplay = '';
+                let winnerButtons = '';
+                let finalizeButton = '';
+
+                if (!fixture.completed) {
+                    // Show winner selection buttons
+                    winnerButtons = `
+                        <div class="mt-3 flex gap-2">
+                            <button onclick="setWinner('${fixture.home}', '${fixture.away}', ${selectedRound})"
+                                    class="bg-green-500 text-white px-3 py-1 rounded text-sm hover:bg-green-600">
+                                ${homeTeam.name} Win
+                            </button>
+                            <button onclick="setDraw('${fixture.home}', '${fixture.away}', ${selectedRound})"
+                                    class="bg-yellow-500 text-white px-3 py-1 rounded text-sm hover:bg-yellow-600">
+                                Draw
+                            </button>
+                            <button onclick="setWinner('${fixture.away}', '${fixture.home}', ${selectedRound})"
+                                    class="bg-blue-500 text-white px-3 py-1 rounded text-sm hover:bg-blue-600">
+                                ${awayTeam.name} Win
+                            </button>
+                        </div>
+                    `;
+
+                    finalizeButton = `
+                        <div class="mt-3">
+                            <button onclick="finalizeMatch('${fixture.home}', '${fixture.away}', ${selectedRound})"
+                                    class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 font-medium">
+                                Finalize Match
+                            </button>
+                        </div>
+                    `;
+                } else {
+                    // Show final result
+                    scoreDisplay = `<span class="text-lg font-bold text-green-600">(${fixture.homeScore} - ${fixture.awayScore})</span>`;
+                }
+
+                let statusText = '';
+                if (fixture.completed) {
+                    statusText = '<span class="text-green-600 text-sm">✓ Completed</span>';
+                } else if (dateTimeInfo.isPast) {
+                    statusText = '<span class="text-red-600 text-sm">Live/Missing Result</span>';
+                } else if (dateTimeInfo.isToday) {
+                    statusText = '<span class="text-blue-600 text-sm">Today</span>';
+                } else if (dateTimeInfo.isTomorrow) {
+                    statusText = '<span class="text-orange-600 text-sm">Tomorrow</span>';
+                }
+
+                fixtureDiv.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div class="flex-1">
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="font-semibold text-lg">${homeTeam.name} vs ${awayTeam.name}</div>
+                                ${statusText}
+                            </div>
+                            <div class="text-sm text-gray-600 mb-2">${dateTimeInfo.formatted}</div>
+                            ${scoreDisplay}
+                            ${winnerButtons}
+                            ${finalizeButton}
+                        </div>
+                    </div>
+                `;
+
+                allFixturesList.appendChild(fixtureDiv);
+            });
+        }
+
+        // Set winner for a match
+        function setWinner(winner, loser, round) {
+            // Find and update the fixture
+            const fixture = gameData.fixtures.find(f =>
+                f.round === round &&
+                ((f.home === winner && f.away === loser) || (f.home === loser && f.away === winner))
+            );
+
+            if (!fixture) return;
+
+            if (fixture.home === winner) {
+                fixture.homeScore = Math.floor(Math.random() * 15) + 20; // 20-35 points for winner
+                fixture.awayScore = Math.floor(Math.random() * 10) + 5;  // 5-15 points for loser
+            } else {
+                fixture.homeScore = Math.floor(Math.random() * 10) + 5;  // 5-15 points for loser
+                fixture.awayScore = Math.floor(Math.random() * 15) + 20; // 20-35 points for winner
+            }
+
+            // Store the pending result
+            fixture.pendingResult = true;
+            localStorage.setItem('gameData', JSON.stringify(gameData));
+
+            showNotification(`Set ${gameData.teams.find(t => t.id === winner).name} as winner`, 'success');
+            updateAllFixturesView();
+        }
+
+        // Set draw result
+        function setDraw(home, away, round) {
+            const fixture = gameData.fixtures.find(f =>
+                f.round === round &&
+                f.home === home && f.away === away
+            );
+
+            if (!fixture) return;
+
+            fixture.homeScore = Math.floor(Math.random() * 10) + 15; // 15-25 points each
+            fixture.awayScore = Math.floor(Math.random() * 10) + 15; // 15-25 points each
+
+            // Store the pending result
+            fixture.pendingResult = true;
+            localStorage.setItem('gameData', JSON.stringify(gameData));
+
+            showNotification('Set match as a draw', 'success');
+            updateAllFixturesView();
+        }
+
+        // Finalize a match result
+        function finalizeMatch(home, away, round) {
+            const fixture = gameData.fixtures.find(f =>
+                f.round === round &&
+                f.home === home && f.away === away
+            );
+
+            if (!fixture || !fixture.pendingResult) {
+                showNotification('No pending result to finalize', 'warning');
+                return;
+            }
+
+            // Mark as completed
+            fixture.completed = true;
+            delete fixture.pendingResult;
+
+            // Process user eliminations based on this result
+            processUserEliminations(round);
+
+            localStorage.setItem('gameData', JSON.stringify(gameData));
+
+            showNotification('Match finalized! User eliminations processed.', 'success');
+            updateGameDisplay();
+            updateAllFixturesView();
+        }
+
+        // Process user eliminations for a round
+        function processUserEliminations(round) {
+            const users = getStoredUsers();
+
+            users.forEach(user => {
+                const userPick = gameData.userPicks[user.id]?.[round];
+                if (!userPick) return;
+
+                const userPickedTeam = userPick;
+                const roundFixtures = gameData.fixtures.filter(f => f.round === round);
+
+                // Check if user's team won or drew
+                let userSurvived = false;
+                for (const fixture of roundFixtures) {
+                    if (fixture.home === userPickedTeam || fixture.away === userPickedTeam) {
+                        if (fixture.completed) {
+                            if (fixture.home === userPickedTeam && fixture.homeScore >= fixture.awayScore) {
+                                userSurvived = true; // Win or draw
+                            } else if (fixture.away === userPickedTeam && fixture.awayScore >= fixture.homeScore) {
+                                userSurvived = true; // Win or draw
+                            } else {
+                                userSurvived = false; // Loss
+                            }
+                        }
+                        break;
+                    }
+                }
+
+                // If user didn't survive, mark them as eliminated
+                if (!userSurvived) {
+                    if (!gameData.eliminatedUsers[user.id]) {
+                        gameData.eliminatedUsers[user.id] = round;
+                    }
+                }
+            });
         }
 
         function updateGameDisplay() {
@@ -1102,6 +1378,32 @@
                 toggleBtn.textContent = 'Admin';
                 toggleBtn.className = 'bg-gray-500 text-white px-3 py-2 rounded-lg hover:bg-gray-600 text-sm';
             }
+        }
+
+        function finalizeAllPendingMatches() {
+            const pendingFixtures = gameData.fixtures.filter(f => f.pendingResult && !f.completed);
+
+            if (pendingFixtures.length === 0) {
+                showNotification('No pending matches to finalize', 'warning');
+                return;
+            }
+
+            pendingFixtures.forEach(fixture => {
+                fixture.completed = true;
+                delete fixture.pendingResult;
+            });
+
+            // Process eliminations for all affected rounds
+            const affectedRounds = [...new Set(pendingFixtures.map(f => f.round))];
+            affectedRounds.forEach(round => {
+                processUserEliminations(round);
+            });
+
+            localStorage.setItem('gameData', JSON.stringify(gameData));
+
+            showNotification(`Finalized ${pendingFixtures.length} matches! User eliminations processed.`, 'success');
+            updateGameDisplay();
+            updateAllFixturesView();
         }
 
 
