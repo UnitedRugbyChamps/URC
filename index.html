@@ -702,7 +702,19 @@
         let currentUser = null;
         let currentGameMode = 'lms'; // 'lms' or 'pickit' - LMS is default
         let gameData = {
-            players: [],
+            players: [
+                {
+                    id: 'test_user_1',
+                    email: 'test@example.com',
+                    password: 'test123',
+                    displayName: 'Test User',
+                    currentPick: null,
+                    usedTeams: [],
+                    isEliminated: false,
+                    pickItPicks: {},
+                    pickItStats: { totalPicks: 0, correctPicks: 0, percentage: 0, weeklyMovement: 0, previousRank: null }
+                }
+            ],
             currentRound: 1,
             roundDeadline: new Date('2025-09-26T17:30:00'),
             roundEnd: new Date('2025-09-27T21:30:00'),
@@ -1290,56 +1302,54 @@
 
         let showEliminated = false;
 
-        // Initialize app
-        document.addEventListener('DOMContentLoaded', function() {
-            try { switchTab('login'); } catch (_) {}
-            try { loadGameData(); } catch (e) { console.error('loadGameData error', e); }
-            try { setupEventListeners(); } catch (e) { console.error('setupEventListeners error', e); }
-            try { updateGameStatus(); } catch (e) { console.error('updateGameStatus error', e); }
-            try { updateUI(); } catch (e) { console.error('updateUI error', e); }
-            try { generateTeamButtons(); } catch (e) {}
-            // Ensure render after any late layout/JS work
-            setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 0);
-            setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 200);
-            // Do not auto-open LMS. User opens via button.
-            setInterval(() => {
-                try { updateGameStatus(); } catch (_) {}
-            }, 1000);
-
-            // Observe Current Round section visibility and rebuild when shown
-            const currentSection = document.getElementById('currentRoundSection');
-            if (currentSection && 'MutationObserver' in window) {
-                const obs = new MutationObserver(() => {
-                    if (!currentSection.classList.contains('hidden')) {
-                        try { generateTeamButtons(); } catch (e) {}
-                    }
-                });
-                obs.observe(currentSection, { attributes: true, attributeFilter: ['class'] });
-            }
-        });
-
         function setupEventListeners() {
-            // Open LMS flow
-            const openBtn = document.getElementById('openLmsBtn');
-            if (openBtn) {
+            try {
+                // Open LMS flow
+                const openBtn = document.getElementById('openLmsBtn');
+                if (openBtn) {
                 openBtn.addEventListener('click', () => {
-                    document.getElementById('roundStatus').classList.remove('hidden');
-                    document.getElementById('lmsInterface').classList.remove('hidden');
-                    const stats = document.getElementById('lmsStats');
-                    if (stats) stats.classList.remove('hidden');
-                    switchFixtureTab('current');
-                    updateGameStatus();
-                    updateUI();
-                    try { generateTeamButtons(); } catch (e) {}
-                    setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 0);
+                    console.log('LMS button clicked');
+                    try {
+                        const roundStatus = document.getElementById('roundStatus');
+                        const lmsInterface = document.getElementById('lmsInterface');
+                        const lmsStats = document.getElementById('lmsStats');
+
+                        console.log('Elements found:', {
+                            roundStatus: !!roundStatus,
+                            lmsInterface: !!lmsInterface,
+                            lmsStats: !!lmsStats
+                        });
+
+                        if (roundStatus) roundStatus.classList.remove('hidden');
+                        if (lmsInterface) lmsInterface.classList.remove('hidden');
+                        if (lmsStats) lmsStats.classList.remove('hidden');
+
+                        switchFixtureTab('current');
+                        updateGameStatus();
+                        updateUI();
+                        generateTeamButtons();
+                        setTimeout(() => generateTeamButtons(), 0);
+                        console.log('LMS interface opened successfully');
+                    } catch (error) {
+                        console.error('Error opening LMS interface:', error);
+                    }
                 });
             }
             // Auth tabs
-            document.getElementById('loginTab').addEventListener('click', () => switchTab('login'));
-            document.getElementById('registerTab').addEventListener('click', () => switchTab('register'));
-            
+            document.getElementById('loginTab').addEventListener('click', () => {
+                console.log('Login tab clicked');
+                switchTab('login');
+            });
+            document.getElementById('registerTab').addEventListener('click', () => {
+                console.log('Register tab clicked');
+                switchTab('register');
+            });
+
             // Auth form
-            document.getElementById('authForm').addEventListener('submit', handleAuth);
+            document.getElementById('authForm').addEventListener('submit', (e) => {
+                console.log('Auth form submitted');
+                handleAuth(e);
+            });
             
             // Game mode toggles
             
@@ -1464,7 +1474,38 @@
                 document.getElementById('syncModal').classList.add('hidden');
                 showNotification('Sync disabled', 'info');
             });
+            } catch (error) {
+                console.error('Error in setupEventListeners:', error);
+            }
         }
+
+        // Initialize app
+        document.addEventListener('DOMContentLoaded', function() {
+            try { switchTab('login'); } catch (_) {}
+            try { loadGameData(); } catch (e) { console.error('loadGameData error', e); }
+            try { setupEventListeners(); } catch (e) { console.error('setupEventListeners error', e); }
+            try { updateGameStatus(); } catch (e) { console.error('updateGameStatus error', e); }
+            try { updateUI(); } catch (e) { console.error('updateUI error', e); }
+            try { generateTeamButtons(); } catch (e) {}
+            // Ensure render after any late layout/JS work
+            setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 0);
+            setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 200);
+            // Do not auto-open LMS. User opens via button.
+            setInterval(() => {
+                try { updateGameStatus(); } catch (_) {}
+            }, 1000);
+
+            // Observe Current Round section visibility and rebuild when shown
+            const currentSection = document.getElementById('currentRoundSection');
+            if (currentSection && 'MutationObserver' in window) {
+                const obs = new MutationObserver(() => {
+                    if (!currentSection.classList.contains('hidden')) {
+                        try { generateTeamButtons(); } catch (e) {}
+                    }
+                });
+                obs.observe(currentSection, { attributes: true, attributeFilter: ['class'] });
+            }
+        });
 
         function loadGameData() {
             const saved = localStorage.getItem('urcGameData');
@@ -1559,7 +1600,9 @@
 			const displayName = document.getElementById('displayName').value;
 			const authButtonEl = document.getElementById('authButton');
 			const authButtonText = authButtonEl.textContent;
-			
+
+			console.log('Auth attempt:', { email, authButtonText, hasWindowLoginUser: !!window.loginUser });
+
 			try {
 				authButtonEl.disabled = true;
 				if (authButtonText === 'Login') {
@@ -1745,17 +1788,21 @@
         }
 
         async function loginUser(email, password) {
+            console.log('loginUser called with:', { email, password });
             email = normalizeEmail(email);
             if (syncUrl) {
                 await syncPullAndMaybeUpdate();
             }
             let player = gameData.players.find(p => normalizeEmail(p.email) === email);
+            console.log('Found player:', player);
             if (!player) {
+                console.log('Player not found');
                 showNotification('Email not found. Please register first.', 'error');
                 return;
             }
-            
+
             if (player.password !== password) {
+                console.log('Password mismatch');
                 showNotification('Incorrect password. Please try again.', 'error');
                 return;
             }
