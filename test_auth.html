@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Authentication</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .test-section {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .output {
+            background: #f8f9fa;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success { color: green; }
+        .error { color: red; }
+        .info { color: blue; }
+    </style>
+</head>
+<body>
+    <h1>Authentication Test Page</h1>
+    
+    <div class="test-section">
+        <h2>1. Direct Form Test</h2>
+        <p>Open the main page in an iframe and try to submit the form directly.</p>
+        <button onclick="testDirectSubmit()">Test Direct Submit</button>
+        <div id="directOutput" class="output"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>2. Manual Test Instructions</h2>
+        <p>To manually test the authentication:</p>
+        <ol>
+            <li>Open the browser's Developer Console (F12)</li>
+            <li>Go to the main index.html page</li>
+            <li>Try to register with these details:
+                <ul>
+                    <li>Email: test@example.com</li>
+                    <li>Password: password123</li>
+                    <li>Display Name: Test User</li>
+                </ul>
+            </li>
+            <li>Check the console for debug messages</li>
+            <li>Look for any error messages</li>
+        </ol>
+    </div>
+    
+    <div class="test-section">
+        <h2>3. Check Console Output</h2>
+        <button onclick="openMainPage()">Open Main Page in New Tab</button>
+        <p>After opening, press F12 to see console messages when you try to login/register.</p>
+    </div>
+    
+    <div class="test-section">
+        <h2>4. Test Local Storage</h2>
+        <button onclick="testLocalStorage()">Test Local Storage</button>
+        <div id="storageOutput" class="output"></div>
+    </div>
+
+    <script>
+        function testDirectSubmit() {
+            const output = document.getElementById('directOutput');
+            output.innerHTML = 'Creating test iframe...\n';
+            
+            const iframe = document.createElement('iframe');
+            iframe.src = 'index.html';
+            iframe.style.width = '100%';
+            iframe.style.height = '400px';
+            iframe.style.border = '1px solid #ccc';
+            iframe.style.marginTop = '10px';
+            
+            iframe.onload = function() {
+                try {
+                    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+                    const iframeWin = iframe.contentWindow;
+                    
+                    output.innerHTML += 'Iframe loaded successfully\n';
+                    
+                    // Check if form exists
+                    const form = iframeDoc.getElementById('authForm');
+                    output.innerHTML += `Form found: ${form !== null}\n`;
+                    
+                    if (form) {
+                        // Fill in test data
+                        const email = iframeDoc.getElementById('email');
+                        const password = iframeDoc.getElementById('password');
+                        
+                        if (email && password) {
+                            email.value = 'test@example.com';
+                            password.value = 'password123';
+                            
+                            output.innerHTML += `Email field set: ${email.value}\n`;
+                            output.innerHTML += `Password field set: ****\n`;
+                            
+                            // Check if we're in register mode
+                            const registerTab = iframeDoc.getElementById('registerTab');
+                            if (registerTab) {
+                                registerTab.click();
+                                output.innerHTML += 'Switched to register mode\n';
+                                
+                                setTimeout(() => {
+                                    const displayName = iframeDoc.getElementById('displayName');
+                                    const confirmPassword = iframeDoc.getElementById('confirmPassword');
+                                    
+                                    if (displayName) {
+                                        displayName.value = 'Test User';
+                                        output.innerHTML += `Display name set: ${displayName.value}\n`;
+                                    }
+                                    
+                                    if (confirmPassword) {
+                                        confirmPassword.value = 'password123';
+                                        output.innerHTML += 'Confirm password set: ****\n';
+                                    }
+                                    
+                                    // Try to submit
+                                    output.innerHTML += '\nAttempting to submit form...\n';
+                                    output.innerHTML += 'Check the browser console for debug messages.\n';
+                                    
+                                    // Trigger submit
+                                    const submitBtn = iframeDoc.getElementById('authButton');
+                                    if (submitBtn) {
+                                        submitBtn.click();
+                                        output.innerHTML += '<span class="success">Submit button clicked!</span>\n';
+                                    } else {
+                                        output.innerHTML += '<span class="error">Submit button not found!</span>\n';
+                                    }
+                                }, 500);
+                            }
+                        } else {
+                            output.innerHTML += '<span class="error">Email or password fields not found!</span>\n';
+                        }
+                    } else {
+                        output.innerHTML += '<span class="error">Auth form not found in iframe!</span>\n';
+                    }
+                } catch (e) {
+                    output.innerHTML += `<span class="error">Error: ${e.message}</span>\n`;
+                }
+            };
+            
+            output.parentElement.appendChild(iframe);
+        }
+        
+        function openMainPage() {
+            window.open('index.html', '_blank');
+        }
+        
+        function testLocalStorage() {
+            const output = document.getElementById('storageOutput');
+            
+            try {
+                // Test if localStorage is available
+                localStorage.setItem('test', 'value');
+                const testValue = localStorage.getItem('test');
+                localStorage.removeItem('test');
+                
+                output.innerHTML = '<span class="success">LocalStorage is working!</span>\n\n';
+                
+                // Check for existing users
+                const users = localStorage.getItem('users');
+                if (users) {
+                    const userList = JSON.parse(users);
+                    output.innerHTML += `Found ${userList.length} existing users:\n`;
+                    userList.forEach(user => {
+                        output.innerHTML += `  - ${user.displayName} (${user.email})\n`;
+                    });
+                } else {
+                    output.innerHTML += 'No users found in localStorage.\n';
+                }
+                
+                // Check for current session
+                const currentUser = localStorage.getItem('currentUser');
+                if (currentUser) {
+                    const user = JSON.parse(currentUser);
+                    output.innerHTML += `\n<span class="info">Current session: ${user.displayName}</span>\n`;
+                } else {
+                    output.innerHTML += '\nNo active session.\n';
+                }
+            } catch (e) {
+                output.innerHTML = `<span class="error">LocalStorage error: ${e.message}</span>\n`;
+            }
+        }
+    </script>
+</body>
+</html>
