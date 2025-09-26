@@ -1363,7 +1363,9 @@
             
             // Toggle eliminated (panel removed — guard)
             const toggleEliminatedBtn = document.getElementById('toggleEliminated');
-            if (toggleEliminatedBtn) toggleEliminatedBtn.addEventListener('click', toggleEliminatedPlayers);
+            if (toggleEliminatedBtn && typeof toggleEliminatedPlayers === 'function') {
+                toggleEliminatedBtn.addEventListener('click', toggleEliminatedPlayers);
+            }
             
             // View picks modal
             document.getElementById('viewPicksCard').addEventListener('click', openPicksModal);
