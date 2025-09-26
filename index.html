@@ -192,6 +192,24 @@
                         </div>
                     </div>
 
+                    <!-- All Fixtures -->
+                    <div class="mb-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-lg font-semibold text-gray-800">All Fixtures</h4>
+                            <div class="flex space-x-2">
+                                <button id="showAllFixtures" class="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors">
+                                    Show All
+                                </button>
+                                <button id="showCurrentWeek" class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
+                                    Current Week Only
+                                </button>
+                            </div>
+                        </div>
+                        <div id="allFixturesList" class="space-y-3 hidden">
+                            <!-- All fixtures will be populated by JavaScript -->
+                        </div>
+                    </div>
+
                     <!-- User's Picks History -->
                     <div class="mb-6">
                         <h4 class="text-lg font-semibold text-gray-800 mb-4">Your Picks History</h4>
@@ -202,7 +220,20 @@
 
                     <!-- Leaderboard -->
                     <div>
-                        <h4 class="text-lg font-semibold text-gray-800 mb-4">Leaderboard</h4>
+                        <div class="flex justify-between items-center mb-4">
+                            <h4 class="text-lg font-semibold text-gray-800">Leaderboard</h4>
+                            <div class="flex space-x-2">
+                                <button id="showAllPlayers" class="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors">
+                                    All Players
+                                </button>
+                                <button id="showStandingPlayers" class="px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors">
+                                    Still Standing
+                                </button>
+                                <button id="showEliminatedPlayers" class="px-3 py-1 text-sm bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors">
+                                    Eliminated
+                                </button>
+                            </div>
+                        </div>
                         <div id="leaderboard" class="space-y-2">
                             <!-- Leaderboard will be populated by JavaScript -->
                         </div>
@@ -271,6 +302,15 @@
 
             // Game event listeners
             document.getElementById('submitPick').addEventListener('click', submitTeamPick);
+            
+            // Fixture display toggles
+            document.getElementById('showAllFixtures').addEventListener('click', () => toggleFixturesDisplay('all'));
+            document.getElementById('showCurrentWeek').addEventListener('click', () => toggleFixturesDisplay('current'));
+            
+            // Leaderboard display toggles
+            document.getElementById('showAllPlayers').addEventListener('click', () => toggleLeaderboardDisplay('all'));
+            document.getElementById('showStandingPlayers').addEventListener('click', () => toggleLeaderboardDisplay('standing'));
+            document.getElementById('showEliminatedPlayers').addEventListener('click', () => toggleLeaderboardDisplay('eliminated'));
         }
 
         // Switch between login and register modes
@@ -581,23 +621,32 @@
             ];
 
             const fixtures = [
-                { week: 1, home: 'leinster', away: 'glasgow', homeScore: 28, awayScore: 14, completed: true },
-                { week: 1, home: 'munster', away: 'edinburgh', homeScore: 31, awayScore: 17, completed: true },
-                { week: 1, home: 'ulster', away: 'cardiff', homeScore: 24, awayScore: 21, completed: true },
-                { week: 1, home: 'connacht', away: 'ospreys', homeScore: 19, awayScore: 22, completed: true },
-                { week: 1, home: 'bulls', away: 'sharks', homeScore: 35, awayScore: 28, completed: true },
-                { week: 1, home: 'stormers', away: 'lions', homeScore: 42, awayScore: 19, completed: true },
-                { week: 1, home: 'zebre', away: 'benetton', homeScore: 12, awayScore: 18, completed: true },
-                { week: 1, home: 'scarlets', away: 'dragons', homeScore: 26, awayScore: 15, completed: true },
+                { week: 1, home: 'leinster', away: 'glasgow', homeScore: 28, awayScore: 14, completed: true, date: '2024-01-15', time: '19:35' },
+                { week: 1, home: 'munster', away: 'edinburgh', homeScore: 31, awayScore: 17, completed: true, date: '2024-01-15', time: '17:00' },
+                { week: 1, home: 'ulster', away: 'cardiff', homeScore: 24, awayScore: 21, completed: true, date: '2024-01-16', time: '19:35' },
+                { week: 1, home: 'connacht', away: 'ospreys', homeScore: 19, awayScore: 22, completed: true, date: '2024-01-16', time: '17:00' },
+                { week: 1, home: 'bulls', away: 'sharks', homeScore: 35, awayScore: 28, completed: true, date: '2024-01-17', time: '15:00' },
+                { week: 1, home: 'stormers', away: 'lions', homeScore: 42, awayScore: 19, completed: true, date: '2024-01-17', time: '17:15' },
+                { week: 1, home: 'zebre', away: 'benetton', homeScore: 12, awayScore: 18, completed: true, date: '2024-01-18', time: '19:30' },
+                { week: 1, home: 'scarlets', away: 'dragons', homeScore: 26, awayScore: 15, completed: true, date: '2024-01-18', time: '17:00' },
                 
-                { week: 2, home: 'glasgow', away: 'munster', homeScore: null, awayScore: null, completed: false },
-                { week: 2, home: 'edinburgh', away: 'ulster', homeScore: null, awayScore: null, completed: false },
-                { week: 2, home: 'cardiff', away: 'connacht', homeScore: null, awayScore: null, completed: false },
-                { week: 2, home: 'ospreys', away: 'leinster', homeScore: null, awayScore: null, completed: false },
-                { week: 2, home: 'sharks', away: 'stormers', homeScore: null, awayScore: null, completed: false },
-                { week: 2, home: 'lions', away: 'bulls', homeScore: null, awayScore: null, completed: false },
-                { week: 2, home: 'benetton', away: 'scarlets', homeScore: null, awayScore: null, completed: false },
-                { week: 2, home: 'dragons', away: 'zebre', homeScore: null, awayScore: null, completed: false }
+                { week: 2, home: 'glasgow', away: 'munster', homeScore: null, awayScore: null, completed: false, date: '2024-01-22', time: '19:35' },
+                { week: 2, home: 'edinburgh', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2024-01-22', time: '17:00' },
+                { week: 2, home: 'cardiff', away: 'connacht', homeScore: null, awayScore: null, completed: false, date: '2024-01-23', time: '19:35' },
+                { week: 2, home: 'ospreys', away: 'leinster', homeScore: null, awayScore: null, completed: false, date: '2024-01-23', time: '17:00' },
+                { week: 2, home: 'sharks', away: 'stormers', homeScore: null, awayScore: null, completed: false, date: '2024-01-24', time: '15:00' },
+                { week: 2, home: 'lions', away: 'bulls', homeScore: null, awayScore: null, completed: false, date: '2024-01-24', time: '17:15' },
+                { week: 2, home: 'benetton', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2024-01-25', time: '19:30' },
+                { week: 2, home: 'dragons', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2024-01-25', time: '17:00' },
+                
+                { week: 3, home: 'leinster', away: 'edinburgh', homeScore: null, awayScore: null, completed: false, date: '2024-01-29', time: '19:35' },
+                { week: 3, home: 'munster', away: 'ulster', homeScore: null, awayScore: null, completed: false, date: '2024-01-29', time: '17:00' },
+                { week: 3, home: 'connacht', away: 'glasgow', homeScore: null, awayScore: null, completed: false, date: '2024-01-30', time: '19:35' },
+                { week: 3, home: 'cardiff', away: 'ospreys', homeScore: null, awayScore: null, completed: false, date: '2024-01-30', time: '17:00' },
+                { week: 3, home: 'bulls', away: 'zebre', homeScore: null, awayScore: null, completed: false, date: '2024-01-31', time: '15:00' },
+                { week: 3, home: 'stormers', away: 'dragons', homeScore: null, awayScore: null, completed: false, date: '2024-01-31', time: '17:15' },
+                { week: 3, home: 'sharks', away: 'benetton', homeScore: null, awayScore: null, completed: false, date: '2024-02-01', time: '19:30' },
+                { week: 3, home: 'lions', away: 'scarlets', homeScore: null, awayScore: null, completed: false, date: '2024-02-01', time: '17:00' }
             ];
 
             const gameData = {
@@ -622,6 +671,7 @@
             updateCurrentWeek();
             updateTeamSelection();
             updateMatchesList();
+            updateAllFixturesList();
             updatePicksHistory();
             updateLeaderboard();
             updateUserScore();
@@ -735,14 +785,26 @@
                     `${fixture.homeScore} - ${fixture.awayScore}` : 
                     'TBD';
                 
+                const matchDate = new Date(fixture.date);
+                const formattedDate = matchDate.toLocaleDateString('en-GB', { 
+                    weekday: 'short', 
+                    day: 'numeric', 
+                    month: 'short' 
+                });
+                
                 matchDiv.innerHTML = `
                     <div class="flex items-center space-x-4">
                         <div class="text-sm font-medium">${homeTeam.name}</div>
                         <div class="text-lg font-bold">${scoreDisplay}</div>
                         <div class="text-sm font-medium">${awayTeam.name}</div>
                     </div>
-                    <div class="text-xs text-gray-500">
-                        ${fixture.completed ? 'Completed' : 'Upcoming'}
+                    <div class="text-right">
+                        <div class="text-xs text-gray-500">
+                            ${fixture.completed ? 'Completed' : 'Upcoming'}
+                        </div>
+                        <div class="text-xs text-gray-600 font-medium">
+                            ${formattedDate} ${fixture.time}
+                        </div>
                     </div>
                 `;
                 
@@ -780,7 +842,7 @@
             });
         }
 
-        function updateLeaderboard() {
+        function updateLeaderboard(filterMode = 'all') {
             const leaderboard = document.getElementById('leaderboard');
             leaderboard.innerHTML = '';
 
@@ -801,30 +863,54 @@
 
             // Get all users and sort by score
             const allUsers = getStoredUsers();
-            const sortedUsers = allUsers
+            let sortedUsers = allUsers
                 .map(user => ({
                     ...user,
-                    score: userScores[user.id] || 0
+                    score: userScores[user.id] || 0,
+                    eliminated: isUserEliminated(user.id)
                 }))
                 .sort((a, b) => b.score - a.score);
 
+            // Apply filtering
+            if (filterMode === 'standing') {
+                sortedUsers = sortedUsers.filter(user => !user.eliminated);
+            } else if (filterMode === 'eliminated') {
+                sortedUsers = sortedUsers.filter(user => user.eliminated);
+            }
+
+            if (sortedUsers.length === 0) {
+                const noUsersDiv = document.createElement('div');
+                noUsersDiv.className = 'text-center text-gray-500 py-8';
+                noUsersDiv.textContent = filterMode === 'standing' ? 'No players still standing' : 
+                                       filterMode === 'eliminated' ? 'No eliminated players' : 
+                                       'No players found';
+                leaderboard.appendChild(noUsersDiv);
+                return;
+            }
+
             sortedUsers.forEach((user, index) => {
                 const userDiv = document.createElement('div');
-                userDiv.className = `rounded-lg p-3 flex justify-between items-center ${
-                    user.id === currentUser.id ? 'bg-blue-50 border border-blue-200' : 'bg-gray-50'
-                }`;
+                const isEliminated = user.eliminated;
+                const bgColor = user.id === currentUser.id ? 
+                    (isEliminated ? 'bg-red-50 border border-red-200' : 'bg-blue-50 border border-blue-200') : 
+                    (isEliminated ? 'bg-red-50' : 'bg-gray-50');
+                
+                userDiv.className = `rounded-lg p-3 flex justify-between items-center ${bgColor}`;
                 
                 userDiv.innerHTML = `
                     <div class="flex items-center space-x-3">
-                        <div class="w-6 h-6 rounded-full bg-blue-600 text-white text-xs flex items-center justify-center font-bold">
+                        <div class="w-6 h-6 rounded-full ${isEliminated ? 'bg-red-600' : 'bg-blue-600'} text-white text-xs flex items-center justify-center font-bold">
                             ${index + 1}
                         </div>
                         <div>
-                            <div class="font-medium">${user.displayName}</div>
+                            <div class="font-medium flex items-center space-x-2">
+                                <span>${user.displayName}</span>
+                                ${isEliminated ? '<span class="text-xs bg-red-100 text-red-700 px-2 py-1 rounded-full">Eliminated</span>' : ''}
+                            </div>
                             <div class="text-sm text-gray-600">${user.email}</div>
                         </div>
                     </div>
-                    <div class="text-lg font-bold text-blue-600">${user.score}</div>
+                    <div class="text-lg font-bold ${isEliminated ? 'text-red-600' : 'text-blue-600'}">${user.score}</div>
                 `;
                 
                 leaderboard.appendChild(userDiv);
@@ -863,6 +949,126 @@
             });
             
             document.getElementById('userScore').textContent = totalScore;
+        }
+
+        // Fixture display functions
+        function updateAllFixturesList() {
+            const allFixturesList = document.getElementById('allFixturesList');
+            allFixturesList.innerHTML = '';
+
+            // Group fixtures by week
+            const fixturesByWeek = {};
+            gameData.fixtures.forEach(fixture => {
+                if (!fixturesByWeek[fixture.week]) {
+                    fixturesByWeek[fixture.week] = [];
+                }
+                fixturesByWeek[fixture.week].push(fixture);
+            });
+
+            // Display fixtures by week
+            Object.keys(fixturesByWeek).sort((a, b) => parseInt(a) - parseInt(b)).forEach(week => {
+                const weekDiv = document.createElement('div');
+                weekDiv.className = 'mb-4';
+                
+                const weekHeader = document.createElement('div');
+                weekHeader.className = 'text-lg font-semibold text-gray-800 mb-2 pb-2 border-b border-gray-200';
+                weekHeader.textContent = `Week ${week}`;
+                weekDiv.appendChild(weekHeader);
+
+                const fixturesContainer = document.createElement('div');
+                fixturesContainer.className = 'space-y-2';
+
+                fixturesByWeek[week].forEach(fixture => {
+                    const homeTeam = gameData.teams.find(t => t.id === fixture.home);
+                    const awayTeam = gameData.teams.find(t => t.id === fixture.away);
+                    
+                    const matchDiv = document.createElement('div');
+                    matchDiv.className = 'bg-gray-50 rounded-lg p-3 flex justify-between items-center';
+                    
+                    const scoreDisplay = fixture.completed ? 
+                        `${fixture.homeScore} - ${fixture.awayScore}` : 
+                        'TBD';
+                    
+                    const matchDate = new Date(fixture.date);
+                    const formattedDate = matchDate.toLocaleDateString('en-GB', { 
+                        weekday: 'short', 
+                        day: 'numeric', 
+                        month: 'short' 
+                    });
+                    
+                    matchDiv.innerHTML = `
+                        <div class="flex items-center space-x-3">
+                            <div class="text-sm font-medium">${homeTeam.name}</div>
+                            <div class="text-base font-bold">${scoreDisplay}</div>
+                            <div class="text-sm font-medium">${awayTeam.name}</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs text-gray-500">
+                                ${fixture.completed ? 'Completed' : 'Upcoming'}
+                            </div>
+                            <div class="text-xs text-gray-600 font-medium">
+                                ${formattedDate} ${fixture.time}
+                            </div>
+                        </div>
+                    `;
+                    
+                    fixturesContainer.appendChild(matchDiv);
+                });
+
+                weekDiv.appendChild(fixturesContainer);
+                allFixturesList.appendChild(weekDiv);
+            });
+        }
+
+        function toggleFixturesDisplay(mode) {
+            const matchesList = document.getElementById('matchesList');
+            const allFixturesList = document.getElementById('allFixturesList');
+            const showAllBtn = document.getElementById('showAllFixtures');
+            const showCurrentBtn = document.getElementById('showCurrentWeek');
+
+            if (mode === 'all') {
+                matchesList.classList.add('hidden');
+                allFixturesList.classList.remove('hidden');
+                showAllBtn.className = 'px-3 py-1 text-sm bg-blue-600 text-white rounded-md transition-colors';
+                showCurrentBtn.className = 'px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors';
+            } else {
+                matchesList.classList.remove('hidden');
+                allFixturesList.classList.add('hidden');
+                showAllBtn.className = 'px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors';
+                showCurrentBtn.className = 'px-3 py-1 text-sm bg-blue-600 text-white rounded-md transition-colors';
+            }
+        }
+
+        // Leaderboard filtering functions
+        function toggleLeaderboardDisplay(mode) {
+            // Update button styles
+            const allBtn = document.getElementById('showAllPlayers');
+            const standingBtn = document.getElementById('showStandingPlayers');
+            const eliminatedBtn = document.getElementById('showEliminatedPlayers');
+
+            // Reset all buttons
+            allBtn.className = 'px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors';
+            standingBtn.className = 'px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors';
+            eliminatedBtn.className = 'px-3 py-1 text-sm bg-gray-100 text-gray-700 rounded-md hover:bg-gray-200 transition-colors';
+
+            // Highlight selected button
+            if (mode === 'all') {
+                allBtn.className = 'px-3 py-1 text-sm bg-blue-600 text-white rounded-md transition-colors';
+            } else if (mode === 'standing') {
+                standingBtn.className = 'px-3 py-1 text-sm bg-blue-600 text-white rounded-md transition-colors';
+            } else if (mode === 'eliminated') {
+                eliminatedBtn.className = 'px-3 py-1 text-sm bg-red-600 text-white rounded-md transition-colors';
+            }
+
+            // Update leaderboard display
+            updateLeaderboard(mode);
+        }
+
+        function isUserEliminated(userId) {
+            const userPicks = gameData.userPicks[userId] || {};
+            const usedTeams = Object.values(userPicks).map(pick => pick.teamId);
+            const availableTeams = gameData.teams.filter(team => !usedTeams.includes(team.id));
+            return availableTeams.length === 0;
         }
 
         function logout() {
