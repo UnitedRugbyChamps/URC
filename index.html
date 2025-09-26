@@ -58,29 +58,80 @@
         </div>
 
         <!-- Login/Register Form -->
-        <div id="authSection" class="max-w-md mx-auto bg-white rounded-xl card-shadow p-6 mb-8">
-            <div class="flex mb-4">
-                <button type="button" id="loginTab" class="flex-1 py-2 px-4 bg-blue-600 text-white rounded-l-lg font-medium">Login</button>
-                <button type="button" id="registerTab" class="flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-r-lg font-medium">Register</button>
+        <div id="authSection" class="max-w-md mx-auto bg-white rounded-xl card-shadow p-6 mb-8 w-full sm:w-auto">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-gray-800 mb-2">Welcome to URC Last Man Standing</h2>
+                <p class="text-gray-600 text-sm">Sign in to your account or create a new one</p>
             </div>
-            
+
+            <div class="flex mb-6 rounded-lg overflow-hidden border border-gray-200">
+                <button type="button" id="loginTab" class="flex-1 py-3 px-4 bg-blue-600 text-white font-medium transition-colors">Login</button>
+                <button type="button" id="registerTab" class="flex-1 py-3 px-4 bg-gray-100 text-gray-700 font-medium transition-colors">Register</button>
+            </div>
+
             <form id="authForm" novalidate>
                 <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-medium mb-2">Email</label>
-                    <input type="email" id="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="email">Email Address</label>
+                    <div class="relative">
+                        <input type="email" id="email"
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                               placeholder="Enter your email"
+                               required>
+                        <span class="absolute right-3 top-3 text-gray-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"></path>
+                            </svg>
+                        </span>
+                    </div>
                 </div>
-                
+
                 <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-medium mb-2">Password</label>
-                    <input type="password" id="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required minlength="6">
-                    <p id="passwordHelp" class="text-xs text-gray-500 mt-1 hidden">Password must be at least 6 characters long</p>
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="password">Password</label>
+                    <div class="relative">
+                        <input type="password" id="password"
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                               placeholder="Enter your password"
+                               required minlength="6">
+                        <button type="button" id="togglePassword" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <p id="passwordHelp" class="text-xs text-gray-500 mt-1 hidden">
+                        <span class="inline-flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                            </svg>
+                            Password must be at least 6 characters long
+                        </span>
+                    </p>
                 </div>
                 
 
                 
                 <div id="nameField" class="mb-4 hidden">
-                    <label class="block text-gray-700 text-sm font-medium mb-2">Display Name</label>
-                    <input type="text" id="displayName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <label class="block text-gray-700 text-sm font-medium mb-2" for="displayName">Display Name</label>
+                    <div class="relative">
+                        <input type="text" id="displayName"
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                               placeholder="Choose a display name"
+                               maxlength="50">
+                        <span class="absolute right-3 top-3 text-gray-400">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                            </svg>
+                        </span>
+                    </div>
+                    <p class="text-xs text-gray-500 mt-1">
+                        <span class="inline-flex items-center">
+                            <svg class="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                            </svg>
+                            Your public display name (max 50 characters)
+                        </span>
+                    </p>
                 </div>
                 
                 <!-- Profile Picture Selection -->
@@ -129,10 +180,20 @@
                     </select>
                 </div>
                 
-                <button type="submit" id="authButton" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 font-medium">Login</button>
-                
-                <div id="forgotPasswordLink" class="text-center mt-3">
-                    <button type="button" id="forgotPasswordBtn" class="text-sm text-blue-600 hover:text-blue-800 underline">Forgot Password?</button>
+                <button type="submit" id="authButton"
+                        class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 font-medium transition-colors duration-200 flex items-center justify-center disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span id="authButtonText">Login</span>
+                    <svg id="authButtonLoader" class="animate-spin ml-2 h-5 w-5 hidden" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                </button>
+
+                <div id="forgotPasswordLink" class="text-center mt-4">
+                    <button type="button" id="forgotPasswordBtn"
+                            class="text-sm text-blue-600 hover:text-blue-800 underline transition-colors">
+                        Forgot your password?
+                    </button>
                 </div>
             </form>
             
@@ -1350,6 +1411,25 @@
                 console.log('Auth form submitted');
                 handleAuth(e);
             });
+
+            // Password visibility toggle
+            document.getElementById('togglePassword').addEventListener('click', () => {
+                const passwordInput = document.getElementById('password');
+                const toggleBtn = document.getElementById('togglePassword');
+
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    toggleBtn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+                    </svg>`;
+                } else {
+                    passwordInput.type = 'password';
+                    toggleBtn.innerHTML = `<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>`;
+                }
+            });
             
             // Game mode toggles
             
@@ -1465,14 +1545,14 @@
                 const url = document.getElementById('syncUrlInput').value;
                 setSyncUrl(url);
                 document.getElementById('syncModal').classList.add('hidden');
-                showNotification('Sync URL saved', 'success');
+                window.AuthUtils.showNotification('Sync URL saved', 'success');
                 syncPullAndMaybeUpdate();
             });
             const clearSync = document.getElementById('clearSyncUrl');
             if (clearSync) clearSync.addEventListener('click', () => {
                 setSyncUrl(null);
                 document.getElementById('syncModal').classList.add('hidden');
-                showNotification('Sync disabled', 'info');
+                window.AuthUtils.showNotification('Sync disabled', 'info');
             });
             } catch (error) {
                 console.error('Error in setupEventListeners:', error);
@@ -1573,66 +1653,100 @@
             passwordResetForm.classList.add('hidden');
             
             if (tab === 'login') {
-                loginTab.className = 'flex-1 py-2 px-4 bg-blue-600 text-white rounded-l-lg font-medium';
-                registerTab.className = 'flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-r-lg font-medium';
+                loginTab.className = 'flex-1 py-3 px-4 bg-blue-600 text-white font-medium transition-colors';
+                registerTab.className = 'flex-1 py-3 px-4 bg-gray-100 text-gray-700 font-medium transition-colors';
                 nameField.classList.add('hidden');
                 profilePicField.classList.add('hidden');
                 favoriteTeamField.classList.add('hidden');
                 passwordHelp.classList.add('hidden');
                 forgotPasswordLink.classList.remove('hidden');
-                authButton.textContent = 'Login';
+                document.getElementById('authButtonText').textContent = 'Login';
             } else {
-                loginTab.className = 'flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-l-lg font-medium';
-                registerTab.className = 'flex-1 py-2 px-4 bg-blue-600 text-white rounded-r-lg font-medium';
+                loginTab.className = 'flex-1 py-3 px-4 bg-gray-100 text-gray-700 font-medium transition-colors';
+                registerTab.className = 'flex-1 py-3 px-4 bg-blue-600 text-white font-medium transition-colors';
                 nameField.classList.remove('hidden');
                 profilePicField.classList.remove('hidden');
                 favoriteTeamField.classList.remove('hidden');
-                passwordHelp.classList.remove('hidden');
+                passwordHelp.classList.add('hidden');
                 forgotPasswordLink.classList.add('hidden');
-                authButton.textContent = 'Register';
+                document.getElementById('authButtonText').textContent = 'Register';
             }
         }
 
 		async function handleAuth(e) {
 			e.preventDefault();
-			const email = document.getElementById('email').value;
+
+			const email = document.getElementById('email').value.trim();
 			const password = document.getElementById('password').value;
-			const displayName = document.getElementById('displayName').value;
+			const displayName = document.getElementById('displayName').value.trim();
 			const authButtonEl = document.getElementById('authButton');
 			const authButtonText = authButtonEl.textContent;
 
-			console.log('Auth attempt:', { email, authButtonText, hasWindowLoginUser: !!window.loginUser });
+			// Client-side validation
+			if (!window.AuthUtils.validateEmail(email)) {
+				window.AuthUtils.showNotification('Please enter a valid email address', 'error');
+				return;
+			}
+
+			if (!window.AuthUtils.validatePassword(password)) {
+				window.AuthUtils.showNotification('Password must be at least 6 characters long', 'error');
+				return;
+			}
+
+			if (authButtonText === 'Register' && !window.AuthUtils.validateDisplayName(displayName)) {
+				window.AuthUtils.showNotification('Please enter a valid display name (max 50 characters, no inappropriate language)', 'error');
+				return;
+			}
 
 			try {
 				authButtonEl.disabled = true;
+				const buttonTextEl = document.getElementById('authButtonText');
+				const buttonLoaderEl = document.getElementById('authButtonLoader');
+
+				buttonTextEl.textContent = authButtonText === 'Login' ? 'Signing In...' : 'Creating Account...';
+				buttonLoaderEl.classList.remove('hidden');
+
 				if (authButtonText === 'Login') {
-					if (window.loginUser) {
-						await window.loginUser(email, password);
-					} else {
-						await loginUser(email, password);
-					}
+					await window.loginUser(email, password);
 				} else if (authButtonText === 'Register') {
-					if (window.registerUser) {
-						await window.registerUser(email, password, displayName);
-					} else {
-						await registerUser(email, password, displayName);
-					}
+					await window.registerUser(email, password, displayName);
 				}
 			} catch (err) {
 				let message = 'Authentication failed. Please try again.';
-				const code = (err && err.code) || '';
-				if (typeof code === 'string') {
-					if (code.includes('auth/invalid-email')) message = 'Invalid email address.';
-					else if (code.includes('auth/user-not-found')) message = 'No account found with that email.';
-					else if (code.includes('auth/wrong-password')) message = 'Incorrect password. Please try again.';
-					else if (code.includes('auth/email-already-in-use')) message = 'Email already registered. Please login instead.';
-					else if (code.includes('auth/weak-password')) message = 'Password must be at least 6 characters.';
-					else if (code.includes('auth/too-many-requests')) message = 'Too many attempts. Try again later.';
-					else if (err.message) message = err.message;
+
+				if (err && err.code) {
+					switch (err.code) {
+						case 'auth/invalid-email':
+							message = 'Invalid email address.';
+							break;
+						case 'auth/user-not-found':
+							message = 'No account found with that email. Please register first.';
+							break;
+						case 'auth/wrong-password':
+							message = 'Incorrect password. Please try again.';
+							break;
+						case 'auth/email-already-in-use':
+							message = 'Email already registered. Please login instead.';
+							break;
+						case 'auth/weak-password':
+							message = 'Password must be at least 6 characters long.';
+							break;
+						case 'auth/too-many-requests':
+							message = 'Too many attempts. Please try again later.';
+							break;
+						default:
+							message = err.message || message;
+					}
 				}
-				if (typeof window.showNotification === 'function') window.showNotification(message, 'error');
+
+				window.AuthUtils.showNotification(message, 'error');
 			} finally {
 				authButtonEl.disabled = false;
+				const buttonTextEl = document.getElementById('authButtonText');
+				const buttonLoaderEl = document.getElementById('authButtonLoader');
+
+				buttonTextEl.textContent = authButtonText;
+				buttonLoaderEl.classList.add('hidden');
 			}
 		}
 
@@ -1655,65 +1769,6 @@
             });
         }
 
-        function registerUser(email, password, displayName) {
-            email = normalizeEmail(email);
-            const existingPlayer = gameData.players.find(p => normalizeEmail(p.email) === email);
-            if (existingPlayer) {
-                showNotification('Email already registered! Please login instead.', 'error');
-                return;
-            }
-            
-            if (password.length < 6) {
-                showNotification('Password must be at least 6 characters long', 'error');
-                return;
-            }
-            
-            if (containsProfanity(displayName)) {
-                showNotification('Display name contains inappropriate language. Please choose a different name.', 'error');
-                return;
-            }
-            
-            const newPlayer = {
-                id: getStablePlayerIdForEmail(email),
-                email: email,
-                password: password,
-                displayName: displayName || email.split('@')[0],
-                profilePic: registrationData.profilePic,
-                isCustomPic: registrationData.isCustomPic || false,
-                favoriteTeam: document.getElementById('favoriteTeam').value,
-                isEliminated: false,
-                usedTeams: [],
-                currentPick: null,
-                roundJoined: gameData.currentRound,
-                joinDate: new Date().toISOString(),
-                // Pick it! game data
-                pickItPicks: {}, // roundNum: {matchId: teamPicked}
-                pickItStats: {
-                    totalPicks: 0,
-                    correctPicks: 0,
-                    percentage: 0,
-                    weeklyMovement: 0,
-                    previousRank: null
-                }
-            };
-            
-            gameData.players.push(newPlayer);
-            saveGameData();
-            // Auto-configure sync URL after sign-up
-            const autoUrlReg = deriveAutoSyncUrlFromEmail(email);
-            if (autoUrlReg && autoUrlReg !== 'github') setSyncUrl(autoUrlReg);
-            
-            showNotification('Registration successful! Logging you in...', 'success');
-            try {
-                // Auto-login offline user
-                currentUser = newPlayer;
-                localStorage.setItem('currentUserEmail', email);
-                document.getElementById('authSection').classList.add('hidden');
-                document.getElementById('mainApp').classList.remove('hidden');
-                document.getElementById('userName').textContent = newPlayer.displayName;
-                updateUI();
-            } catch (_) {}
-        }
 
 
 
@@ -1787,62 +1842,6 @@
             window.tempCustomPic = null;
         }
 
-        async function loginUser(email, password) {
-            console.log('loginUser called with:', { email, password });
-            email = normalizeEmail(email);
-            if (syncUrl) {
-                await syncPullAndMaybeUpdate();
-            }
-            let player = gameData.players.find(p => normalizeEmail(p.email) === email);
-            console.log('Found player:', player);
-            if (!player) {
-                console.log('Player not found');
-                showNotification('Email not found. Please register first.', 'error');
-                return;
-            }
-
-            if (player.password !== password) {
-                console.log('Password mismatch');
-                showNotification('Incorrect password. Please try again.', 'error');
-                return;
-            }
-            
-            currentUser = player;
-            localStorage.setItem('currentUserEmail', email);
-            // Auto-configure sync using email
-            (async () => {
-                const auto = deriveAutoSyncUrlFromEmail(email);
-                if (auto === 'github') {
-                    await syncPullAndMaybeUpdate();
-                } else if (auto) {
-                    setSyncUrl(auto);
-                    await syncPullAndMaybeUpdate();
-                }
-            })();
-            document.getElementById('authSection').classList.add('hidden');
-            document.getElementById('mainApp').classList.remove('hidden');
-            document.getElementById('userName').textContent = player.displayName;
-            // Hide LMS UI until user explicitly opens it
-            document.getElementById('roundStatus').classList.add('hidden');
-            document.getElementById('lmsInterface').classList.add('hidden');
-            const statsPanel = document.getElementById('lmsStats');
-            if (statsPanel) statsPanel.classList.add('hidden');
-            try { generateTeamButtons(); } catch (e) {}
-            
-            const userProfilePicElement = document.getElementById('userProfilePic');
-            userProfilePicElement.innerHTML = `<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMFCSXJWsbmkra95ltt9Z9LJiRuMOsIBluqwF-g4&usqp=CAE&s" class="w-8 h-8 rounded-full object-cover border border-gray-300" alt="Profile" onerror="this.src=''; this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="w-8 h-8 rounded-full bg-gray-300 border border-gray-400" style="display: none;"></div>`;
-            
-            if (email === 'sacksjordan@gmail.com') {
-                document.getElementById('adminScores').classList.remove('hidden');
-            } else {
-                document.getElementById('adminScores').classList.add('hidden');
-            }
-            
-            showNotification(`Welcome back, ${player.displayName}!`, 'success');
-            updateUI();
-            try { generateTeamButtons(); } catch (e) {}
-            setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 0);
-        }
 
 
 
@@ -3437,6 +3436,49 @@
     appId: "1:1043782079157:web:916519d1d159af9268e4fc",
     measurementId: "G-8JELFED65D"
   };
+
+  // Authentication utilities
+  window.AuthUtils = {
+    showNotification: function(message, type = 'info') {
+      // Create notification element
+      const notification = document.createElement('div');
+      notification.className = `fixed top-4 right-4 px-6 py-3 rounded-lg shadow-lg z-50 transition-all duration-300 transform translate-x-full ${
+        type === 'error' ? 'bg-red-500 text-white' :
+        type === 'success' ? 'bg-green-500 text-white' :
+        'bg-blue-500 text-white'
+      }`;
+      notification.textContent = message;
+      document.body.appendChild(notification);
+
+      // Animate in
+      setTimeout(() => notification.classList.remove('translate-x-full'), 10);
+
+      // Auto remove after 5 seconds
+      setTimeout(() => {
+        notification.classList.add('translate-x-full');
+        setTimeout(() => document.body.removeChild(notification), 300);
+      }, 5000);
+    },
+
+    validateEmail: function(email) {
+      const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return re.test(email);
+    },
+
+    validatePassword: function(password) {
+      return password && password.length >= 6;
+    },
+
+    validateDisplayName: function(displayName) {
+      if (!displayName || displayName.trim().length === 0) return false;
+      if (displayName.length > 50) return false;
+      // Check for inappropriate language (basic check)
+      const inappropriate = ['admin', 'administrator', 'system', 'mod', 'moderator'];
+      return !inappropriate.some(word =>
+        displayName.toLowerCase().includes(word)
+      );
+    }
+  };
 </script><script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-app.js";
 import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail, signOut } from "https://www.gstatic.com/firebasejs/10.14.0/firebase-auth.js";
@@ -3544,32 +3586,52 @@ if (mainApp) mainApp.classList.add('hidden');
 });
 
 window.registerUser = async function(email, password, displayName) {
-email = (email || '').trim().toLowerCase();
-const cred = await createUserWithEmailAndPassword(auth, email, password);
-if (displayName) { try { await updateProfile(cred.user, { displayName }); } catch (_) {} }
-const uid = cred.user.uid;
-const playerRef = doc(db, 'players', uid);
-const newPlayer = {
-id: uid,
-email,
-displayName: displayName || email.split('@')[0],
-profilePic: (window.registrationData && window.registrationData.profilePic) || null,
-isCustomPic: (window.registrationData && !!window.registrationData.isCustomPic) || false,
-favoriteTeam: (document.getElementById('favoriteTeam')?.value) || '',
-isEliminated: false,
-usedTeams: [],
-currentPick: null,
-roundJoined: window.gameData?.currentRound || 1,
-joinDate: new Date().toISOString(),
-pickItPicks: {},
-pickItStats: { totalPicks: 0, correctPicks: 0, percentage: 0, weeklyMovement: 0, previousRank: null }
-};
-await setDoc(playerRef, newPlayer, { merge: true });
-if (typeof window.showNotification === 'function') window.showNotification('Registration successful! You can now login and start playing.', 'success');
-if (typeof window.switchTab === 'function') window.switchTab('login');
-const emailEl = document.getElementById('email'); if (emailEl) emailEl.value = '';
-const pwdEl = document.getElementById('password'); if (pwdEl) pwdEl.value = '';
-const nameEl = document.getElementById('displayName'); if (nameEl) nameEl.value = '';
+    email = (email || '').trim().toLowerCase();
+
+    const cred = await createUserWithEmailAndPassword(auth, email, password);
+    if (displayName) {
+        try {
+            await updateProfile(cred.user, { displayName });
+        } catch (_) {}
+    }
+
+    const uid = cred.user.uid;
+    const playerRef = doc(db, 'players', uid);
+    const newPlayer = {
+        id: uid,
+        email,
+        displayName: displayName || email.split('@')[0],
+        profilePic: (window.registrationData && window.registrationData.profilePic) || null,
+        isCustomPic: (window.registrationData && !!window.registrationData.isCustomPic) || false,
+        favoriteTeam: (document.getElementById('favoriteTeam')?.value) || '',
+        isEliminated: false,
+        usedTeams: [],
+        currentPick: null,
+        roundJoined: window.gameData?.currentRound || 1,
+        joinDate: new Date().toISOString(),
+        pickItPicks: {},
+        pickItStats: {
+            totalPicks: 0,
+            correctPicks: 0,
+            percentage: 0,
+            weeklyMovement: 0,
+            previousRank: null
+        }
+    };
+
+    await setDoc(playerRef, newPlayer, { merge: true });
+    window.AuthUtils.showNotification('Registration successful! You can now login and start playing.', 'success');
+
+    if (typeof window.switchTab === 'function') window.switchTab('login');
+
+    // Clear form fields
+    const emailEl = document.getElementById('email');
+    const pwdEl = document.getElementById('password');
+    const nameEl = document.getElementById('displayName');
+
+    if (emailEl) emailEl.value = '';
+    if (pwdEl) pwdEl.value = '';
+    if (nameEl) nameEl.value = '';
 };
 
 window.loginUser = async function(email, password) {
@@ -3582,11 +3644,33 @@ await signOut(auth);
 };
 
 window.resetPassword = async function() {
-const email = (document.getElementById('resetEmail')?.value || '').trim().toLowerCase();
-if (!email) { if (typeof window.showNotification === 'function') window.showNotification('Please enter your email', 'error'); return; }
-await sendPasswordResetEmail(auth, email);
-if (typeof window.hidePasswordReset === 'function') window.hidePasswordReset();
-if (typeof window.showNotification === 'function') window.showNotification('Password reset email sent. Check your inbox.', 'success');
+    const email = (document.getElementById('resetEmail')?.value || '').trim().toLowerCase();
+
+    if (!email) {
+        window.AuthUtils.showNotification('Please enter your email', 'error');
+        return;
+    }
+
+    if (!window.AuthUtils.validateEmail(email)) {
+        window.AuthUtils.showNotification('Please enter a valid email address', 'error');
+        return;
+    }
+
+    try {
+        await sendPasswordResetEmail(auth, email);
+
+        if (typeof window.hidePasswordReset === 'function') window.hidePasswordReset();
+
+        window.AuthUtils.showNotification('Password reset email sent. Check your inbox.', 'success');
+    } catch (err) {
+        let message = 'Failed to send password reset email. Please try again.';
+
+        if (err && err.code === 'auth/user-not-found') {
+            message = 'No account found with that email address.';
+        }
+
+        window.AuthUtils.showNotification(message, 'error');
+    }
 };
 
 const legacySaveGameData = window.saveGameData;
