@@ -60,8 +60,8 @@
         <!-- Login/Register Form -->
         <div id="authSection" class="max-w-md mx-auto bg-white rounded-xl card-shadow p-6 mb-8">
             <div class="flex mb-4">
-                <button id="loginTab" class="flex-1 py-2 px-4 bg-blue-600 text-white rounded-l-lg font-medium">Login</button>
-                <button id="registerTab" class="flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-r-lg font-medium">Register</button>
+                <button type="button" id="loginTab" class="flex-1 py-2 px-4 bg-blue-600 text-white rounded-l-lg font-medium">Login</button>
+                <button type="button" id="registerTab" class="flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-r-lg font-medium">Register</button>
             </div>
             
             <form id="authForm" novalidate>
@@ -1292,18 +1292,18 @@
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
-            loadGameData();
-            setupEventListeners();
-            updateGameStatus();
-            updateUI();
+            try { switchTab('login'); } catch (_) {}
+            try { loadGameData(); } catch (e) { console.error('loadGameData error', e); }
+            try { setupEventListeners(); } catch (e) { console.error('setupEventListeners error', e); }
+            try { updateGameStatus(); } catch (e) { console.error('updateGameStatus error', e); }
+            try { updateUI(); } catch (e) { console.error('updateUI error', e); }
             try { generateTeamButtons(); } catch (e) {}
             // Ensure render after any late layout/JS work
             setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 0);
             setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 200);
-            // Force show Current Round tab on load
             // Do not auto-open LMS. User opens via button.
             setInterval(() => {
-                updateGameStatus();
+                try { updateGameStatus(); } catch (_) {}
             }, 1000);
 
             // Observe Current Round section visibility and rebuild when shown
@@ -1354,11 +1354,13 @@
             
             
             // Round selectors
-            document.getElementById('roundSelector').addEventListener('change', updateAllFixtures);
+            const roundSel = document.getElementById('roundSelector');
+            if (roundSel) roundSel.addEventListener('change', updateAllFixtures);
             
             
             // Confirm pick
-            document.getElementById('confirmPick').addEventListener('click', confirmPick);
+            const confirmBtn = document.getElementById('confirmPick');
+            if (confirmBtn) confirmBtn.addEventListener('click', confirmPick);
             
             
             // Toggle eliminated (panel removed — guard)
@@ -1368,43 +1370,59 @@
             }
             
             // View picks modal
-            document.getElementById('viewPicksCard').addEventListener('click', openPicksModal);
-            document.getElementById('closePicksModal').addEventListener('click', closePicksModal);
+            const viewPicks = document.getElementById('viewPicksCard');
+            if (viewPicks) viewPicks.addEventListener('click', openPicksModal);
+            const closePicks = document.getElementById('closePicksModal');
+            if (closePicks) closePicks.addEventListener('click', closePicksModal);
             
             // Player list modals
-            document.getElementById('standingPlayersCard').addEventListener('click', () => openPlayerListModal('standing'));
-            document.getElementById('eliminatedPlayersCard').addEventListener('click', () => openPlayerListModal('eliminated'));
+            const standingCard = document.getElementById('standingPlayersCard');
+            if (standingCard) standingCard.addEventListener('click', () => openPlayerListModal('standing'));
+            const eliminatedCard = document.getElementById('eliminatedPlayersCard');
+            if (eliminatedCard) eliminatedCard.addEventListener('click', () => openPlayerListModal('eliminated'));
             const closePlayerListBtn = document.getElementById('closePlayerListModal');
             if (closePlayerListBtn) closePlayerListBtn.addEventListener('click', closePlayerListModal);
             
             // Admin modal
-            document.getElementById('adminScores').addEventListener('click', openAdminModal);
-            document.getElementById('closeAdminModal').addEventListener('click', closeAdminModal);
+            const adminBtn = document.getElementById('adminScores');
+            if (adminBtn) adminBtn.addEventListener('click', openAdminModal);
+            const closeAdmin = document.getElementById('closeAdminModal');
+            if (closeAdmin) closeAdmin.addEventListener('click', closeAdminModal);
             
             // Admin tabs
-            document.getElementById('adminScoresTab').addEventListener('click', () => switchAdminTab('scores'));
-            document.getElementById('adminPlayersTab').addEventListener('click', () => switchAdminTab('players'));
+            const adminScoresTab = document.getElementById('adminScoresTab');
+            if (adminScoresTab) adminScoresTab.addEventListener('click', () => switchAdminTab('scores'));
+            const adminPlayersTab = document.getElementById('adminPlayersTab');
+            if (adminPlayersTab) adminPlayersTab.addEventListener('click', () => switchAdminTab('players'));
             
             // Admin round selector
-            document.getElementById('adminRoundSelector').addEventListener('change', populateAdminScores);
+            const adminRoundSel = document.getElementById('adminRoundSelector');
+            if (adminRoundSel) adminRoundSel.addEventListener('change', populateAdminScores);
             
             // Admin tabs
-            document.getElementById('adminPlayoffsTab').addEventListener('click', () => switchAdminTab('playoffs'));
+            const adminPlayoffsTab = document.getElementById('adminPlayoffsTab');
+            if (adminPlayoffsTab) adminPlayoffsTab.addEventListener('click', () => switchAdminTab('playoffs'));
             
             // Chat functionality
             
             
             // Logout
-            document.getElementById('logoutBtn').addEventListener('click', logout);
+            const logoutBtn = document.getElementById('logoutBtn');
+            if (logoutBtn) logoutBtn.addEventListener('click', logout);
             
             // Settings
-            document.getElementById('settingsBtn').addEventListener('click', openSettingsModal);
-            document.getElementById('closeSettingsModal').addEventListener('click', closeSettingsModal);
-            document.getElementById('settingsForm').addEventListener('submit', saveSettings);
-            document.getElementById('cancelSettings').addEventListener('click', closeSettingsModal);
+            const settingsBtn = document.getElementById('settingsBtn');
+            if (settingsBtn) settingsBtn.addEventListener('click', openSettingsModal);
+            const closeSettings = document.getElementById('closeSettingsModal');
+            if (closeSettings) closeSettings.addEventListener('click', closeSettingsModal);
+            const settingsForm = document.getElementById('settingsForm');
+            if (settingsForm) settingsForm.addEventListener('submit', saveSettings);
+            const cancelSettings = document.getElementById('cancelSettings');
+            if (cancelSettings) cancelSettings.addEventListener('click', closeSettingsModal);
             
             // Profile modal
-            document.getElementById('closeProfileModal').addEventListener('click', closeProfileModal);
+            const closeProfile = document.getElementById('closeProfileModal');
+            if (closeProfile) closeProfile.addEventListener('click', closeProfileModal);
             
             // Password reset
             document.getElementById('forgotPasswordBtn').addEventListener('click', showPasswordReset);
@@ -1451,7 +1469,15 @@
         function loadGameData() {
             const saved = localStorage.getItem('urcGameData');
             if (saved) {
-                gameData = { ...gameData, ...JSON.parse(saved) };
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (parsed && typeof parsed === 'object') {
+                        gameData = { ...gameData, ...parsed };
+                    }
+                } catch (e) {
+                    console.warn('Ignoring corrupted saved game data; clearing key', e);
+                    try { localStorage.removeItem('urcGameData'); } catch (_) {}
+                }
             }
             dedupePlayersByEmail();
             // Auto-attach current user if we previously stored an email
@@ -1634,12 +1660,16 @@
             const autoUrlReg = deriveAutoSyncUrlFromEmail(email);
             if (autoUrlReg && autoUrlReg !== 'github') setSyncUrl(autoUrlReg);
             
-            showNotification('Registration successful! You can now login and start playing.', 'success');
-            
-            switchTab('login');
-            document.getElementById('email').value = '';
-            document.getElementById('password').value = '';
-            document.getElementById('displayName').value = '';
+            showNotification('Registration successful! Logging you in...', 'success');
+            try {
+                // Auto-login offline user
+                currentUser = newPlayer;
+                localStorage.setItem('currentUserEmail', email);
+                document.getElementById('authSection').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                document.getElementById('userName').textContent = newPlayer.displayName;
+                updateUI();
+            } catch (_) {}
         }
 
 
