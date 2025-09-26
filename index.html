@@ -59,94 +59,127 @@
 
         <!-- Login/Register Form -->
         <div id="authSection" class="max-w-md mx-auto bg-white rounded-xl card-shadow p-6 mb-8">
-            <div class="flex mb-4">
-                <button type="button" id="loginTab" class="flex-1 py-2 px-4 bg-blue-600 text-white rounded-l-lg font-medium">Login</button>
-                <button type="button" id="registerTab" class="flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-r-lg font-medium">Register</button>
+            <!-- Auth Mode Toggle -->
+            <div class="flex mb-6 bg-gray-100 rounded-lg p-1">
+                <button type="button" id="loginTab" class="flex-1 py-2 px-4 bg-blue-600 text-white rounded-md font-medium transition-all duration-200">Login</button>
+                <button type="button" id="registerTab" class="flex-1 py-2 px-4 text-gray-600 rounded-md font-medium transition-all duration-200">Register</button>
             </div>
             
+            <!-- Auth Form -->
             <form id="authForm" novalidate>
+                <!-- Email Field -->
                 <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-medium mb-2">Email</label>
-                    <input type="email" id="email" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <label for="email" class="block text-gray-700 text-sm font-medium mb-2">Email Address</label>
+                    <input type="email" id="email" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                           placeholder="Enter your email" required>
+                    <div id="emailError" class="text-red-500 text-xs mt-1 hidden"></div>
                 </div>
                 
+                <!-- Password Field -->
                 <div class="mb-4">
-                    <label class="block text-gray-700 text-sm font-medium mb-2">Password</label>
-                    <input type="password" id="password" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" required minlength="6">
-                    <p id="passwordHelp" class="text-xs text-gray-500 mt-1 hidden">Password must be at least 6 characters long</p>
-                </div>
-                
-
-                
-                <div id="nameField" class="mb-4 hidden">
-                    <label class="block text-gray-700 text-sm font-medium mb-2">Display Name</label>
-                    <input type="text" id="displayName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                
-                <!-- Profile Picture Selection -->
-                <div id="profilePicField" class="mb-4 hidden">
-                    <label class="block text-gray-700 text-sm font-medium mb-2">Profile Picture (Optional)</label>
-                    
-                    <!-- Upload Custom Picture -->
-                    <div class="mb-4 p-4 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 transition-colors">
-                        <div class="text-center">
-                            <div class="mb-2">
-                                <svg class="mx-auto h-8 w-8 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                            </div>
-                            <div class="text-sm text-gray-500">Profile pictures are disabled</div>
-                            <p class="text-xs text-gray-500 mt-1">JPG, PNG, GIF up to 2MB</p>
+                    <label for="password" class="block text-gray-700 text-sm font-medium mb-2">Password</label>
+                    <div class="relative">
+                        <input type="password" id="password" 
+                               class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                               placeholder="Enter your password" required minlength="6">
+                        <button type="button" id="togglePassword" class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors">
+                            <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                            </svg>
+                            <svg id="eyeOffIcon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <div id="passwordError" class="text-red-500 text-xs mt-1 hidden"></div>
+                    <div id="passwordStrength" class="mt-2 hidden">
+                        <div class="text-xs text-gray-600 mb-1">Password strength:</div>
+                        <div class="flex space-x-1">
+                            <div id="strength1" class="h-1 w-1/4 bg-gray-200 rounded"></div>
+                            <div id="strength2" class="h-1 w-1/4 bg-gray-200 rounded"></div>
+                            <div id="strength3" class="h-1 w-1/4 bg-gray-200 rounded"></div>
+                            <div id="strength4" class="h-1 w-1/4 bg-gray-200 rounded"></div>
                         </div>
-                        <div id="customPicPreview" class="hidden mt-3 text-center">
-                            <img id="customPicImage" class="w-16 h-16 rounded-full mx-auto object-cover border-2 border-blue-500" alt="Custom profile picture">
-                            <button type="button" id="removeCustomPic" class="mt-2 text-xs text-red-600 hover:text-red-800">Remove</button>
-                        </div>
+                        <div id="strengthText" class="text-xs mt-1 text-gray-500"></div>
                     </div>
                 </div>
                 
-                <!-- Favorite Team Selection -->
-                <div id="favoriteTeamField" class="mb-4 hidden">
-                    <label class="block text-gray-700 text-sm font-medium mb-2">Favorite URC Team (Optional)</label>
-                    <select id="favoriteTeam" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">Select your favorite team</option>
-                        <option value="Benetton Rugby">Benetton Rugby</option>
-                        <option value="Bulls">Bulls</option>
-                        <option value="Cardiff Rugby">Cardiff Rugby</option>
-                        <option value="Connacht">Connacht</option>
-                        <option value="Dragons">Dragons</option>
-                        <option value="Edinburgh">Edinburgh</option>
-                        <option value="Glasgow Warriors">Glasgow Warriors</option>
-                        <option value="Leinster">Leinster</option>
-                        <option value="Lions">Lions</option>
-                        <option value="Munster">Munster</option>
-                        <option value="Ospreys">Ospreys</option>
-                        <option value="Scarlets">Scarlets</option>
-                        <option value="Sharks">Sharks</option>
-                        <option value="Stormers">Stormers</option>
-                        <option value="Ulster">Ulster</option>
-                        <option value="Zebre">Zebre</option>
-                    </select>
+                <!-- Register-only fields -->
+                <div id="registerFields" class="hidden">
+                    <!-- Display Name -->
+                    <div class="mb-4">
+                        <label for="displayName" class="block text-gray-700 text-sm font-medium mb-2">Display Name</label>
+                        <input type="text" id="displayName" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200" 
+                               placeholder="How should we call you?">
+                        <div id="displayNameError" class="text-red-500 text-xs mt-1 hidden"></div>
+                    </div>
+                    
+                    <!-- Favorite Team -->
+                    <div class="mb-4">
+                        <label for="favoriteTeam" class="block text-gray-700 text-sm font-medium mb-2">Favorite Team (Optional)</label>
+                        <select id="favoriteTeam" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200">
+                            <option value="">Select your favorite team...</option>
+                            <option value="Benetton Rugby">Benetton Rugby</option>
+                            <option value="Bulls">Bulls</option>
+                            <option value="Cardiff Rugby">Cardiff Rugby</option>
+                            <option value="Connacht">Connacht</option>
+                            <option value="Dragons">Dragons</option>
+                            <option value="Edinburgh">Edinburgh</option>
+                            <option value="Glasgow Warriors">Glasgow Warriors</option>
+                            <option value="Leinster">Leinster</option>
+                            <option value="Lions">Lions</option>
+                            <option value="Munster">Munster</option>
+                            <option value="Ospreys">Ospreys</option>
+                            <option value="Scarlets">Scarlets</option>
+                            <option value="Sharks">Sharks</option>
+                            <option value="Stormers">Stormers</option>
+                            <option value="Ulster">Ulster</option>
+                            <option value="Zebre">Zebre</option>
+                        </select>
+                    </div>
                 </div>
                 
-                <button type="submit" id="authButton" class="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 font-medium">Login</button>
+                <!-- Submit Button -->
+                <button type="submit" id="authButton" 
+                        class="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span id="authButtonText">Login</span>
+                    <div id="authButtonSpinner" class="hidden inline-block ml-2 w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                </button>
                 
-                <div id="forgotPasswordLink" class="text-center mt-3">
-                    <button type="button" id="forgotPasswordBtn" class="text-sm text-blue-600 hover:text-blue-800 underline">Forgot Password?</button>
+                <!-- Forgot Password Link (Login only) -->
+                <div id="forgotPasswordSection" class="mt-4 text-center">
+                    <button type="button" id="forgotPasswordBtn" class="text-sm text-blue-600 hover:text-blue-800 transition-colors">
+                        Forgot your password?
+                    </button>
                 </div>
             </form>
             
-            <!-- Password Reset Form -->
-            <div id="passwordResetForm" class="hidden mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                <h4 class="font-medium text-gray-800 mb-3">🔐 Password Reset</h4>
-                <p class="text-sm text-gray-600 mb-3">Enter your email and display name to reset your password:</p>
-                <div class="space-y-3">
-                    <input type="email" id="resetEmail" placeholder="Your email address" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <input type="text" id="resetDisplayName" placeholder="Your display name" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <input type="password" id="newPassword" placeholder="New password (min 6 characters)" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" minlength="6">
-                    <div class="flex space-x-2">
-                        <button type="button" id="resetPasswordBtn" class="flex-1 bg-yellow-600 text-white py-2 px-4 rounded-lg hover:bg-yellow-700 font-medium">Reset Password</button>
-                        <button type="button" id="cancelResetBtn" class="flex-1 bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 font-medium">Cancel</button>
+            <!-- Password Reset Modal -->
+            <div id="passwordResetModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 hidden z-50">
+                <div class="bg-white rounded-xl max-w-md w-full p-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Reset Password</h3>
+                        <button type="button" id="closeResetModal" class="text-gray-400 hover:text-gray-600">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="text-gray-600 mb-4">Enter your email and display name to reset your password:</p>
+                    <div class="space-y-4">
+                        <input type="email" id="resetEmail" placeholder="Email address" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="text" id="resetDisplayName" placeholder="Display name" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="password" id="newPassword" placeholder="New password (min 6 characters)" 
+                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" minlength="6">
+                        <div class="flex space-x-3">
+                            <button type="button" id="resetPasswordBtn" class="flex-1 bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 font-medium">Reset Password</button>
+                            <button type="button" id="cancelResetBtn" class="flex-1 bg-gray-500 text-white py-3 px-4 rounded-lg hover:bg-gray-600 font-medium">Cancel</button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -1336,19 +1369,60 @@
                 });
             }
             // Auth tabs
+            // ===== NEW AUTH EVENT HANDLERS =====
+            
+            // Login/Register tabs
             document.getElementById('loginTab').addEventListener('click', () => {
-                console.log('Login tab clicked');
-                switchTab('login');
+                switchAuthMode('login');
             });
+            
             document.getElementById('registerTab').addEventListener('click', () => {
-                console.log('Register tab clicked');
-                switchTab('register');
+                switchAuthMode('register');
             });
 
-            // Auth form
-            document.getElementById('authForm').addEventListener('submit', (e) => {
-                console.log('Auth form submitted');
-                handleAuth(e);
+            // Auth form submission
+            document.getElementById('authForm').addEventListener('submit', handleAuthSubmission);
+            
+            // Password visibility toggle
+            document.getElementById('togglePassword').addEventListener('click', togglePasswordVisibility);
+            
+            // Password strength indicator
+            document.getElementById('password').addEventListener('input', (e) => {
+                updatePasswordStrength(e.target.value);
+            });
+            
+            // Forgot password modal
+            document.getElementById('forgotPasswordBtn').addEventListener('click', showPasswordResetModal);
+            document.getElementById('closeResetModal').addEventListener('click', hidePasswordResetModal);
+            document.getElementById('cancelResetBtn').addEventListener('click', hidePasswordResetModal);
+            document.getElementById('resetPasswordBtn').addEventListener('click', handlePasswordReset);
+            
+            // Close modal when clicking outside
+            document.getElementById('passwordResetModal').addEventListener('click', (e) => {
+                if (e.target.id === 'passwordResetModal') {
+                    hidePasswordResetModal();
+                }
+            });
+            
+            // Real-time validation
+            document.getElementById('email').addEventListener('blur', (e) => {
+                const email = e.target.value.trim();
+                if (email && !validateEmail(email)) {
+                    showFieldError('email', 'Please enter a valid email address');
+                } else {
+                    hideFieldError('email');
+                }
+            });
+            
+            document.getElementById('displayName').addEventListener('blur', (e) => {
+                const displayName = e.target.value.trim();
+                if (!isLoginMode && displayName && displayName.length < 2) {
+                    showFieldError('displayName', 'Display name must be at least 2 characters long');
+                } else if (!isLoginMode && displayName && containsProfanity(displayName)) {
+                    showFieldError('displayName', 'Display name contains inappropriate language');
+                } else {
+                    hideFieldError('displayName');
+                }
             });
             
             // Game mode toggles
@@ -1435,9 +1509,9 @@
             if (closeProfile) closeProfile.addEventListener('click', closeProfileModal);
             
             // Password reset
-            document.getElementById('forgotPasswordBtn').addEventListener('click', showPasswordReset);
-            document.getElementById('resetPasswordBtn').addEventListener('click', resetPassword);
-            document.getElementById('cancelResetBtn').addEventListener('click', hidePasswordReset);
+            // Duplicate removed - handled above
+            // Handled by new authentication system above
+            // Duplicate removed - handled above
             
 			// Email verification (guard if element missing)
 			try {
@@ -1481,7 +1555,7 @@
 
         // Initialize app
         document.addEventListener('DOMContentLoaded', function() {
-            try { switchTab('login'); } catch (_) {}
+            try { switchAuthMode('login'); } catch (_) {}
             try { loadGameData(); } catch (e) { console.error('loadGameData error', e); }
             try { setupEventListeners(); } catch (e) { console.error('setupEventListeners error', e); }
             try { updateGameStatus(); } catch (e) { console.error('updateGameStatus error', e); }
@@ -1544,97 +1618,11 @@
             scheduleSyncPush();
         }
 
-        function resetVerificationState() {
-            // Reset verification state when switching tabs
-            verificationState = {
-                email: null,
-                code: null,
-                expiresAt: null,
-                attempts: 0,
-                maxAttempts: 3,
-                timer: null
-            };
-        }
+        // Old resetVerificationState function removed - not needed in new auth system
 
-        function switchTab(tab) {
-            const loginTab = document.getElementById('loginTab');
-            const registerTab = document.getElementById('registerTab');
-            const nameField = document.getElementById('nameField');
-            const profilePicField = document.getElementById('profilePicField');
-            const favoriteTeamField = document.getElementById('favoriteTeamField');
-            const passwordHelp = document.getElementById('passwordHelp');
-            const authButton = document.getElementById('authButton');
-            const forgotPasswordLink = document.getElementById('forgotPasswordLink');
-            const passwordResetForm = document.getElementById('passwordResetForm');
-            
-            resetVerificationState();
-            
-            // Hide password reset form when switching tabs
-            passwordResetForm.classList.add('hidden');
-            
-            if (tab === 'login') {
-                loginTab.className = 'flex-1 py-2 px-4 bg-blue-600 text-white rounded-l-lg font-medium';
-                registerTab.className = 'flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-r-lg font-medium';
-                nameField.classList.add('hidden');
-                profilePicField.classList.add('hidden');
-                favoriteTeamField.classList.add('hidden');
-                passwordHelp.classList.add('hidden');
-                forgotPasswordLink.classList.remove('hidden');
-                authButton.textContent = 'Login';
-            } else {
-                loginTab.className = 'flex-1 py-2 px-4 bg-gray-200 text-gray-700 rounded-l-lg font-medium';
-                registerTab.className = 'flex-1 py-2 px-4 bg-blue-600 text-white rounded-r-lg font-medium';
-                nameField.classList.remove('hidden');
-                profilePicField.classList.remove('hidden');
-                favoriteTeamField.classList.remove('hidden');
-                passwordHelp.classList.remove('hidden');
-                forgotPasswordLink.classList.add('hidden');
-                authButton.textContent = 'Register';
-            }
-        }
+        // Old switchTab function removed - replaced with switchAuthMode
 
-		async function handleAuth(e) {
-			e.preventDefault();
-			const email = document.getElementById('email').value;
-			const password = document.getElementById('password').value;
-			const displayName = document.getElementById('displayName').value;
-			const authButtonEl = document.getElementById('authButton');
-			const authButtonText = authButtonEl.textContent;
-
-			console.log('Auth attempt:', { email, authButtonText, hasWindowLoginUser: !!window.loginUser });
-
-			try {
-				authButtonEl.disabled = true;
-				if (authButtonText === 'Login') {
-					if (window.loginUser) {
-						await window.loginUser(email, password);
-					} else {
-						await loginUser(email, password);
-					}
-				} else if (authButtonText === 'Register') {
-					if (window.registerUser) {
-						await window.registerUser(email, password, displayName);
-					} else {
-						await registerUser(email, password, displayName);
-					}
-				}
-			} catch (err) {
-				let message = 'Authentication failed. Please try again.';
-				const code = (err && err.code) || '';
-				if (typeof code === 'string') {
-					if (code.includes('auth/invalid-email')) message = 'Invalid email address.';
-					else if (code.includes('auth/user-not-found')) message = 'No account found with that email.';
-					else if (code.includes('auth/wrong-password')) message = 'Incorrect password. Please try again.';
-					else if (code.includes('auth/email-already-in-use')) message = 'Email already registered. Please login instead.';
-					else if (code.includes('auth/weak-password')) message = 'Password must be at least 6 characters.';
-					else if (code.includes('auth/too-many-requests')) message = 'Too many attempts. Try again later.';
-					else if (err.message) message = err.message;
-				}
-				if (typeof window.showNotification === 'function') window.showNotification(message, 'error');
-			} finally {
-				authButtonEl.disabled = false;
-			}
-		}
+        // Old handleAuth function removed - replaced with handleAuthSubmission
 
         // Enhanced profanity filter function
         function containsProfanity(text) {
@@ -1655,64 +1643,293 @@
             });
         }
 
-        function registerUser(email, password, displayName) {
-            email = normalizeEmail(email);
-            const existingPlayer = gameData.players.find(p => normalizeEmail(p.email) === email);
-            if (existingPlayer) {
-                showNotification('Email already registered! Please login instead.', 'error');
-                return;
+        // ===== NEW AUTHENTICATION SYSTEM =====
+        
+        // Authentication state
+        let isLoginMode = true;
+        let registrationData = {};
+        
+        // Validation utilities
+        function validateEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+        
+        function validatePassword(password) {
+            const errors = [];
+            if (password.length < 6) errors.push('Password must be at least 6 characters long');
+            if (!/[A-Za-z]/.test(password)) errors.push('Password must contain at least one letter');
+            if (!/\d/.test(password)) errors.push('Password must contain at least one number');
+            return errors;
+        }
+        
+        function calculatePasswordStrength(password) {
+            let score = 0;
+            if (password.length >= 6) score++;
+            if (password.length >= 8) score++;
+            if (/[A-Z]/.test(password) && /[a-z]/.test(password)) score++;
+            if (/\d/.test(password)) score++;
+            if (/[^A-Za-z0-9]/.test(password)) score++;
+            
+            return Math.min(4, score);
+        }
+        
+        function showFieldError(fieldId, message) {
+            const errorElement = document.getElementById(fieldId + 'Error');
+            const inputElement = document.getElementById(fieldId);
+            
+            if (errorElement) {
+                errorElement.textContent = message;
+                errorElement.classList.remove('hidden');
             }
             
-            if (password.length < 6) {
-                showNotification('Password must be at least 6 characters long', 'error');
-                return;
+            if (inputElement) {
+                inputElement.classList.add('border-red-500');
+                inputElement.classList.remove('border-gray-300');
+            }
+        }
+        
+        function hideFieldError(fieldId) {
+            const errorElement = document.getElementById(fieldId + 'Error');
+            const inputElement = document.getElementById(fieldId);
+            
+            if (errorElement) {
+                errorElement.classList.add('hidden');
             }
             
-            if (containsProfanity(displayName)) {
-                showNotification('Display name contains inappropriate language. Please choose a different name.', 'error');
-                return;
+            if (inputElement) {
+                inputElement.classList.remove('border-red-500');
+                inputElement.classList.add('border-gray-300');
             }
+        }
+        
+        function updatePasswordStrength(password) {
+            const strength = calculatePasswordStrength(password);
+            const strengthIndicator = document.getElementById('passwordStrength');
+            const strengthText = document.getElementById('strengthText');
             
-            const newPlayer = {
-                id: getStablePlayerIdForEmail(email),
-                email: email,
-                password: password,
-                displayName: displayName || email.split('@')[0],
-                profilePic: registrationData.profilePic,
-                isCustomPic: registrationData.isCustomPic || false,
-                favoriteTeam: document.getElementById('favoriteTeam').value,
-                isEliminated: false,
-                usedTeams: [],
-                currentPick: null,
-                roundJoined: gameData.currentRound,
-                joinDate: new Date().toISOString(),
-                // Pick it! game data
-                pickItPicks: {}, // roundNum: {matchId: teamPicked}
-                pickItStats: {
-                    totalPicks: 0,
-                    correctPicks: 0,
-                    percentage: 0,
-                    weeklyMovement: 0,
-                    previousRank: null
+            if (!isLoginMode && password.length > 0) {
+                strengthIndicator.classList.remove('hidden');
+                
+                // Update strength bars
+                for (let i = 1; i <= 4; i++) {
+                    const bar = document.getElementById('strength' + i);
+                    if (i <= strength) {
+                        bar.classList.remove('bg-gray-200');
+                        if (strength <= 1) bar.classList.add('bg-red-500');
+                        else if (strength <= 2) bar.classList.add('bg-yellow-500');
+                        else if (strength <= 3) bar.classList.add('bg-blue-500');
+                        else bar.classList.add('bg-green-500');
+                    } else {
+                        bar.classList.add('bg-gray-200');
+                        bar.classList.remove('bg-red-500', 'bg-yellow-500', 'bg-blue-500', 'bg-green-500');
+                    }
                 }
-            };
-            
-            gameData.players.push(newPlayer);
-            saveGameData();
-            // Auto-configure sync URL after sign-up
-            const autoUrlReg = deriveAutoSyncUrlFromEmail(email);
-            if (autoUrlReg && autoUrlReg !== 'github') setSyncUrl(autoUrlReg);
-            
-            showNotification('Registration successful! Logging you in...', 'success');
+                
+                // Update strength text
+                const strengthTexts = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
+                strengthText.textContent = strengthTexts[strength] || 'Very Weak';
+            } else {
+                strengthIndicator.classList.add('hidden');
+            }
+        }
+        
+        // Register user function
+        async function registerUser(email, password, displayName) {
             try {
-                // Auto-login offline user
-                currentUser = newPlayer;
+                email = normalizeEmail(email);
+                
+                // Check if user already exists
+                const existingPlayer = gameData.players.find(p => normalizeEmail(p.email) === email);
+                if (existingPlayer) {
+                    throw new Error('Email already registered! Please login instead.');
+                }
+                
+                // Validate inputs
+                if (!validateEmail(email)) {
+                    throw new Error('Please enter a valid email address.');
+                }
+                
+                const passwordErrors = validatePassword(password);
+                if (passwordErrors.length > 0) {
+                    throw new Error(passwordErrors[0]);
+                }
+                
+                if (!displayName || displayName.trim().length < 2) {
+                    throw new Error('Display name must be at least 2 characters long.');
+                }
+                
+                if (containsProfanity(displayName)) {
+                    throw new Error('Display name contains inappropriate language. Please choose a different name.');
+                }
+                
+                // Create new player
+                const newPlayer = {
+                    id: getStablePlayerIdForEmail(email),
+                    email: email,
+                    password: btoa(password), // Basic encoding (not secure, but better than plain text)
+                    displayName: displayName.trim(),
+                    profilePic: null,
+                    isCustomPic: false,
+                    favoriteTeam: document.getElementById('favoriteTeam').value || '',
+                    isEliminated: false,
+                    usedTeams: [],
+                    currentPick: null,
+                    roundJoined: gameData.currentRound || 1,
+                    joinDate: new Date().toISOString(),
+                    pickItPicks: {},
+                    pickItStats: {
+                        totalPicks: 0,
+                        correctPicks: 0,
+                        percentage: 0,
+                        weeklyMovement: 0,
+                        previousRank: null
+                    }
+                };
+                
+                // Add player to game data
+                gameData.players.push(newPlayer);
+                saveGameData();
+                
+                // Auto-login the new user
+                await loginUser(email, password, true);
+                
+                showNotification('Registration successful! Welcome to URC Last Man Standing!', 'success');
+                
+            } catch (error) {
+                throw error;
+            }
+        }
+        
+        // Login user function
+        async function loginUser(email, password, skipValidation = false) {
+            try {
+                email = normalizeEmail(email);
+                
+                if (!skipValidation) {
+                    // Validate inputs
+                    if (!validateEmail(email)) {
+                        throw new Error('Please enter a valid email address.');
+                    }
+                    
+                    if (!password || password.length < 6) {
+                        throw new Error('Password must be at least 6 characters long.');
+                    }
+                }
+                
+                // Sync data if available
+                if (syncUrl) {
+                    await syncPullAndMaybeUpdate();
+                }
+                
+                // Find player
+                const player = gameData.players.find(p => normalizeEmail(p.email) === email);
+                if (!player) {
+                    throw new Error('Email not found. Please register first.');
+                }
+                
+                // Check password
+                const storedPassword = player.password.startsWith('btoa:') ? 
+                    atob(player.password.substring(5)) : 
+                    (player.password.length > 20 ? atob(player.password) : player.password);
+                
+                if (storedPassword !== password) {
+                    throw new Error('Incorrect password. Please try again.');
+                }
+                
+                // Login successful
+                currentUser = player;
                 localStorage.setItem('currentUserEmail', email);
+                
+                // Auto-configure sync
+                const autoSyncUrl = deriveAutoSyncUrlFromEmail(email);
+                if (autoSyncUrl && autoSyncUrl !== 'github') {
+                    setSyncUrl(autoSyncUrl);
+                    await syncPullAndMaybeUpdate();
+                }
+                
+                // Update UI
                 document.getElementById('authSection').classList.add('hidden');
                 document.getElementById('mainApp').classList.remove('hidden');
-                document.getElementById('userName').textContent = newPlayer.displayName;
+                document.getElementById('userName').textContent = player.displayName;
+                
+                // Hide LMS UI initially
+                document.getElementById('roundStatus').classList.add('hidden');
+                document.getElementById('lmsInterface').classList.add('hidden');
+                const statsPanel = document.getElementById('lmsStats');
+                if (statsPanel) statsPanel.classList.add('hidden');
+                
+                // Update profile picture
+                const userProfilePicElement = document.getElementById('userProfilePic');
+                if (userProfilePicElement) {
+                    userProfilePicElement.innerHTML = `<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMFCSXJWsbmkra95ltt9Z9LJiRuMOsIBluqwF-g4&usqp=CAE&s" class="w-8 h-8 rounded-full object-cover border border-gray-300" alt="Profile" onerror="this.src=''; this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="w-8 h-8 rounded-full bg-gray-300 border border-gray-400" style="display: none;"></div>`;
+                }
+                
+                // Show admin panel for admin user
+                if (email === 'sacksjordan@gmail.com') {
+                    document.getElementById('adminScores').classList.remove('hidden');
+                } else {
+                    document.getElementById('adminScores').classList.add('hidden');
+                }
+                
+                // Update UI and generate team buttons
                 updateUI();
-            } catch (_) {}
+                try { generateTeamButtons(); } catch (e) {}
+                setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 0);
+                
+                if (!skipValidation) {
+                    showNotification(`Welcome back, ${player.displayName}!`, 'success');
+                }
+                
+            } catch (error) {
+                throw error;
+            }
+        }
+        
+        // Reset password function
+        async function resetPassword(email, displayName, newPassword) {
+            try {
+                email = normalizeEmail(email);
+                
+                // Validate inputs
+                if (!validateEmail(email)) {
+                    throw new Error('Please enter a valid email address.');
+                }
+                
+                if (!displayName || displayName.trim().length < 2) {
+                    throw new Error('Please enter your display name.');
+                }
+                
+                const passwordErrors = validatePassword(newPassword);
+                if (passwordErrors.length > 0) {
+                    throw new Error(passwordErrors[0]);
+                }
+                
+                // Find player
+                const player = gameData.players.find(p => 
+                    normalizeEmail(p.email) === email && 
+                    p.displayName.toLowerCase() === displayName.toLowerCase()
+                );
+                
+                if (!player) {
+                    throw new Error('No account found with that email and display name combination.');
+                }
+                
+                // Update password
+                player.password = btoa(newPassword);
+                saveGameData();
+                
+                showNotification('Password reset successful! You can now login with your new password.', 'success');
+                
+                // Switch to login mode
+                switchAuthMode('login');
+                
+                // Pre-fill email
+                document.getElementById('email').value = email;
+                
+            } catch (error) {
+                throw error;
+            }
         }
 
 
@@ -1787,61 +2004,160 @@
             window.tempCustomPic = null;
         }
 
-        async function loginUser(email, password) {
-            console.log('loginUser called with:', { email, password });
-            email = normalizeEmail(email);
-            if (syncUrl) {
-                await syncPullAndMaybeUpdate();
-            }
-            let player = gameData.players.find(p => normalizeEmail(p.email) === email);
-            console.log('Found player:', player);
-            if (!player) {
-                console.log('Player not found');
-                showNotification('Email not found. Please register first.', 'error');
-                return;
-            }
-
-            if (player.password !== password) {
-                console.log('Password mismatch');
-                showNotification('Incorrect password. Please try again.', 'error');
-                return;
-            }
+        // ===== UI INTERACTION FUNCTIONS =====
+        
+        // Switch between login and register modes
+        function switchAuthMode(mode) {
+            isLoginMode = (mode === 'login');
             
-            currentUser = player;
-            localStorage.setItem('currentUserEmail', email);
-            // Auto-configure sync using email
-            (async () => {
-                const auto = deriveAutoSyncUrlFromEmail(email);
-                if (auto === 'github') {
-                    await syncPullAndMaybeUpdate();
-                } else if (auto) {
-                    setSyncUrl(auto);
-                    await syncPullAndMaybeUpdate();
-                }
-            })();
-            document.getElementById('authSection').classList.add('hidden');
-            document.getElementById('mainApp').classList.remove('hidden');
-            document.getElementById('userName').textContent = player.displayName;
-            // Hide LMS UI until user explicitly opens it
-            document.getElementById('roundStatus').classList.add('hidden');
-            document.getElementById('lmsInterface').classList.add('hidden');
-            const statsPanel = document.getElementById('lmsStats');
-            if (statsPanel) statsPanel.classList.add('hidden');
-            try { generateTeamButtons(); } catch (e) {}
+            const loginTab = document.getElementById('loginTab');
+            const registerTab = document.getElementById('registerTab');
+            const registerFields = document.getElementById('registerFields');
+            const authButtonText = document.getElementById('authButtonText');
+            const forgotPasswordSection = document.getElementById('forgotPasswordSection');
+            const passwordStrength = document.getElementById('passwordStrength');
             
-            const userProfilePicElement = document.getElementById('userProfilePic');
-            userProfilePicElement.innerHTML = `<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRgMFCSXJWsbmkra95ltt9Z9LJiRuMOsIBluqwF-g4&usqp=CAE&s" class="w-8 h-8 rounded-full object-cover border border-gray-300" alt="Profile" onerror="this.src=''; this.style.display='none'; this.nextElementSibling.style.display='block';"><div class="w-8 h-8 rounded-full bg-gray-300 border border-gray-400" style="display: none;"></div>`;
-            
-            if (email === 'sacksjordan@gmail.com') {
-                document.getElementById('adminScores').classList.remove('hidden');
+            if (isLoginMode) {
+                // Login mode styling
+                loginTab.className = 'flex-1 py-2 px-4 bg-blue-600 text-white rounded-md font-medium transition-all duration-200';
+                registerTab.className = 'flex-1 py-2 px-4 text-gray-600 rounded-md font-medium transition-all duration-200';
+                
+                // Hide register fields
+                registerFields.classList.add('hidden');
+                forgotPasswordSection.classList.remove('hidden');
+                passwordStrength.classList.add('hidden');
+                
+                // Update button text
+                authButtonText.textContent = 'Login';
             } else {
-                document.getElementById('adminScores').classList.add('hidden');
+                // Register mode styling
+                loginTab.className = 'flex-1 py-2 px-4 text-gray-600 rounded-md font-medium transition-all duration-200';
+                registerTab.className = 'flex-1 py-2 px-4 bg-blue-600 text-white rounded-md font-medium transition-all duration-200';
+                
+                // Show register fields
+                registerFields.classList.remove('hidden');
+                forgotPasswordSection.classList.add('hidden');
+                
+                // Update button text
+                authButtonText.textContent = 'Register';
+                
+                // Update password strength if password exists
+                const password = document.getElementById('password').value;
+                if (password) updatePasswordStrength(password);
             }
             
-            showNotification(`Welcome back, ${player.displayName}!`, 'success');
-            updateUI();
-            try { generateTeamButtons(); } catch (e) {}
-            setTimeout(() => { try { generateTeamButtons(); } catch (e) {} }, 0);
+            // Clear form errors
+            hideFieldError('email');
+            hideFieldError('password');
+            hideFieldError('displayName');
+        }
+        
+        // Handle form submission
+        async function handleAuthSubmission(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value.trim();
+            const password = document.getElementById('password').value;
+            const displayName = document.getElementById('displayName').value.trim();
+            const authButton = document.getElementById('authButton');
+            const authButtonText = document.getElementById('authButtonText');
+            const authButtonSpinner = document.getElementById('authButtonSpinner');
+            
+            // Clear previous errors
+            hideFieldError('email');
+            hideFieldError('password');
+            hideFieldError('displayName');
+            
+            // Show loading state
+            authButton.disabled = true;
+            authButtonSpinner.classList.remove('hidden');
+            
+            try {
+                if (isLoginMode) {
+                    await loginUser(email, password);
+                } else {
+                    await registerUser(email, password, displayName);
+                }
+                
+                // Clear form on success
+                document.getElementById('authForm').reset();
+                
+            } catch (error) {
+                console.error('Authentication error:', error);
+                
+                // Show field-specific errors
+                const errorMessage = error.message || 'An error occurred. Please try again.';
+                
+                if (errorMessage.includes('email')) {
+                    showFieldError('email', errorMessage);
+                } else if (errorMessage.includes('password') || errorMessage.includes('Password')) {
+                    showFieldError('password', errorMessage);
+                } else if (errorMessage.includes('display name') || errorMessage.includes('Display name')) {
+                    showFieldError('displayName', errorMessage);
+                } else {
+                    showNotification(errorMessage, 'error');
+                }
+                
+            } finally {
+                // Hide loading state
+                authButton.disabled = false;
+                authButtonSpinner.classList.add('hidden');
+            }
+        }
+        
+        // Handle password reset
+        async function handlePasswordReset() {
+            const email = document.getElementById('resetEmail').value.trim();
+            const displayName = document.getElementById('resetDisplayName').value.trim();
+            const newPassword = document.getElementById('newPassword').value;
+            const resetButton = document.getElementById('resetPasswordBtn');
+            
+            resetButton.disabled = true;
+            resetButton.textContent = 'Resetting...';
+            
+            try {
+                await resetPassword(email, displayName, newPassword);
+                hidePasswordResetModal();
+                
+                // Clear reset form
+                document.getElementById('resetEmail').value = '';
+                document.getElementById('resetDisplayName').value = '';
+                document.getElementById('newPassword').value = '';
+                
+            } catch (error) {
+                console.error('Password reset error:', error);
+                showNotification(error.message || 'Password reset failed. Please try again.', 'error');
+                
+            } finally {
+                resetButton.disabled = false;
+                resetButton.textContent = 'Reset Password';
+            }
+        }
+        
+        // Show/hide password reset modal
+        function showPasswordResetModal() {
+            document.getElementById('passwordResetModal').classList.remove('hidden');
+        }
+        
+        function hidePasswordResetModal() {
+            document.getElementById('passwordResetModal').classList.add('hidden');
+        }
+        
+        // Toggle password visibility
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            const eyeOffIcon = document.getElementById('eyeOffIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.add('hidden');
+                eyeOffIcon.classList.remove('hidden');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('hidden');
+                eyeOffIcon.classList.add('hidden');
+            }
         }
 
 
@@ -3343,54 +3659,7 @@
             showNotification('Final updated successfully!', 'success');
         }
 
-        // Password reset functions
-        function showPasswordReset() {
-            document.getElementById('passwordResetForm').classList.remove('hidden');
-            document.getElementById('forgotPasswordBtn').style.display = 'none';
-        }
-
-        function hidePasswordReset() {
-            document.getElementById('passwordResetForm').classList.add('hidden');
-            document.getElementById('forgotPasswordBtn').style.display = 'block';
-            // Clear form fields
-            document.getElementById('resetEmail').value = '';
-            document.getElementById('resetDisplayName').value = '';
-            document.getElementById('newPassword').value = '';
-        }
-
-        function resetPassword() {
-            const email = document.getElementById('resetEmail').value.trim();
-            const displayName = document.getElementById('resetDisplayName').value.trim();
-            const newPassword = document.getElementById('newPassword').value;
-            
-            if (!email || !displayName || !newPassword) {
-                showNotification('Please fill in all fields', 'error');
-                return;
-            }
-            
-            if (newPassword.length < 6) {
-                showNotification('New password must be at least 6 characters long', 'error');
-                return;
-            }
-            
-            // Find player by email and display name for security
-            const player = gameData.players.find(p => 
-                p.email.toLowerCase() === email.toLowerCase() && 
-                p.displayName.toLowerCase() === displayName.toLowerCase()
-            );
-            
-            if (!player) {
-                showNotification('No account found with that email and display name combination', 'error');
-                return;
-            }
-            
-            // Update password
-            player.password = newPassword;
-            saveGameData();
-            
-            hidePasswordReset();
-            showNotification('Password reset successfully! You can now login with your new password.', 'success');
-        }
+        // Old password reset functions removed - replaced with new modal system
 
         function showNotification(message, type = 'info') {
             const notification = document.createElement('div');
@@ -3543,39 +3812,7 @@ if (mainApp) mainApp.classList.add('hidden');
 }
 });
 
-window.registerUser = async function(email, password, displayName) {
-email = (email || '').trim().toLowerCase();
-const cred = await createUserWithEmailAndPassword(auth, email, password);
-if (displayName) { try { await updateProfile(cred.user, { displayName }); } catch (_) {} }
-const uid = cred.user.uid;
-const playerRef = doc(db, 'players', uid);
-const newPlayer = {
-id: uid,
-email,
-displayName: displayName || email.split('@')[0],
-profilePic: (window.registrationData && window.registrationData.profilePic) || null,
-isCustomPic: (window.registrationData && !!window.registrationData.isCustomPic) || false,
-favoriteTeam: (document.getElementById('favoriteTeam')?.value) || '',
-isEliminated: false,
-usedTeams: [],
-currentPick: null,
-roundJoined: window.gameData?.currentRound || 1,
-joinDate: new Date().toISOString(),
-pickItPicks: {},
-pickItStats: { totalPicks: 0, correctPicks: 0, percentage: 0, weeklyMovement: 0, previousRank: null }
-};
-await setDoc(playerRef, newPlayer, { merge: true });
-if (typeof window.showNotification === 'function') window.showNotification('Registration successful! You can now login and start playing.', 'success');
-if (typeof window.switchTab === 'function') window.switchTab('login');
-const emailEl = document.getElementById('email'); if (emailEl) emailEl.value = '';
-const pwdEl = document.getElementById('password'); if (pwdEl) pwdEl.value = '';
-const nameEl = document.getElementById('displayName'); if (nameEl) nameEl.value = '';
-};
-
-window.loginUser = async function(email, password) {
-email = (email || '').trim().toLowerCase();
-await signInWithEmailAndPassword(auth, email, password);
-};
+// Firebase authentication functions removed - using local authentication system
 
 window.logout = async function() {
 await signOut(auth);
