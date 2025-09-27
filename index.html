@@ -1071,6 +1071,8 @@
 
         // Update game state based on current time and fixtures
         function updateGameState() {
+            if (!gameData) return;
+            
             const now = new Date();
 
             // Determine if we're in regular season or knockout phase
@@ -1301,8 +1303,12 @@
 
         // Update knockout rounds display
         function updateKnockoutRoundsList() {
+            if (!gameData) return;
+            
             const knockoutList = document.getElementById('knockoutRoundsList');
             const knockoutSection = document.getElementById('knockoutSection');
+
+            if (!knockoutList || !knockoutSection) return;
 
             // Only show knockout section if we're in knockout phase or have completed rounds
             if (gameData.currentRound < 18) {
@@ -1367,7 +1373,22 @@
         function loadGameData() {
             if (!currentUser) return;
             
-            gameData = JSON.parse(localStorage.getItem('gameData'));
+            const storedGameData = localStorage.getItem('gameData');
+            if (storedGameData) {
+                try {
+                    gameData = JSON.parse(storedGameData);
+                } catch (e) {
+                    console.error('Error parsing game data:', e);
+                    // Reinitialize game data if corrupted
+                    initializeGameData();
+                    gameData = JSON.parse(localStorage.getItem('gameData'));
+                }
+            } else {
+                // Initialize game data if it doesn't exist
+                initializeGameData();
+                gameData = JSON.parse(localStorage.getItem('gameData'));
+            }
+            
             updateGameDisplay();
         }
 
@@ -1383,13 +1404,22 @@
         }
 
         function updateCurrentRound() {
-            document.getElementById('currentRound').textContent = gameData.currentRound;
+            if (!gameData) return;
+            
+            const currentRoundElement = document.getElementById('currentRound');
+            if (currentRoundElement) {
+                currentRoundElement.textContent = gameData.currentRound;
+            }
             updateGameStateDisplay();
         }
 
         function updateGameStateDisplay() {
+            if (!gameData || !currentUser) return;
+            
             const gameStateText = document.getElementById('gameStateText');
             const deadlineInfo = document.getElementById('deadlineInfo');
+            
+            if (!gameStateText || !deadlineInfo) return;
             
             if (gameData.eliminatedUsers[currentUser.id]) {
                 gameStateText.textContent = 'You have been eliminated!';
@@ -1441,10 +1471,14 @@
         }
 
         function updateTeamSelection() {
+            if (!gameData || !currentUser) return;
+            
             const teamGrid = document.getElementById('teamGrid');
             const submitBtn = document.getElementById('submitPick');
             const changeBtn = document.getElementById('changePick');
             const pickStatus = document.getElementById('pickStatus');
+
+            if (!teamGrid || !submitBtn || !changeBtn || !pickStatus) return;
 
             teamGrid.innerHTML = '';
 
@@ -1514,8 +1548,8 @@
             }
 
             // Get teams this user has already used
-            const userPicks = gameData.userPicks[currentUser.id] || {};
-            const usedTeamIds = Object.values(userPicks).map(pick => pick.teamId);
+            const userPicksForTeamCheck = gameData.userPicks[currentUser.id] || {};
+            const usedTeamIds = Object.values(userPicksForTeamCheck).map(pick => pick.teamId);
 
             availableTeams.forEach(team => {
                 const isUsedByUser = usedTeamIds.includes(team.id);
@@ -1687,7 +1721,11 @@
         }
 
         function updateMatchesList() {
+            if (!gameData) return;
+            
             const matchesList = document.getElementById('matchesList');
+            if (!matchesList) return;
+            
             matchesList.innerHTML = '';
 
             const currentRoundFixtures = gameData.fixtures.filter(f => f.round === gameData.currentRound);
@@ -1732,7 +1770,11 @@
         }
 
         function updatePicksHistory() {
+            if (!gameData || !currentUser) return;
+            
             const picksHistory = document.getElementById('picksHistory');
+            if (!picksHistory) return;
+            
             picksHistory.innerHTML = '';
 
             const userId = currentUser.id;
@@ -1762,7 +1804,11 @@
         }
 
         function updateLeaderboard(filterMode = 'all') {
+            if (!gameData) return;
+            
             const leaderboard = document.getElementById('leaderboard');
+            if (!leaderboard) return;
+            
             leaderboard.innerHTML = '';
 
             // Get all users
@@ -1873,16 +1919,25 @@
         }
 
         function updateUserScore() {
+            if (!gameData || !currentUser) return;
+            
             const userId = currentUser.id;
             const userPicks = gameData.userPicks[userId] || {};
             const roundsSurvived = Object.keys(userPicks).length;
 
-            document.getElementById('userScore').textContent = roundsSurvived;
+            const userScoreElement = document.getElementById('userScore');
+            if (userScoreElement) {
+                userScoreElement.textContent = roundsSurvived;
+            }
         }
 
         // Fixture display functions
         function updateAllFixturesList() {
+            if (!gameData) return;
+            
             const allFixturesList = document.getElementById('allFixturesList');
+            if (!allFixturesList) return;
+            
             allFixturesList.innerHTML = '';
 
             // Group fixtures by round
@@ -2052,6 +2107,8 @@
 
         function showNotification(message, type = 'info') {
             const container = document.getElementById('notificationContainer');
+            if (!container) return;
+            
             const notification = document.createElement('div');
             
             const bgColor = {
